@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "./ConvexClientProvider";
-import { Header } from "./header";
 import { Toaster } from "@/components/ui/toaster";
 import { Footer } from "./footer";
+import Nav from "@/components/home/Nav";
 
 const font = Plus_Jakarta_Sans({ 
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={font.className}>
         <ConvexClientProvider>
           <Toaster />
-          <Header />
+          <Nav />
           {children}
           <Footer />
         </ConvexClientProvider>

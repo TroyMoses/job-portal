@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-export function Header() {
+export default function Nav() {
   return (
     <div className="relative z-10 border-b py-4 bg-gray-50">
       <div className="items-center container mx-auto justify-between flex">
