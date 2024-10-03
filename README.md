@@ -1,3 +1,3 @@
 ## Job Portal
 
-Welcome to the job portal repo
+Welcome to the job portal repository
