@@ -13,13 +13,20 @@ const FeaturedJobs = () => {
       />
       <div className="mt-12 w-[80%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
         {JobData.map((job) => {
-            return (
-                <Link href={`/job/jobdetails/${job.id}`} key={job.id}>
-                   <JobCard job={job}/>
-                </Link>
-            )
+          return (
+            <Link href={`/job/jobdetails/${job.id}`} key={job.id}>
+              <JobCard job={job} />
+            </Link>
+          );
         })}
       </div>
+      <Link href={"/job/alljobs"}>
+        <div className="text-center mt-[3rem]">
+            <button className="px-8 py-2 font-semibold hover:bg-blue-500 transition-all duration-300 bg-blue-500 rounded-lg text-white hover:scale-105 cursor-pointer">
+                View All Jobs
+            </button>
+        </div>
+      </Link>
     </div>
   );
 };

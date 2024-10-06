@@ -3,8 +3,8 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { Toaster } from "@/components/ui/toaster";
-import { Footer } from "./footer";
 import Nav from "@/components/home/Nav";
+import Footer from "@/components/home/Footer";
 
 const font = Plus_Jakarta_Sans({ 
   weight: ["200", "300", "400", "500", "600", "700", "800"],
