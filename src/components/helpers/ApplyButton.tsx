@@ -13,6 +13,7 @@ const ApplyButton = () => {
       >
         Apply Now
       </button>
+      <ToastContainer position="top-center"/>
     </div>
   );
 };
