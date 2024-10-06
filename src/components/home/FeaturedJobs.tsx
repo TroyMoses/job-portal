@@ -15,7 +15,7 @@ const FeaturedJobs = () => {
         {JobData.map((job) => {
             return (
                 <Link href={`/job/jobdetails/${job.id}`} key={job.id}>
-                   <JobCard />
+                   <JobCard job={job}/>
                 </Link>
             )
         })}
