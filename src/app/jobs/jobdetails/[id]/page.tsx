@@ -8,6 +8,8 @@ import React from "react";
 const JobDetails = async ({ params }: { params: { id: string } }) => {
   const singleJob = JobData.find((job) => job.id.toString() == params.id);
 
+  const firstFourJobs = JobData.slice(0, 4);
+
   return (
     <div className="mt-20 mb-12">
       <div className="block sm:flex items-center justify-between w-[80%] mx-auto">
@@ -50,6 +52,16 @@ const JobDetails = async ({ params }: { params: { id: string } }) => {
             <li className="mt-4 text-black text-opacity-70">Typescript</li>
             <li className="mt-4 text-black text-opacity-70">Next Auth</li>
         </ul>
+        <h1 className="text-[20px] mt-8 font-semibold">Related Jobs</h1>
+        <div className="mt-4">
+        {firstFourJobs.map((job) => {
+          return (
+            <Link href={`/jobs/jobdetails/${job.id}`} className="space-y-6" key={job.id}>
+              <JobCard job={job} />
+            </Link>
+          );
+        })}
+      </div>
       </div>
     </div>
   );
