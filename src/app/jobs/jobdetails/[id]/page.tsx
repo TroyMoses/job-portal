@@ -1,3 +1,5 @@
+"use client"
+
 import ApplyButton from "@/components/helpers/ApplyButton";
 import JobCard from "@/components/helpers/JobCard";
 import { JobData } from "@/jobs/data";
