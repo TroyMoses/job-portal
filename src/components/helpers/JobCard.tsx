@@ -2,7 +2,7 @@ import { Job } from "@/jobs/data";
 import Image from "next/image";
 import React from "react";
 import { BiMoney } from "react-icons/bi";
-import { FaMapLocation } from "react-icons/fa6";
+import { FaMapLocation, FaRegBookmark } from "react-icons/fa6";
 
 interface Props {
   job: Job;
@@ -49,6 +49,9 @@ const JobCard = ({ job }: Props) => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="absolute top-[1rem] right-[1rem]">
+        <FaRegBookmark className="w-[1rem] h-[1rem]" />
       </div>
     </div>
   );
