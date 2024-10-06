@@ -1,6 +1,5 @@
 import JobCard from "@/components/helpers/JobCard";
 import { JobData } from "@/jobs/data";
-import { Key } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
