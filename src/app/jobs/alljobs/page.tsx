@@ -12,7 +12,7 @@ const AllJobs = () => {
       <div className="space-y-8">
         {JobData.map((job) => {
           return (
-            <Link href={`/job/jobdetails/${job.id}`} key={job.id}>
+            <Link href={`/jobs/jobdetails/${job.id}`} key={job.id}>
               <JobCard job={job} />
             </Link>
           );
