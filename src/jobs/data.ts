@@ -7,7 +7,7 @@ export interface Job {
   jobType: string;
 }
 
-const JobData: Job[] = [
+export const JobData: Job[] = [
   {
     id: 1,
     title: "Software Engineer",
