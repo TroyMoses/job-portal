@@ -20,7 +20,7 @@ const FeaturedJobs = () => {
           );
         })}
       </div>
-      <Link href={"/job/alljobs"}>
+      <Link href={"/jobs/alljobs"}>
         <div className="text-center mt-[3rem]">
             <button className="px-8 py-2 font-semibold hover:bg-blue-500 transition-all duration-300 bg-blue-500 rounded-lg text-white hover:scale-105 cursor-pointer">
                 View All Jobs
