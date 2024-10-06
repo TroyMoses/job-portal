@@ -1,7 +1,7 @@
 import ApplyButton from "@/components/helpers/ApplyButton";
 import JobCard from "@/components/helpers/JobCard";
 import { JobData } from "@/jobs/data";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 
@@ -18,11 +18,11 @@ const JobDetails = async ({ params }: { params: { id: string } }) => {
           <ApplyButton />
         </SignedIn>
         <SignedOut>
-          <Link href={"/signup"}>
+          <SignInButton>
             <button className="px-8 py-3 bg-emerald-600 rounded-lg text-white">
               Sign Up To Apply
             </button>
-          </Link>
+          </SignInButton>
         </SignedOut>
       </div>
     </div>

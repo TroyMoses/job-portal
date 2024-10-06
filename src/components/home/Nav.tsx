@@ -43,7 +43,7 @@ export default function Nav() {
       <div className="w-[90%] md:w-[80%] h-[100%] mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="w-[150px] h-[150px] md:w-[250px] md:h-[250px]">
-          <Link href={"sign-up"}>
+          <Link href={"/"}>
             <Image
               src={LogoImage}
               alt="Log"
