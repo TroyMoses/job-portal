@@ -19,7 +19,12 @@ const JobCategoryCard = ({ category, image, openPositions }: Props) => {
                 height={60}
             />
             {/* Content */}
-            
+            <div>
+                <h1 className="text-[17px] font-semibold mb-[0.4rem]">{category}</h1>
+                <p className="text-[14px] text-black font-semibold text-opacity-50">
+                    ({openPositions} open positions)
+                </p>
+            </div>
         </div>
     </div>
   );
