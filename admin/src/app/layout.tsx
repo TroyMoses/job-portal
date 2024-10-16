@@ -1,8 +1,11 @@
 "use client";
+
+import { ClerkProvider } from "@clerk/nextjs";
 import "jsvectormap/dist/jsvectormap.css";
 import "flatpickr/dist/flatpickr.min.css";
 import "@/css/satoshi.css";
 import "@/css/style.css";
+import { ConvexClientProvider } from "./ConvexClientProvider";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 
@@ -21,12 +24,16 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
-      <body suppressHydrationWarning={true}>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? <Loader /> : children}
-        </div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body suppressHydrationWarning={true}>
+        <ConvexClientProvider>
+          <div className="dark:bg-boxdark-2 dark:text-bodydark">
+            {loading ? <Loader /> : children}
+          </div>
+        </ConvexClientProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

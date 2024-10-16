@@ -4,6 +4,7 @@ import DropdownMessage from "./DropdownMessage";
 import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
+import { SignedIn, UserButton } from '@clerk/nextjs'
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -118,7 +119,9 @@ const Header = (props: {
           </ul>
 
           {/* <!-- User Area --> */}
-          <DropdownUser />
+          <SignedIn>
+              <UserButton />
+          </SignedIn>
           {/* <!-- User Area --> */}
         </div>
       </div>
