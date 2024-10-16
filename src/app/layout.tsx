@@ -6,10 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import Nav from "@/components/home/Nav";
 import Footer from "@/components/home/Footer";
 import ScrollToTop from "@/components/helpers/ScrollToTop";
-import "jsvectormap/dist/jsvectormap.css";
-import "flatpickr/dist/flatpickr.min.css";
-import "@/css/satoshi.css";
-import "@/css/style.css";
 
 const font = Plus_Jakarta_Sans({ 
   weight: ["200", "300", "400", "500", "600", "700", "800"],

@@ -1,4 +1,7 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
+const colors = require("tailwindcss/colors");
+
 
 const config = {
   darkMode: ["class"],
@@ -10,6 +13,15 @@ const config = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      satoshi: ["Satoshi", "sans-serif"],
+    },
+    screens: {
+      "2xsm": "375px",
+      xsm: "425px",
+      "3xl": "2000px",
+      ...defaultTheme.screens,
+    },
     container: {
       center: true,
       padding: "2rem",
