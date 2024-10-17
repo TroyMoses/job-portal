@@ -34,11 +34,27 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { Doc } from "../../../../../convex/_generated/dataModel";
 
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 const formSchema = z.object({
-  title: z.string().min(1).max(200),
+  post: z.string().min(1).max(200),
+  name: z.string().min(1).max(200),
   file: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Required`),
+  dateOfBirth: z.string().min(1).max(200),
+  yesNoChoice: z.enum(["yes", "no"], {
+    required_error: "Yes or No choice is required",
+  }),
+  email: z.string().min(1).max(200),
+  telephone: z.string().min(1).max(200),
+  postalAddress: z.string().min(1).max(500),
+  nationality: z.string().min(1).max(200),
+  homeDistrict: z.string().min(1).max(200),
+  subcounty: z.string().min(1).max(200),
+  village: z.string().min(1).max(200),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -52,8 +68,18 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      post: "",
+      name: "",
       file: undefined,
+      dateOfBirth: "",
+      yesNoChoice: "yes",
+      email: "",
+      telephone: "",
+      postalAddress: "",
+      nationality: "",
+      homeDistrict: "",
+      subcounty: "",
+      village: "",
     },
   });
 
@@ -89,10 +115,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
     try {
       await createFile({
-        name: values.title,
+        post: values.post,
+        name: values.name,
         fileId: storageId,
         orgId,
         type: types[fileType],
+        dateOfBirth: values.dateOfBirth,
+        yesNoChoice: values.yesNoChoice,
+        email: values.email,
+        telephone: values.telephone,
+        postalAddress: values.postalAddress,
+        nationality: values.nationality,
+        homeDistrict: values.homeDistrict,
+        subcounty: values.subcounty,
+        village: values.village,
       });
 
       form.reset();
@@ -159,6 +195,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
               {"("}original in own handwriting{"("} and submitted through their
               Permanent Secretary/Responsible Officer.
             </li>
+
             <li>
               In the case of others, the form should be completed in triplicate{" "}
               {"("}the original in own handwriting{"("}
@@ -174,12 +211,176 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
               >
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="post"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel>
+                        Post applied for and Reference Number
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-between w-full">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Full name {"("}Surname first in capital letters{")"}
+                        </FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Date of Birth Field */}
+                  <FormField
+                    control={form.control}
+                    name="dateOfBirth"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Date of Birth</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex justify-between w-full">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Date of Birth Field */}
+                  <FormField
+                    control={form.control}
+                    name="telephone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telephone Number</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="post"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Postal Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-between w-full">
+                  <FormField
+                    control={form.control}
+                    name="nationality"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nationality</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Date of Birth Field */}
+                  <FormField
+                    control={form.control}
+                    name="homeDistrict"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Home District</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex justify-between w-full">
+                  <FormField
+                    control={form.control}
+                    name="subcounty"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sub-county</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Date of Birth Field */}
+                  <FormField
+                    control={form.control}
+                    name="village"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Village</FormLabel>
+                        <FormControl>
+                          <Input className="w-[500px]" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Yes/No Radio Button Field */}
+                <FormField
+                  control={form.control}
+                  name="yesNoChoice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Choose Yes or No</FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-row space-x-4"
+                        >
+                          <RadioGroupItem value="yes">Yes</RadioGroupItem>
+                          <RadioGroupItem value="no">No</RadioGroupItem>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -199,6 +400,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     </FormItem>
                   )}
                 />
+
                 <Button
                   type="submit"
                   disabled={form.formState.isSubmitting}

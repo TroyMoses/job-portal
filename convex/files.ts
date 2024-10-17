@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { fileTypes } from "./schema";
+import { fileTypes, yesNoChoiceType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -53,10 +53,20 @@ export async function hasAccessToOrg(
 
 export const createFile = mutation({
   args: {
+    post: v.string(),
     name: v.string(),
     fileId: v.id("_storage"),
     orgId: v.string(),
     type: fileTypes,
+    dateOfBirth: v.string(),
+    yesNoChoice: yesNoChoiceType,
+    email: v.string(),
+    telephone: v.string(),
+    postalAddress: v.string(),
+    nationality: v.string(),
+    homeDistrict: v.string(),
+    subcounty: v.string(),
+    village: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -66,11 +76,21 @@ export const createFile = mutation({
     }
 
     await ctx.db.insert("files", {
+      post: args.post,
       name: args.name,
       orgId: args.orgId,
       fileId: args.fileId,
       type: args.type,
       userId: hasAccess.user._id,
+      dateOfBirth: args.dateOfBirth,
+      yesNoChoice: args.yesNoChoice,
+      email: args.email,
+      telephone: args.telephone,
+      postalAddress: args.postalAddress,
+      nationality: args.nationality,
+      homeDistrict: args.homeDistrict,
+      subcounty: args.subcounty,
+      village: args.village,
     });
   },
 });
@@ -130,12 +150,23 @@ export const getFiles = query({
       files.map(async (file) => ({
         ...file,
         url: await ctx.storage.getUrl(file.fileId),
+        dateOfBirth: file.dateOfBirth,
+        yesNoChoice: file.yesNoChoice,
+        post: file.post,
+        email: file.email,
+        telephone: file.telephone,
+        postalAddress: file.postalAddress,
+        nationality: file.nationality,
+        homeDistrict: file.homeDistrict,
+        subcounty: file.subcounty,
+        village: file.village,
       }))
     );
 
     return filesWithUrl;
   },
 });
+
 
 export const deleteAllFiles = internalMutation({
   args: {},
