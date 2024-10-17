@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://calm-mite-8.clerk.accounts.dev",
+      domain: "https://trusty-earwig-14.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],
