@@ -47,7 +47,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Dashboard",
-        route: "/",
+        route: "/admin/",
       },
       {
         icon: (
@@ -66,7 +66,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Calendar",
-        route: "/calendar",
+        route: "/admin/calendar",
       },
       {
         icon: (
@@ -89,7 +89,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Profile",
-        route: "/profile",
+        route: "/admin/profile",
       },
       {
         icon: (
@@ -126,8 +126,8 @@ const menuGroups = [
         label: "Forms",
         route: "#",
         children: [
-          { label: "Form Elements", route: "/forms/form-elements" },
-          { label: "Form Layout", route: "/forms/form-layout" },
+          { label: "Form Elements", route: "/admin/forms/form-elements" },
+          { label: "Form Layout", route: "/admin/forms/form-layout" },
         ],
       },
       {
@@ -158,8 +158,8 @@ const menuGroups = [
             </defs>
           </svg>
         ),
-        label: "Tables",
-        route: "/tables",
+        label: "Jobs",
+        route: "/admin/jobs",
       },
       {
         icon: (
@@ -194,7 +194,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Settings",
-        route: "/settings",
+        route: "/admin/settings",
       },
     ],
   },
@@ -234,7 +234,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Chart",
-        route: "/chart",
+        route: "/admin/chart",
       },
       {
         icon: (
@@ -275,8 +275,8 @@ const menuGroups = [
         label: "UI Elements",
         route: "#",
         children: [
-          { label: "Alerts", route: "/ui/alerts" },
-          { label: "Buttons", route: "/ui/buttons" },
+          { label: "Alerts", route: "/admin/ui/alerts" },
+          { label: "Buttons", route: "/admin/ui/buttons" },
         ],
       },
       // {

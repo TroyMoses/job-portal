@@ -14,6 +14,14 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
+export const answerTypes = v.union(
+  v.literal("text"),
+  v.literal("essay"),
+  v.literal("number"),
+  v.literal("boolean"),
+  v.literal("file")
+);
+
 export default defineSchema({
   files: defineTable({
     name: v.string(),
@@ -25,11 +33,13 @@ export default defineSchema({
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
+    
   favorites: defineTable({
     fileId: v.id("files"),
     orgId: v.string(),
     userId: v.id("users"),
   }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
+  
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
@@ -41,4 +51,33 @@ export default defineSchema({
       })
     ),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
+  
+  jobs: defineTable({
+    title: v.string(),
+    description: v.string(),
+    image: v.optional(v.string()),
+    salary: v.string(),
+    orgId: v.string(),
+    location: v.string(),
+    jobType: v.string(),
+    shouldDelete: v.optional(v.boolean()),
+  }).index("by_title_location", ["title", "location"]),
+  
+  questions: defineTable({
+    jobId: v.id("jobs"),
+    question: v.string(),
+    orgId: v.string(),
+    answerType: answerTypes,
+    shouldDelete: v.optional(v.boolean()),
+  }).index("by_orgId", ["orgId"])
+  .index("by_shouldDelete", ["shouldDelete"]),
+  
+  answers: defineTable({
+    jobId: v.id("jobs"),
+    questionId: v.id("questions"),
+    userId: v.id("users"),
+    orgId: v.string(),
+    answer: v.any(),
+    fileId: v.optional(v.id("files")),
+  }).index("by_jobId_userId", ["jobId", "userId"]),
 });
