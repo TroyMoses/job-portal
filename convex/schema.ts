@@ -57,20 +57,26 @@ export default defineSchema({
     description: v.string(),
     image: v.optional(v.string()),
     salary: v.string(),
+    orgId: v.string(),
     location: v.string(),
     jobType: v.string(),
+    shouldDelete: v.optional(v.boolean()),
   }).index("by_title_location", ["title", "location"]),
   
   questions: defineTable({
     jobId: v.id("jobs"),
     question: v.string(),
+    orgId: v.string(),
     answerType: answerTypes,
-  }).index("by_jobId", ["jobId"]),
+    shouldDelete: v.optional(v.boolean()),
+  }).index("by_orgId", ["orgId"])
+  .index("by_shouldDelete", ["shouldDelete"]),
   
   answers: defineTable({
     jobId: v.id("jobs"),
     questionId: v.id("questions"),
     userId: v.id("users"),
+    orgId: v.string(),
     answer: v.any(),
     fileId: v.optional(v.id("files")),
   }).index("by_jobId_userId", ["jobId", "userId"]),
