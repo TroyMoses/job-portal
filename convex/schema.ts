@@ -55,7 +55,7 @@ export default defineSchema({
   jobs: defineTable({
     title: v.string(),
     description: v.string(),
-    image: v.string(),
+    image: v.optional(v.string()),
     salary: v.string(),
     location: v.string(),
     jobType: v.string(),

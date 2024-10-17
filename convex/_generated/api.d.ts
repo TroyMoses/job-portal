@@ -18,6 +18,8 @@ import type * as clerk from "../clerk.js";
 import type * as crons from "../crons.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as jobs from "../jobs.js";
+import type * as qusestion from "../qusestion.js";
 import type * as users from "../users.js";
 
 /**
@@ -33,6 +35,8 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   files: typeof files;
   http: typeof http;
+  jobs: typeof jobs;
+  qusestion: typeof qusestion;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
