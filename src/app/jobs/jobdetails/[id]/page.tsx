@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ApplyButton from "@/components/helpers/ApplyButton";
 import JobCard from "@/components/helpers/JobCard";
@@ -7,7 +7,7 @@ import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 
-const JobDetails = async ({ params }: { params: { id: string } }) => {
+const JobDetails = ({ params }: { params: { id: string } }) => {
   const singleJob = JobData.find((job) => job.id.toString() == params.id);
 
   const firstFourJobs = JobData.slice(0, 4);
@@ -19,7 +19,7 @@ const JobDetails = async ({ params }: { params: { id: string } }) => {
           <JobCard job={singleJob!} />
         </div>
         <SignedIn>
-          <ApplyButton />
+          <ApplyButton id={params.id} />
         </SignedIn>
         <SignedOut>
           <SignInButton>
@@ -48,22 +48,26 @@ const JobDetails = async ({ params }: { params: { id: string } }) => {
         </p>
         <h1 className="text-[20px] mt-8 font-semibold">Skills Required</h1>
         <ul className="mt-4">
-            <li className="mt-4 text-black text-opacity-70">React JS</li>
-            <li className="mt-4 text-black text-opacity-70">Next JS</li>
-            <li className="mt-4 text-black text-opacity-70">Tailwind CSS</li>
-            <li className="mt-4 text-black text-opacity-70">Typescript</li>
-            <li className="mt-4 text-black text-opacity-70">Next Auth</li>
+          <li className="mt-4 text-black text-opacity-70">React JS</li>
+          <li className="mt-4 text-black text-opacity-70">Next JS</li>
+          <li className="mt-4 text-black text-opacity-70">Tailwind CSS</li>
+          <li className="mt-4 text-black text-opacity-70">Typescript</li>
+          <li className="mt-4 text-black text-opacity-70">Next Auth</li>
         </ul>
         <h1 className="text-[20px] mt-8 font-semibold">Related Jobs</h1>
         <div className="mt-4">
-        {firstFourJobs.map((job) => {
-          return (
-            <Link href={`/jobs/jobdetails/${job.id}`} className="space-y-6" key={job.id}>
-              <JobCard job={job} />
-            </Link>
-          );
-        })}
-      </div>
+          {firstFourJobs.map((job) => {
+            return (
+              <Link
+                href={`/jobs/jobdetails/${job.id}`}
+                className="space-y-6"
+                key={job.id}
+              >
+                <JobCard job={job} />
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
