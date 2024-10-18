@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { employmentType, fileTypes, schoolType, uaceType, uceType, yesNoChoiceType } from "./schema";
+import { employmentType, fileTypes, officerType, referenceType, schoolType, uaceType, uceType, yesNoChoiceType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -55,7 +55,8 @@ export const createFile = mutation({
   args: {
     post: v.string(),
     name: v.string(),
-    fileId: v.id("_storage"),
+    ucefileId: v.id("_storage"),
+    uacefileId: v.id("_storage"),
     orgId: v.string(),
     type: fileTypes,
     dateOfBirth: v.string(),
@@ -81,6 +82,9 @@ export const createFile = mutation({
     uacerecord: v.array(uaceType),
     conviction: v.string(),
     available: v.string(),
+    referencerecord: v.array(referenceType),
+    officerrecord: v.array(officerType),
+    consentment: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -93,7 +97,8 @@ export const createFile = mutation({
       post: args.post,
       name: args.name,
       orgId: args.orgId,
-      fileId: args.fileId,
+      ucefileId: args.ucefileId,
+      uacefileId: args.uacefileId,
       type: args.type,
       userId: hasAccess.user._id,
       dateOfBirth: args.dateOfBirth,
@@ -119,6 +124,9 @@ export const createFile = mutation({
       uacerecord: args.uacerecord,
       conviction: args.conviction,
       available: args.available,
+      referencerecord: args.referencerecord,
+      officerrecord: args.officerrecord,
+      consentment: args.consentment,
     });
   },
 });
@@ -177,7 +185,7 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        url: await ctx.storage.getUrl(file.fileId),
+        url: await ctx.storage.getUrl(file.ucefileId),
         dateOfBirth: file.dateOfBirth,
         yesNoChoice: file.yesNoChoice,
         post: file.post,
@@ -202,6 +210,9 @@ export const getFiles = query({
         uacerecord: file.uacerecord,
         conviction: file.conviction,
         available: file.available,
+        referencerecord: file.referencerecord,
+        officerrecord: file.officerrecord,
+        consentment: file.consentment,
       }))
     );
 
@@ -220,7 +231,7 @@ export const deleteAllFiles = internalMutation({
 
     await Promise.all(
       files.map(async (file) => {
-        await ctx.storage.delete(file.fileId);
+        await ctx.storage.delete(file.ucefileId);
         return await ctx.db.delete(file._id);
       })
     );

@@ -43,12 +43,26 @@ export const uaceType = v.object({
   grade: v.string(),
 });
 
+// reference structure
+export const referenceType = v.object({
+  name: v.string(),
+  address: v.string(),
+});
+
+// officer structure
+export const officerType = v.object({
+  name: v.string(),
+  title: v.string(),
+  contact: v.string(),
+});
+
 export default defineSchema({
   files: defineTable({
     name: v.string(),
     type: fileTypes,
     orgId: v.string(),
-    fileId: v.id("_storage"),
+    ucefileId: v.id("_storage"),
+    uacefileId: v.id("_storage"),
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
     dateOfBirth: v.optional(v.string()),
@@ -75,6 +89,9 @@ export default defineSchema({
     uacerecord: v.optional(v.array(uaceType)),
     conviction: v.optional(v.string()),
     available: v.optional(v.string()),
+    referencerecord: v.optional(v.array(referenceType)),
+    officerrecord: v.optional(v.array(officerType)),
+    consentment: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),

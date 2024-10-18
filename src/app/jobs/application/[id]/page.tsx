@@ -31,9 +31,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 const formSchema = z.object({
   post: z.string().min(1).max(200),
   name: z.string().min(1).max(200),
-  file: z
+  ucefile: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `Required`),
+    .refine((files) => files.length > 0, `UCE document is required`),
+  uacefile: z
+    .custom<FileList>((val) => val instanceof FileList, "Required")
+    .refine((files) => files.length > 0, `UACE document is required`),
   dateOfBirth: z.string().min(1).max(200),
   yesNoChoice: z.enum(["yes", "no"], {
     required_error: "Yes or No choice is required",
@@ -87,6 +90,20 @@ const formSchema = z.object({
   ),
   conviction: z.string().min(1).max(300),
   available: z.string().min(1).max(500),
+  referencerecord: z.array(
+    z.object({
+      name: z.string().min(1, "Reference name is required"),
+      address: z.string().min(1, "Address is required"),
+    })
+  ),
+  officerrecord: z.array(
+    z.object({
+      name: z.string().min(1, "Subject name is required"),
+      title: z.string().min(1, "Title is required"),
+      contact: z.string().min(1, "Contact is required"),
+    })
+  ),
+  consentment: z.string().min(1).max(50),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -102,7 +119,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     defaultValues: {
       post: "",
       name: "",
-      file: undefined,
+      ucefile: undefined,
+      uacefile: undefined,
       dateOfBirth: "",
       yesNoChoice: "yes",
       email: "",
@@ -126,6 +144,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       uacerecord: [{ subject: "", grade: "" }],
       conviction: "",
       available: "",
+      referencerecord: [{ name: "", address: "" }],
+      officerrecord: [{ name: "", title: "", contact: "" }],
+      consentment: "",
     },
   });
 
@@ -169,21 +190,51 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "uacerecord",
   });
 
-  const fileRef = form.register("file");
+  // Manage the "referencerecord" array
+  const {
+    fields: referenceFields,
+    append: appendReferenceRecord,
+    remove: removeReferenceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "referencerecord",
+  });
+
+  // Manage the "officerrecord" array
+  const {
+    fields: officerFields,
+    append: appendOfficerRecord,
+    remove: removeOfficerRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "officerrecord",
+  });
+
+  const ucefileRef = form.register("ucefile");
+  const uacefileRef = form.register("uacefile");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!orgId) return;
 
-    const postUrl = await generateUploadUrl();
-
-    const fileType = values.file[0].type;
-
-    const result = await fetch(postUrl, {
+    // Upload UCE file
+    const ucePostUrl = await generateUploadUrl();
+    const uceFileType = values.ucefile[0].type;
+    const uceResult = await fetch(ucePostUrl, {
       method: "POST",
-      headers: { "Content-Type": fileType },
-      body: values.file[0],
+      headers: { "Content-Type": uceFileType },
+      body: values.ucefile[0],
     });
-    const { storageId } = await result.json();
+    const { storageId: uceStorageId } = await uceResult.json();
+
+    // Upload UACE file
+    const uacePostUrl = await generateUploadUrl();
+    const uaceFileType = values.uacefile[0].type;
+    const uaceResult = await fetch(uacePostUrl, {
+      method: "POST",
+      headers: { "Content-Type": uaceFileType },
+      body: values.uacefile[0],
+    });
+    const { storageId: uaceStorageId } = await uaceResult.json();
 
     const types = {
       "image/png": "image",
@@ -203,9 +254,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       await createFile({
         post: values.post,
         name: values.name,
-        fileId: storageId,
+        ucefileId: uceStorageId,
+        uacefileId: uaceStorageId,
         orgId,
-        type: types[fileType],
+        type: types[uceFileType],
         dateOfBirth: values.dateOfBirth,
         yesNoChoice: values.yesNoChoice,
         email: values.email,
@@ -229,6 +281,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         uacerecord: values.uacerecord,
         conviction: values.conviction,
         available: values.available,
+        referencerecord: values.referencerecord,
+        officerrecord: values.officerrecord,
+        consentment: values.consentment,
       });
 
       form.reset();
@@ -843,6 +898,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
+                  name="ucefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>UCE Certificate/Document</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...ucefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="uaceyear"
                   render={({ field }) => (
                     <FormItem>
@@ -911,6 +980,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
+                  name="uacefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>UACE Certificate/Document</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...uacefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="conviction"
                   render={({ field }) => (
                     <FormItem>
@@ -949,14 +1032,157 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   )}
                 />
 
+                {referenceFields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <h2>
+                      In the case of applicants not already in Government
+                      Service, the names and addresses of two responsible
+                      persons{"("}not relatives{")"} to whom reference can be
+                      made as regards character and ability and should be given
+                      here.
+                    </h2>
+                    <FormField
+                      control={form.control}
+                      name={`referencerecord.${index}.name`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Name" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`referencerecord.${index}.address`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Address</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Address" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove record entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => removeReferenceRecord(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove Record
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another record */}
+                <Button
+                  type="button"
+                  onClick={() =>
+                    appendReferenceRecord({ name: "", address: "" })
+                  }
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another Record
+                </Button>
+
+                {officerFields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <h2>
+                      In the case of applicants already in Government Service,
+                      the comments and recommendation as to the suitability for
+                      the post applied for of the Permanent
+                      Secretary/Responsible Officer be given here.
+                    </h2>
+                    <FormField
+                      control={form.control}
+                      name={`officerrecord.${index}.name`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Name" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`officerrecord.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title/Designation</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Title/Designation" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`officerrecord.${index}.contact`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Contact</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Phone Contact" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove record entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => removeOfficerRecord(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove Record
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another record */}
+                <Button
+                  type="button"
+                  onClick={() =>
+                    appendOfficerRecord({ name: "", title: "", contact: "" })
+                  }
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another Record
+                </Button>
+
                 <FormField
                   control={form.control}
-                  name="file"
-                  render={() => (
+                  name="consentment"
+                  render={({ field }) => (
                     <FormItem>
-                      <FormLabel>File</FormLabel>
+                      <FormLabel>
+                        I hereby certify that to the best of my knowledge and
+                        belief, the particulars given in this form are true and
+                        complete in all respects.
+                      </FormLabel>
                       <FormControl>
-                        <Input type="file" {...fileRef} />
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-row space-x-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="yes" />
+                            <label className="text-sm">I agree</label>
+                          </div>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
