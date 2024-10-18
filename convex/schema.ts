@@ -14,6 +14,48 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
+// Define yesNoChoice as a union of literals
+export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
+
+// school structure
+export const schoolType = v.object({
+  year: v.string(),
+  schoolName: v.string(),
+  award: v.string(),
+});
+
+// employment structure
+export const employmentType = v.object({
+  year: v.string(),
+  position: v.string(),
+  employer: v.string(),
+});
+
+// uce structure
+export const uceType = v.object({
+  subject: v.string(),
+  grade: v.string(),
+});
+
+// uace structure
+export const uaceType = v.object({
+  subject: v.string(),
+  grade: v.string(),
+});
+
+// reference structure
+export const referenceType = v.object({
+  name: v.string(),
+  address: v.string(),
+});
+
+// officer structure
+export const officerType = v.object({
+  name: v.string(),
+  title: v.string(),
+  contact: v.string(),
+});
+
 export const answerTypes = v.union(
   v.literal("text"),
   v.literal("essay"),
@@ -27,19 +69,47 @@ export default defineSchema({
     name: v.string(),
     type: fileTypes,
     orgId: v.string(),
-    fileId: v.id("_storage"),
+    ucefileId: v.optional(v.id("_storage")),
+    uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
+    dateOfBirth: v.optional(v.string()),
+    yesNoChoice: v.optional(yesNoChoiceType),
+    post: v.optional(v.string()),
+    email: v.optional(v.string()),
+    telephone: v.optional(v.string()),
+    postalAddress: v.optional(v.string()),
+    nationality: v.optional(v.string()),
+    homeDistrict: v.optional(v.string()),
+    subcounty: v.optional(v.string()),
+    village: v.optional(v.string()),
+    presentministry: v.optional(v.string()),
+    presentpost: v.optional(v.string()),
+    presentsalary: v.optional(v.string()),
+    termsofemployment: v.optional(v.string()),
+    maritalstatus: v.optional(v.string()),
+    children: v.optional(v.string()),
+    schools: v.optional(v.array(schoolType)),
+    employmentrecord: v.optional(v.array(employmentType)),
+    uceyear: v.optional(v.string()),
+    ucerecord: v.optional(v.array(uceType)),
+    uaceyear: v.optional(v.string()),
+    uacerecord: v.optional(v.array(uaceType)),
+    conviction: v.optional(v.string()),
+    available: v.optional(v.string()),
+    referencerecord: v.optional(v.array(referenceType)),
+    officerrecord: v.optional(v.array(officerType)),
+    consentment: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
-    
+
   favorites: defineTable({
     fileId: v.id("files"),
     orgId: v.string(),
     userId: v.id("users"),
   }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
-  
+
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
@@ -51,27 +121,30 @@ export default defineSchema({
       })
     ),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
-  
+
   jobs: defineTable({
     title: v.string(),
     description: v.string(),
-    image: v.optional(v.string()),
+    imageId: v.optional(v.string()),
     salary: v.string(),
     orgId: v.string(),
     location: v.string(),
     jobType: v.string(),
     shouldDelete: v.optional(v.boolean()),
-  }).index("by_title_location", ["title", "location"]),
-  
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_shouldDelete", ["shouldDelete"]),
+
   questions: defineTable({
     jobId: v.id("jobs"),
     question: v.string(),
     orgId: v.string(),
     answerType: answerTypes,
     shouldDelete: v.optional(v.boolean()),
-  }).index("by_orgId", ["orgId"])
-  .index("by_shouldDelete", ["shouldDelete"]),
-  
+  })
+    .index("by_orgId", ["orgId"])
+    .index("by_shouldDelete", ["shouldDelete"]),
+
   answers: defineTable({
     jobId: v.id("jobs"),
     questionId: v.id("questions"),
@@ -79,5 +152,6 @@ export default defineSchema({
     orgId: v.string(),
     answer: v.any(),
     fileId: v.optional(v.id("files")),
-  }).index("by_jobId_userId", ["jobId", "userId"]),
+  })
+    .index("by_orgId", ["orgId"]),
 });

@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { fileTypes } from "./schema";
+import { employmentType, fileTypes, officerType, referenceType, schoolType, uaceType, uceType, yesNoChoiceType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -53,10 +53,38 @@ export async function hasAccessToOrg(
 
 export const createFile = mutation({
   args: {
+    post: v.string(),
     name: v.string(),
-    fileId: v.id("_storage"),
+    ucefileId: v.id("_storage"),
+    uacefileId: v.id("_storage"),
     orgId: v.string(),
     type: fileTypes,
+    dateOfBirth: v.string(),
+    yesNoChoice: yesNoChoiceType,
+    email: v.string(),
+    telephone: v.string(),
+    postalAddress: v.string(),
+    nationality: v.string(),
+    homeDistrict: v.string(),
+    subcounty: v.string(),
+    village: v.string(),
+    presentministry: v.string(),
+    presentpost: v.string(),
+    presentsalary: v.string(),
+    termsofemployment: v.string(),
+    maritalstatus: v.string(),
+    children: v.string(),
+    schools: v.array(schoolType),
+    employmentrecord: v.array(employmentType),
+    uceyear: v.string(),
+    ucerecord: v.array(uceType),
+    uaceyear: v.string(),
+    uacerecord: v.array(uaceType),
+    conviction: v.string(),
+    available: v.string(),
+    referencerecord: v.array(referenceType),
+    officerrecord: v.array(officerType),
+    consentment: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -66,11 +94,39 @@ export const createFile = mutation({
     }
 
     await ctx.db.insert("files", {
+      post: args.post,
       name: args.name,
       orgId: args.orgId,
-      fileId: args.fileId,
+      ucefileId: args.ucefileId,
+      uacefileId: args.uacefileId,
       type: args.type,
       userId: hasAccess.user._id,
+      dateOfBirth: args.dateOfBirth,
+      yesNoChoice: args.yesNoChoice,
+      email: args.email,
+      telephone: args.telephone,
+      postalAddress: args.postalAddress,
+      nationality: args.nationality,
+      homeDistrict: args.homeDistrict,
+      subcounty: args.subcounty,
+      village: args.village,
+      presentministry: args.presentministry,
+      presentpost: args.presentpost,
+      presentsalary: args.presentsalary,
+      termsofemployment: args.termsofemployment,
+      maritalstatus: args.maritalstatus,
+      children: args.children,
+      schools: args.schools,
+      employmentrecord: args.employmentrecord,
+      uceyear: args.uceyear,
+      ucerecord: args.ucerecord,
+      uaceyear: args.uaceyear,
+      uacerecord: args.uacerecord,
+      conviction: args.conviction,
+      available: args.available,
+      referencerecord: args.referencerecord,
+      officerrecord: args.officerrecord,
+      consentment: args.consentment,
     });
   },
 });
@@ -129,13 +185,42 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        url: await ctx.storage.getUrl(file.fileId),
+        uceFileUrl: file.ucefileId ? await ctx.storage.getUrl(file.ucefileId) : null,
+        uaceFileUrl: file.uacefileId ? await ctx.storage.getUrl(file.uacefileId) : null,
+        dateOfBirth: file.dateOfBirth,
+        yesNoChoice: file.yesNoChoice,
+        post: file.post,
+        email: file.email,
+        telephone: file.telephone,
+        postalAddress: file.postalAddress,
+        nationality: file.nationality,
+        homeDistrict: file.homeDistrict,
+        subcounty: file.subcounty,
+        village: file.village,
+        presentministry: file.presentministry,
+        presentpost: file.presentpost,
+        presentsalary: file.presentsalary,
+        termsofemployment: file.termsofemployment,
+        maritalstatus: file.maritalstatus,
+        children: file.children,
+        schools: file.schools,
+        employmentrecord: file.employmentrecord,
+        uceyear: file.uceyear,
+        ucerecord: file.ucerecord,
+        uaceyear: file.uaceyear,
+        uacerecord: file.uacerecord,
+        conviction: file.conviction,
+        available: file.available,
+        referencerecord: file.referencerecord,
+        officerrecord: file.officerrecord,
+        consentment: file.consentment,
       }))
     );
 
     return filesWithUrl;
   },
 });
+
 
 export const deleteAllFiles = internalMutation({
   args: {},
@@ -145,12 +230,17 @@ export const deleteAllFiles = internalMutation({
       .withIndex("by_shouldDelete", (q) => q.eq("shouldDelete", true))
       .collect();
 
-    await Promise.all(
-      files.map(async (file) => {
-        await ctx.storage.delete(file.fileId);
-        return await ctx.db.delete(file._id);
-      })
-    );
+      await Promise.all(
+        files.map(async (file) => {
+          if (file.ucefileId) {
+            await ctx.storage.delete(file.ucefileId);
+          }
+          if (file.uacefileId) {
+            await ctx.storage.delete(file.uacefileId);
+          }
+          return await ctx.db.delete(file._id);
+        })
+      );
   },
 });
 

@@ -19,7 +19,7 @@ import { FileCardActions } from "./file-actions";
 export function FileCard({
   file,
 }: {
-  file: Doc<"files"> & { isFavorited: boolean; url: string | null };
+  file: Doc<"files"> & { isFavorited: boolean; uceFileUrl: string | null };
 }) {
   const userProfile = useQuery(api.users.getUserProfile, {
     userId: file.userId,
@@ -48,8 +48,8 @@ export function FileCard({
         </div>
       </CardHeader>
       <CardContent className="h-[200px] flex justify-center items-center">
-        {file.type === "image" && file.url && (
-          <Image alt={file.name} width="200" height="100" src={file.url} />
+        {file.type === "image" && file.uceFileUrl && (
+          <Image alt={file.name} width="200" height="100" src={file.uceFileUrl} />
         )}
 
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
