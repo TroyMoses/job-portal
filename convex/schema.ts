@@ -14,8 +14,11 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
-// Define yesNoChoice as a union of literals
-export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
+// Define residence as a union of literals
+export const residenceType = v.union(v.literal("temporary"), v.literal("permanent"));
+
+// Define consentment as a union of literals
+export const consentmentType = v.union(v.literal("yes"), v.literal("no"));
 
 // school structure
 export const schoolType = v.object({
@@ -74,7 +77,6 @@ export default defineSchema({
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
     dateOfBirth: v.optional(v.string()),
-    yesNoChoice: v.optional(yesNoChoiceType),
     post: v.optional(v.string()),
     email: v.optional(v.string()),
     telephone: v.optional(v.string()),
@@ -83,6 +85,7 @@ export default defineSchema({
     homeDistrict: v.optional(v.string()),
     subcounty: v.optional(v.string()),
     village: v.optional(v.string()),
+    residence: v.optional(residenceType),
     presentministry: v.optional(v.string()),
     presentpost: v.optional(v.string()),
     presentsalary: v.optional(v.string()),
@@ -99,7 +102,7 @@ export default defineSchema({
     available: v.optional(v.string()),
     referencerecord: v.optional(v.array(referenceType)),
     officerrecord: v.optional(v.array(officerType)),
-    consentment: v.optional(v.string()),
+    consentment: v.optional(consentmentType),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
@@ -148,10 +151,8 @@ export default defineSchema({
   answers: defineTable({
     jobId: v.id("jobs"),
     questionId: v.id("questions"),
-    userId: v.id("users"),
     orgId: v.string(),
     answer: v.any(),
-    fileId: v.optional(v.id("files")),
   })
     .index("by_orgId", ["orgId"]),
 });
