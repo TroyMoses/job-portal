@@ -40,6 +40,7 @@ export default defineSchema({
     presentsalary: v.optional(v.string()),
     termsofemployment: v.optional(v.string()),
     maritalstatus: v.optional(v.string()),
+    children: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),

@@ -50,6 +50,7 @@ const formSchema = z.object({
   presentsalary: z.string().min(1).max(300),
   termsofemployment: z.string().min(1).max(100),
   maritalstatus: z.string().min(1).max(100),
+  children: z.string().min(1).max(100),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -80,6 +81,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       presentsalary: "",
       termsofemployment: "",
       maritalstatus: "",
+      children: "",
     },
   });
 
@@ -134,6 +136,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         presentsalary: values.presentsalary,
         termsofemployment: values.termsofemployment,
         maritalstatus: values.maritalstatus,
+        children: values.children,
       });
 
       form.reset();
@@ -520,6 +523,22 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                             <label className="text-sm">Separated</label>
                           </div>
                         </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="children"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Number and age of Children
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

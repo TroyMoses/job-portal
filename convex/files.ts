@@ -72,6 +72,7 @@ export const createFile = mutation({
     presentsalary: v.string(),
     termsofemployment: v.string(),
     maritalstatus: v.string(),
+    children: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -101,6 +102,7 @@ export const createFile = mutation({
       presentsalary: args.presentsalary,
       termsofemployment: args.termsofemployment,
       maritalstatus: args.maritalstatus,
+      children: args.children,
     });
   },
 });
@@ -175,6 +177,7 @@ export const getFiles = query({
         presentsalary: file.presentsalary,
         termsofemployment: file.termsofemployment,
         maritalstatus: file.maritalstatus,
+        children: file.children,
       }))
     );
 
