@@ -185,7 +185,8 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        url: await ctx.storage.getUrl(file.ucefileId),
+        uceFileUrl: file.ucefileId ? await ctx.storage.getUrl(file.ucefileId) : null,
+        uaceFileUrl: file.uacefileId ? await ctx.storage.getUrl(file.uacefileId) : null,
         dateOfBirth: file.dateOfBirth,
         yesNoChoice: file.yesNoChoice,
         post: file.post,
@@ -229,12 +230,17 @@ export const deleteAllFiles = internalMutation({
       .withIndex("by_shouldDelete", (q) => q.eq("shouldDelete", true))
       .collect();
 
-    await Promise.all(
-      files.map(async (file) => {
-        await ctx.storage.delete(file.ucefileId);
-        return await ctx.db.delete(file._id);
-      })
-    );
+      await Promise.all(
+        files.map(async (file) => {
+          if (file.ucefileId) {
+            await ctx.storage.delete(file.ucefileId);
+          }
+          if (file.uacefileId) {
+            await ctx.storage.delete(file.uacefileId);
+          }
+          return await ctx.db.delete(file._id);
+        })
+      );
   },
 });
 
