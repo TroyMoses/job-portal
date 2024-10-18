@@ -20,7 +20,7 @@ import type * as crons from "../crons.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
-import type * as qusestion from "../qusestion.js";
+import type * as question from "../question.js";
 import type * as users from "../users.js";
 
 /**
@@ -38,7 +38,7 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   http: typeof http;
   jobs: typeof jobs;
-  qusestion: typeof qusestion;
+  question: typeof question;
   users: typeof users;
 }>;
 export declare const api: FilterApi<
