@@ -1,4 +1,5 @@
 "use client";
+
 import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api"; // Ensure this points to the correct path
@@ -52,17 +53,12 @@ export default function JobBrowser({
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<Doc<"jobs">["type"] | "all">("all"); // Change type to 'jobs'
+  const [type, setType] = useState<"all">("all");
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
     orgId = organization.organization?.id ?? user.user?.id;
   }
-
-  const favorites = useQuery(
-    api.jobs.allJobs, // Change to your jobs API
-    orgId ? { orgId } : "skip"
-  );
 
   const jobs = useQuery(
     api.jobs.allJobs, // Change to your jobs API endpoint
@@ -71,8 +67,6 @@ export default function JobBrowser({
           orgId,
           type: type === "all" ? undefined : type,
           query,
-          favorites: favoritesOnly,
-          deletedOnly,
         }
       : "skip"
   );
@@ -147,7 +141,7 @@ export default function JobBrowser({
         <TabsContent value="grid">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
             {modifiedJobs?.map((job) => {
-              return <JobCard key={job._id} job={job} />; // Use JobCard for displaying jobs
+              return <FileCard key={job._id} job={job} />; // Use JobCard for displaying jobs
             })}
           </div>
         </TabsContent>

@@ -34,7 +34,7 @@ export function FileCardActions({
   file,
   isFavorited,
 }: {
-  file: Doc<"files"> & { url: string | null };
+  file: Doc<"files"> & { uceFileUrl: string | null };
   isFavorited: boolean;
 }) {
   const deleteFile = useMutation(api.files.deleteFile);
@@ -83,8 +83,8 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              if (!file.url) return;
-              window.open(file.url, "_blank");
+              if (!file.uceFileUrl) return;
+              window.open(file.uceFileUrl, "_blank");
             }}
             className="flex gap-1 items-center cursor-pointer"
           >

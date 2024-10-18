@@ -5,28 +5,76 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
+import { Doc, Id } from "./_generated/dataModel";
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  const identity = await ctx.auth.getUserIdentity();
+
+  if (!identity) {
+    throw new ConvexError("you must be logged in to upload a job");
+  }
+
+  return await ctx.storage.generateUploadUrl();
+});
+
+export async function hasAccessToOrg(
+  ctx: QueryCtx | MutationCtx,
+  orgId: string
+) {
+  const identity = await ctx.auth.getUserIdentity();
+
+  if (!identity) {
+    return null;
+  }
+
+  const user = await ctx.db
+    .query("users")
+    .withIndex("by_tokenIdentifier", (q) =>
+      q.eq("tokenIdentifier", identity.tokenIdentifier)
+    )
+    .first();
+
+  if (!user) {
+    return null;
+  }
+
+  const hasAccess =
+    user.orgIds.some((item) => item.orgId === orgId) ||
+    user.tokenIdentifier.includes(orgId);
+
+  if (!hasAccess) {
+    return null;
+  }
+
+  return { user };
+}
 
 export const createJob = mutation({
   args: {
     title: v.string(),
     description: v.string(),
-    image: v.optional(v.string()),
+    imageId: v.id("_storage"),
+    orgId: v.string(),
     salary: v.string(),
     location: v.string(),
     jobType: v.string(),
   },
-  handler: async (ctx, args) => {
-    const jobId = await ctx.db.insert("jobs", {
+  async handler(ctx, args) {
+    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
+
+    if (!hasAccess) {
+      throw new ConvexError("you do not have access to this org");
+    }
+    await ctx.db.insert("jobs", {
       title: args.title,
       description: args.description,
-      image: args.image,
+      imageId: args.imageId,
+      orgId: args.orgId,
       salary: args.salary,
       location: args.location,
       jobType: args.jobType,
     });
-
-    return jobId; 
   },
 });
 
@@ -49,6 +97,39 @@ export const allJobs = query({
   handler: async (ctx) => {
     const jobs = await ctx.db.query("jobs").collect();  // Collects all jobs
     return jobs;
+  },
+});
+
+export const getJobs = query({
+  args: {
+    orgId: v.string(),
+  },
+  async handler(ctx, args) {
+    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
+
+    if (!hasAccess) {
+      return [];
+    }
+
+    let jobs = await ctx.db
+      .query("jobs")
+      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+      .collect();
+
+    const jobsWithUrl = await Promise.all(
+      jobs.map(async (job) => ({
+        ...job,
+        imageId: job.imageId ? await ctx.storage.getUrl(job.imageId) : null,
+        title: job.title,
+        description: job.description,
+        orgId: job.orgId,
+        salary: job.salary,
+        location: job.location,
+        jobType: job.jobType,
+      }))
+    );
+
+    return jobsWithUrl;
   },
 });
 
