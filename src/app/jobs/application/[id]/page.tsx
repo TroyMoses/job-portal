@@ -16,14 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutation } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import { z } from "zod";
 
@@ -34,8 +26,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { Doc } from "../../../../../convex/_generated/dataModel";
 
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
@@ -58,6 +48,8 @@ const formSchema = z.object({
   presentministry: z.string().min(1).max(500),
   presentpost: z.string().min(1).max(500),
   presentsalary: z.string().min(1).max(300),
+  termsofemployment: z.string().min(1).max(100),
+  maritalstatus: z.string().min(1).max(100),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -86,6 +78,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       presentministry: "",
       presentpost: "",
       presentsalary: "",
+      termsofemployment: "",
+      maritalstatus: "",
     },
   });
 
@@ -138,6 +132,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         presentministry: values.presentministry,
         presentpost: values.presentpost,
         presentsalary: values.presentsalary,
+        termsofemployment: values.termsofemployment,
+        maritalstatus: values.maritalstatus,
       });
 
       form.reset();
@@ -388,7 +384,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                           onValueChange={field.onChange}
                           className="flex flex-row space-x-4"
                         >
-                          {/* Wrap the label inside a <label> element */}
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="temporary" />
                             <label className="text-sm">Temporary</label>
@@ -447,6 +442,84 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="termsofemployment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                      Terms of Employment {"("}Tick as appropriate{")"} 
+                      </FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-row space-x-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="temporary" />
+                            <label className="text-sm">Temporary</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="contract" />
+                            <label className="text-sm">Contract</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="probation" />
+                            <label className="text-sm">Probation</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="permanent" />
+                            <label className="text-sm">Permanent</label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="maritalstatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Marital Status {"("}Tick as appropriate{")"}
+                      </FormLabel>
+                      <FormControl>
+                        <RadioGroup
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          className="flex flex-row space-x-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="married" />
+                            <label className="text-sm">Married</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="single" />
+                            <label className="text-sm">Single</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="widowed" />
+                            <label className="text-sm">Widowed</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="divorced" />
+                            <label className="text-sm">Divorced</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="separated" />
+                            <label className="text-sm">Separated</label>
+                          </div>
+                        </RadioGroup>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
