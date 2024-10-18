@@ -20,7 +20,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
@@ -51,6 +51,16 @@ const formSchema = z.object({
   termsofemployment: z.string().min(1).max(100),
   maritalstatus: z.string().min(1).max(100),
   children: z.string().min(1).max(100),
+  schools: z.array(
+    z.object({
+      year: z
+        .string()
+        .min(4, "Enter a valid year")
+        .max(4, "Enter a valid year"),
+      schoolName: z.string().min(1, "School name is required"),
+      award: z.string().min(1, "Award is required"),
+    })
+  ),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -82,7 +92,13 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       termsofemployment: "",
       maritalstatus: "",
       children: "",
+      schools: [{ year: "", schoolName: "", award: "" }],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "schools", // Manage the "schools" array
   });
 
   const fileRef = form.register("file");
@@ -457,7 +473,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                      Terms of Employment {"("}Tick as appropriate{")"} 
+                        Terms of Employment {"("}Tick as appropriate{")"}
                       </FormLabel>
                       <FormControl>
                         <RadioGroup
@@ -529,14 +545,78 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   )}
                 />
 
+                {fields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <h2>Details of Schools/Institutions attended:</h2>
+                    <FormField
+                      control={form.control}
+                      name={`schools.${index}.year`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Year/Period</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Year" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`schools.${index}.schoolName`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>School/Institution</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="School or Institution Name" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`schools.${index}.award`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Award/Qualifications attained</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Award" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove school entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => remove(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove School
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another school */}
+                <Button
+                  type="button"
+                  onClick={() =>
+                    append({ year: "", schoolName: "", award: "" })
+                  }
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another School
+                </Button>
+
                 <FormField
                   control={form.control}
                   name="children"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Number and age of Children
-                      </FormLabel>
+                      <FormLabel>Number and age of Children</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -562,12 +642,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                 <Button
                   type="submit"
                   disabled={form.formState.isSubmitting}
-                  className="flex gap-1"
+                  className="flex gap-1 text-lg"
                 >
                   {form.formState.isSubmitting && (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   )}
-                  Submit
+                  Submit Form
                 </Button>
               </form>
             </Form>
