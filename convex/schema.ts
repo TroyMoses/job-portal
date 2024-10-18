@@ -31,6 +31,18 @@ export const employmentType = v.object({
   employer: v.string(),
 });
 
+// uce structure
+export const uceType = v.object({
+  subject: v.string(),
+  grade: v.string(),
+});
+
+// uace structure
+export const uaceType = v.object({
+  subject: v.string(),
+  grade: v.string(),
+});
+
 export default defineSchema({
   files: defineTable({
     name: v.string(),
@@ -58,6 +70,11 @@ export default defineSchema({
     schools: v.optional(v.array(schoolType)),
     employmentrecord: v.optional(v.array(employmentType)),
     uceyear: v.optional(v.string()),
+    ucerecord: v.optional(v.array(uceType)),
+    uaceyear: v.optional(v.string()),
+    uacerecord: v.optional(v.array(uaceType)),
+    conviction: v.optional(v.string()),
+    available: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),

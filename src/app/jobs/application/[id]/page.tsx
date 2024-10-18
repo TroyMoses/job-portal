@@ -72,6 +72,21 @@ const formSchema = z.object({
     })
   ),
   uceyear: z.string().min(1).max(100),
+  ucerecord: z.array(
+    z.object({
+      subject: z.string().min(1, "Subject name is required"),
+      grade: z.string().min(1, "Grade is required"),
+    })
+  ),
+  uaceyear: z.string().min(1).max(100),
+  uacerecord: z.array(
+    z.object({
+      subject: z.string().min(1, "Subject name is required"),
+      grade: z.string().min(1, "Grade is required"),
+    })
+  ),
+  conviction: z.string().min(1).max(300),
+  available: z.string().min(1).max(500),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -106,6 +121,11 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       schools: [{ year: "", schoolName: "", award: "" }],
       employmentrecord: [{ year: "", position: "", employer: "" }],
       uceyear: "",
+      ucerecord: [{ subject: "", grade: "" }],
+      uaceyear: "",
+      uacerecord: [{ subject: "", grade: "" }],
+      conviction: "",
+      available: "",
     },
   });
 
@@ -127,6 +147,26 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   } = useFieldArray({
     control: form.control,
     name: "employmentrecord",
+  });
+
+  // Manage the "ucerecord" array
+  const {
+    fields: uceFields,
+    append: appendUceRecord,
+    remove: removeUceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "ucerecord",
+  });
+
+  // Manage the "uacerecord" array
+  const {
+    fields: uaceFields,
+    append: appendUaceRecord,
+    remove: removeUaceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "uacerecord",
   });
 
   const fileRef = form.register("file");
@@ -184,6 +224,11 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         schools: values.schools,
         employmentrecord: values.employmentrecord,
         uceyear: values.uceyear,
+        ucerecord: values.ucerecord,
+        uaceyear: values.uaceyear,
+        uacerecord: values.uacerecord,
+        conviction: values.conviction,
+        available: values.available,
       });
 
       form.reset();
@@ -659,7 +704,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   Add Another School
                 </Button>
 
-                {schoolFields.map((field, index) => (
+                {employmentFields.map((field, index) => (
                   <div key={field.id} className="space-y-4 border p-4">
                     <h2>Employment Record:</h2>
                     <FormField
@@ -737,6 +782,164 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Have you passed Uganda Certificate of Education Exams{" "}
                         {"["}UCE{"]"}? Indicate the year, subject and level of
                         passes.
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {uceFields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <FormField
+                      control={form.control}
+                      name={`ucerecord.${index}.subject`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Subject" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`ucerecord.${index}.grade`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Grade</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Grade" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove record entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => removeUceRecord(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove Record
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another record */}
+                <Button
+                  type="button"
+                  onClick={() => appendUceRecord({ subject: "", grade: "" })}
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another Record
+                </Button>
+
+                <FormField
+                  control={form.control}
+                  name="uaceyear"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Have you passed Uganda Certificate of Education Exams{" "}
+                        {"["}UACE{"]"}? Indicate the year, subject and level of
+                        passes.
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {uaceFields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <FormField
+                      control={form.control}
+                      name={`uacerecord.${index}.subject`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Subject" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`uacerecord.${index}.grade`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Grade</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Grade" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove record entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => removeUaceRecord(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove Record
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another record */}
+                <Button
+                  type="button"
+                  onClick={() => appendUaceRecord({ subject: "", grade: "" })}
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another Record
+                </Button>
+
+                <FormField
+                  control={form.control}
+                  name="conviction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Have you ever been convicted on a criminal charge? If
+                        so, give brief details including sentence imposed
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                      <p className="font-semibold italic mt-3">
+                        N.B: Conviction for a criminal offence will not
+                        necessarily prevent an applicant from being employed in
+                        the Public Service but giving of false information in
+                        that context is an offence.{" "}
+                      </p>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="available"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        How soon would you be available for appointment if
+                        selected? State the minimum salary expectation
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />

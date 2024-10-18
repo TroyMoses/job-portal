@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { employmentType, fileTypes, schoolType, yesNoChoiceType } from "./schema";
+import { employmentType, fileTypes, schoolType, uaceType, uceType, yesNoChoiceType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -76,6 +76,11 @@ export const createFile = mutation({
     schools: v.array(schoolType),
     employmentrecord: v.array(employmentType),
     uceyear: v.string(),
+    ucerecord: v.array(uceType),
+    uaceyear: v.string(),
+    uacerecord: v.array(uaceType),
+    conviction: v.string(),
+    available: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -109,6 +114,11 @@ export const createFile = mutation({
       schools: args.schools,
       employmentrecord: args.employmentrecord,
       uceyear: args.uceyear,
+      ucerecord: args.ucerecord,
+      uaceyear: args.uaceyear,
+      uacerecord: args.uacerecord,
+      conviction: args.conviction,
+      available: args.available,
     });
   },
 });
@@ -187,6 +197,11 @@ export const getFiles = query({
         schools: file.schools,
         employmentrecord: file.employmentrecord,
         uceyear: file.uceyear,
+        ucerecord: file.ucerecord,
+        uaceyear: file.uaceyear,
+        uacerecord: file.uacerecord,
+        conviction: file.conviction,
+        available: file.available,
       }))
     );
 
