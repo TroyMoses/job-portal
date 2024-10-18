@@ -67,6 +67,9 @@ export const createFile = mutation({
     homeDistrict: v.string(),
     subcounty: v.string(),
     village: v.string(),
+    presentministry: v.string(),
+    presentpost: v.string(),
+    presentsalary: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -91,6 +94,9 @@ export const createFile = mutation({
       homeDistrict: args.homeDistrict,
       subcounty: args.subcounty,
       village: args.village,
+      presentministry: args.presentministry,
+      presentpost: args.presentpost,
+      presentsalary: args.presentsalary,
     });
   },
 });
@@ -160,6 +166,9 @@ export const getFiles = query({
         homeDistrict: file.homeDistrict,
         subcounty: file.subcounty,
         village: file.village,
+        presentministry: file.presentministry,
+        presentpost: file.presentpost,
+        presentsalary: file.presentsalary,
       }))
     );
 

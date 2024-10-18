@@ -55,6 +55,9 @@ const formSchema = z.object({
   homeDistrict: z.string().min(1).max(200),
   subcounty: z.string().min(1).max(200),
   village: z.string().min(1).max(200),
+  presentministry: z.string().min(1).max(500),
+  presentpost: z.string().min(1).max(500),
+  presentsalary: z.string().min(1).max(300),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -80,6 +83,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       homeDistrict: "",
       subcounty: "",
       village: "",
+      presentministry: "",
+      presentpost: "",
+      presentsalary: "",
     },
   });
 
@@ -129,6 +135,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         homeDistrict: values.homeDistrict,
         subcounty: values.subcounty,
         village: values.village,
+        presentministry: values.presentministry,
+        presentpost: values.presentpost,
+        presentsalary: values.presentsalary,
       });
 
       form.reset();
@@ -365,22 +374,79 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   />
                 </div>
 
-                {/* Yes/No Radio Button Field */}
                 <FormField
                   control={form.control}
                   name="yesNoChoice"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Choose Yes or No</FormLabel>
+                      <FormLabel>
+                        Are you a temporary or permanent resident in Uganda?
+                      </FormLabel>
                       <FormControl>
                         <RadioGroup
                           value={field.value}
                           onValueChange={field.onChange}
                           className="flex flex-row space-x-4"
                         >
-                          <RadioGroupItem value="yes">Yes</RadioGroupItem>
-                          <RadioGroupItem value="no">No</RadioGroupItem>
+                          {/* Wrap the label inside a <label> element */}
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="temporary" />
+                            <label className="text-sm">Temporary</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="permanent" />
+                            <label className="text-sm">Permanent</label>
+                          </div>
                         </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="presentministry"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Present Ministry/Local Government/ Department/Any other
+                        Employer
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="presentpost"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Present post and date appointment to it
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="presentsalary"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Present Salary and Scale {"("}if applicable{")"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

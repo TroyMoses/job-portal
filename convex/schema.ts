@@ -35,6 +35,9 @@ export default defineSchema({
     homeDistrict: v.optional(v.string()),
     subcounty: v.optional(v.string()),
     village: v.optional(v.string()),
+    presentministry: v.optional(v.string()),
+    presentpost: v.optional(v.string()),
+    presentsalary: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
