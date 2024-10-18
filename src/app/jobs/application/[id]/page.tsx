@@ -153,6 +153,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         termsofemployment: values.termsofemployment,
         maritalstatus: values.maritalstatus,
         children: values.children,
+        schools: values.schools,
       });
 
       form.reset();
