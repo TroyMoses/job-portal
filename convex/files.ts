@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { fileTypes, schoolType, yesNoChoiceType } from "./schema";
+import { employmentType, fileTypes, schoolType, yesNoChoiceType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -74,6 +74,8 @@ export const createFile = mutation({
     maritalstatus: v.string(),
     children: v.string(),
     schools: v.array(schoolType),
+    employmentrecord: v.array(employmentType),
+    uceyear: v.string(),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -105,6 +107,8 @@ export const createFile = mutation({
       maritalstatus: args.maritalstatus,
       children: args.children,
       schools: args.schools,
+      employmentrecord: args.employmentrecord,
+      uceyear: args.uceyear,
     });
   },
 });
@@ -180,6 +184,9 @@ export const getFiles = query({
         termsofemployment: file.termsofemployment,
         maritalstatus: file.maritalstatus,
         children: file.children,
+        schools: file.schools,
+        employmentrecord: file.employmentrecord,
+        uceyear: file.uceyear,
       }))
     );
 

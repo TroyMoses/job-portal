@@ -61,6 +61,17 @@ const formSchema = z.object({
       award: z.string().min(1, "Award is required"),
     })
   ),
+  employmentrecord: z.array(
+    z.object({
+      year: z
+        .string()
+        .min(4, "Enter a valid year")
+        .max(4, "Enter a valid year"),
+      position: z.string().min(1, "Position is required"),
+      employer: z.string().min(1, "Employer details are required"),
+    })
+  ),
+  uceyear: z.string().min(1).max(100),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -93,12 +104,29 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       maritalstatus: "",
       children: "",
       schools: [{ year: "", schoolName: "", award: "" }],
+      employmentrecord: [{ year: "", position: "", employer: "" }],
+      uceyear: "",
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  // Manage the "schools" array
+  const {
+    fields: schoolFields,
+    append: appendSchool,
+    remove: removeSchool,
+  } = useFieldArray({
     control: form.control,
-    name: "schools", // Manage the "schools" array
+    name: "schools",
+  });
+
+  // Manage the "employmentrecord" array
+  const {
+    fields: employmentFields,
+    append: appendEmployment,
+    remove: removeEmployment,
+  } = useFieldArray({
+    control: form.control,
+    name: "employmentrecord",
   });
 
   const fileRef = form.register("file");
@@ -154,6 +182,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         maritalstatus: values.maritalstatus,
         children: values.children,
         schools: values.schools,
+        employmentrecord: values.employmentrecord,
+        uceyear: values.uceyear,
       });
 
       form.reset();
@@ -546,7 +576,21 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   )}
                 />
 
-                {fields.map((field, index) => (
+                <FormField
+                  control={form.control}
+                  name="children"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number and age of Children</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {schoolFields.map((field, index) => (
                   <div key={field.id} className="space-y-4 border p-4">
                     <h2>Details of Schools/Institutions attended:</h2>
                     <FormField
@@ -569,7 +613,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         <FormItem>
                           <FormLabel>School/Institution</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="School or Institution Name" />
+                            <Input
+                              {...field}
+                              placeholder="School or Institution Name"
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -593,7 +640,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     <Button
                       type="button"
                       variant="destructive"
-                      onClick={() => remove(index)}
+                      onClick={() => removeSchool(index)}
                       className="text-sm px-2 py-1"
                     >
                       Remove School
@@ -605,19 +652,92 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                 <Button
                   type="button"
                   onClick={() =>
-                    append({ year: "", schoolName: "", award: "" })
+                    appendSchool({ year: "", schoolName: "", award: "" })
                   }
                   className="text-sm px-2 py-1"
                 >
                   Add Another School
                 </Button>
 
+                {schoolFields.map((field, index) => (
+                  <div key={field.id} className="space-y-4 border p-4">
+                    <h2>Employment Record:</h2>
+                    <FormField
+                      control={form.control}
+                      name={`employmentrecord.${index}.year`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Year/Period</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Year" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`employmentrecord.${index}.position`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Position held/Designation</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="Position held/Designation"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`employmentrecord.${index}.employer`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employer i.e. Name and Address</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="Employer record" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Remove record entry button */}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => removeEmployment(index)}
+                      className="text-sm px-2 py-1"
+                    >
+                      Remove Record
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Button to add another record */}
+                <Button
+                  type="button"
+                  onClick={() =>
+                    appendEmployment({ year: "", position: "", employer: "" })
+                  }
+                  className="text-sm px-2 py-1"
+                >
+                  Add Another Record
+                </Button>
+
                 <FormField
                   control={form.control}
-                  name="children"
+                  name="uceyear"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Number and age of Children</FormLabel>
+                      <FormLabel>
+                        Have you passed Uganda Certificate of Education Exams{" "}
+                        {"["}UCE{"]"}? Indicate the year, subject and level of
+                        passes.
+                      </FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>

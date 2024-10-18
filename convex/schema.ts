@@ -17,11 +17,18 @@ export const roles = v.union(v.literal("admin"), v.literal("member"));
 // Define yesNoChoice as a union of literals
 export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
 
-// Define the school structure
+// school structure
 export const schoolType = v.object({
   year: v.string(),
   schoolName: v.string(),
   award: v.string(),
+});
+
+// employment structure
+export const employmentType = v.object({
+  year: v.string(),
+  position: v.string(),
+  employer: v.string(),
 });
 
 export default defineSchema({
@@ -49,6 +56,8 @@ export default defineSchema({
     maritalstatus: v.optional(v.string()),
     children: v.optional(v.string()),
     schools: v.optional(v.array(schoolType)),
+    employmentrecord: v.optional(v.array(employmentType)),
+    uceyear: v.optional(v.string()),
   })
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
