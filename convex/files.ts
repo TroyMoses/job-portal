@@ -86,6 +86,7 @@ export const createFile = mutation({
     officerrecord: v.array(officerType),
     consentment: v.string(),
   },
+  
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
 

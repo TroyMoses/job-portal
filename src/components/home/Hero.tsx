@@ -10,12 +10,12 @@ const Hero = () => {
           {/* Content */}
           <div className="">
             <h1 className="text-[28px] sm:text-[35px] lg:text-[45px] xl:text-[60px] text-[#05264e] leading-[3rem] lg:leading-[4rem] font-extrabold">
-              The <span className="text-blue-500">Easiest Way</span> <br /> To
-              Get Your New Job
+              Get <span className="text-blue-500">Your self Hired</span> <br /> By
+              Kakumiro District
             </h1>
             <p className="text-[#4f5e64] text-[16px] md:text-[18px] mt-[1rem]">
-              Each month, more than 20000 jobseekers turn to website in their
-              search for work, making over 1,000 applications every single day.
+              {/* Each month, more than 20000 jobseekers turn to website in their
+              search for work, making over 1,000 applications every single day. */}
             </p>
             {/* Seacrh box */}
             <div className="mt-[1.5rem]">
