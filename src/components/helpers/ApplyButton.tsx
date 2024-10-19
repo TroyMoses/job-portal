@@ -1,7 +1,8 @@
 import Link from "next/link";
 import React from "react";
+import { Doc } from "../../../convex/_generated/dataModel";
 
-const ApplyButton = ({ id }: { id: string }) => {
+const ApplyButton = ({ id }: { id: Doc<"jobs"> }) => {
 
   return (
     <div>

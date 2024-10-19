@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { Doc } from "../../../../../convex/_generated/dataModel";
 import { api } from "../../../../../convex/_generated/api";
 
-const JobDetails = ({ params }: { params: { id: Doc<"jobs"> } }) => {
+const JobDetails = ({ params }: { params: { id: string } }) => {
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
@@ -21,38 +21,29 @@ const JobDetails = ({ params }: { params: { id: Doc<"jobs"> } }) => {
     orgId = organization.organization?.id ?? user.user?.id;
   }
 
-  const jobs = useQuery(
-    api.jobs.getJobs,
-    orgId
-      ? {
-          orgId,
-          query,
-        }
-      : "skip"
+  const singleJob = useQuery(
+    api.jobs.getJobById,
+    // @ts-ignore
+    { jobId: params.id }
   );
-  const isLoading = jobs === undefined;
 
-  const modifiedJobs =
-    jobs?.map((job) => ({
-      ...job,
-    })) ?? [];
+  const isLoading = singleJob === undefined;
 
-  const singleJob = modifiedJobs.find((job) => job._id === params.id._id);
+  if (isLoading) {
+    return <Loader2 className="animate-spin" />;
+  }
 
   return (
     <div className="mt-20 mb-12">
       <div className="block sm:flex items-center justify-between w-[80%] mx-auto">
-        {isLoading && (
-          <div className="flex flex-col justify-center gap-8 w-full items-center mt-12 md:mt-24">
-            <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading job...</div>
-          </div>
-        )}
         <div className="flex-[0.7]">
           <JobCard job={singleJob!} />
         </div>
         <SignedIn>
-          <ApplyButton id={params.id._id} />
+          <ApplyButton
+            // @ts-ignore
+            id={params.id}
+          />
         </SignedIn>
         <SignedOut>
           <SignInButton>

@@ -95,6 +95,17 @@ export const createJob = mutation({
   },
 });
 
+export const getJobById = query({
+  args: { jobId: v.id("jobs") },
+  async handler(ctx, { jobId }) {
+    const job = await ctx.db.get(jobId);
+    if (!job) {
+      throw new ConvexError("Job not found");
+    }
+    return job;
+  },
+});
+
 export const getJobs = query({
   args: {
     orgId: v.string(),
