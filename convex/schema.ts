@@ -144,18 +144,6 @@ export default defineSchema({
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
 
-  favorites: defineTable({
-    fileId: v.id("files"),
-    orgId: v.string(),
-    userId: v.id("users"),
-  }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
-
-  favoritesJob: defineTable({
-    jobId: v.id("jobs"),
-    orgId: v.string(),
-    userId: v.id("users"),
-  }).index("by_userId_orgId_jobId", ["userId", "orgId", "jobId"]),
-
 
   users: defineTable({
     tokenIdentifier: v.string(),
