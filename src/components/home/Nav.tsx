@@ -9,28 +9,28 @@ import {
 } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import LogoImage from "../../../public/logo.png";
+import LogoImage from "../../../public/1234.png";
 
 export default function Nav() {
   return (
-    <div className="h-[13vh] overflow-hidden shadow-md">
-      {/* <div className="items-center container mx-auto justify-between flex">
-        <Link href="/" className="flex gap-2 items-center text-xl text-black -ml-5">
+    <div className="h-[9vh] overflow-hidden shadow-md">
+      <div className="items-center container mx-auto justify-between flex">
+        {/* <Link href="/" className="flex gap-2 items-center text-xl text-black -ml-5">
           <Image src="/logo.png" width="50" height="50" alt="sycom file drive logo" />
           <span className="hidden md:block">
             Sycom FileDrive
           </span>
-        </Link>
+        </Link> */}
 
-        <div className="hidden md:block">
+        {/* <div className="hidden md:block">
           <SignedIn>
             <Button variant={"outline"}>
               <Link href="/dashboard/files">Your Files</Link>
             </Button>
           </SignedIn>
-        </div>
+        </div> */}
 
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <OrganizationSwitcher />
           <UserButton afterSignOutUrl="/"/>
           <SignedOut>
@@ -38,21 +38,23 @@ export default function Nav() {
               <Button>Sign In</Button>
             </SignInButton>
           </SignedOut>
-        </div>
-      </div> */}
-      <div className="w-[90%] md:w-[80%] h-[100%] mx-auto flex items-center justify-between">
+        </div> */}
+      </div>
+      <div className="w-[100%] md:w-[100%] h-[100%] mx-auto flex items-center justify-between">
         {/* Logo */}
-        <div className="w-[150px] h-[150px] md:w-[250px] md:h-[250px]">
+        <div className="w-[200px] h-[150px] md:w-[250px] md:h-[250px] flex items-center space-x-2">
           <Link href={"/"}>
             <Image
               src={LogoImage}
               alt="Log"
-              width={250}
-              height={250}
-              className="w-[100%] h-[100%]"
+              width={100}
+              height={100}
+              className="w-[40%] h-[40%]  ml-4 mt-5"
             />
           </Link>
+          <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">Kakumiro District</span>
         </div>
+
 
         <div className="flex items-center space-x-4">
           <SignedOut>
