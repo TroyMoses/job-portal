@@ -14,13 +14,24 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
+<<<<<<< HEAD
+export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
+=======
 // Define residence as a union of literals
 export const residenceType = v.union(v.literal("temporary"), v.literal("permanent"));
 
 // Define consentment as a union of literals
 export const consentmentType = v.union(v.literal("yes"), v.literal("no"));
+>>>>>>> main
 
-// school structure
+export const jobStatusTypes = v.union(
+  v.literal("urgent"),
+  v.literal("normal"),
+  v.literal("closed"),
+  v.literal("all")
+);
+
+
 export const schoolType = v.object({
   year: v.string(),
   schoolName: v.string(),
@@ -113,6 +124,13 @@ export default defineSchema({
     userId: v.id("users"),
   }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
 
+  favoritesJob: defineTable({
+    jobId: v.id("jobs"),
+    orgId: v.string(),
+    userId: v.id("users"),
+  }).index("by_userId_orgId_jobId", ["userId", "orgId", "jobId"]),
+
+
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
@@ -128,11 +146,13 @@ export default defineSchema({
   jobs: defineTable({
     title: v.string(),
     description: v.string(),
-    imageId: v.optional(v.string()),
+    imageId: v.optional(v.id("_storage")),
     salary: v.string(),
+    userId: v.id("users"),
     orgId: v.string(),
     location: v.string(),
     jobType: v.string(),
+    status: v.optional(v.array(jobStatusTypes)), 
     shouldDelete: v.optional(v.boolean()),
   })
     .index("by_orgId", ["orgId"])
