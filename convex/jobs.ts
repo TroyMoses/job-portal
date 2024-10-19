@@ -114,7 +114,6 @@ export const getJobs = query({
   args: {
     orgId: v.string(),
     query: v.optional(v.string()),
-    favoritesJob: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
   },
   async handler(ctx, args) {

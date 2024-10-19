@@ -144,7 +144,6 @@ export default defineSchema({
     .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
 
-
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),

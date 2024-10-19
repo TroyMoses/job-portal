@@ -1,9 +1,9 @@
-import { FileBrowser } from "../_components/file-browser";
+import { JobBrowser } from "../_components/job-browser";
 
 export default function FilesPage() {
   return (
     <div>
-      <FileBrowser title="All Your Files" />
+      <JobBrowser title="All Your Files" />
     </div>
   );
 }

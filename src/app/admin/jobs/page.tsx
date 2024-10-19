@@ -33,11 +33,9 @@ function Placeholder() {
 
 export default function JobBrowser({
   title,
-  favoritesOnly,
   deletedOnly,
 }: {
   title: string;
-  favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
   const organization = useOrganization();
