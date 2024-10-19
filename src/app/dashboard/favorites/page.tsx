@@ -1,13 +1,11 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { FileBrowser } from "../_components/file-browser";
-import { api } from "../../../../../convex/_generated/api";
+import { JobBrowser } from "../_components/job-browser";
 
 export default function FavoritesPage() {
   return (
     <div>
-      <FileBrowser title="Favorites" favoritesOnly />
+      <JobBrowser title="Favorites" favoritesOnly />
     </div>
   );
 }

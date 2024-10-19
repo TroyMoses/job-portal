@@ -159,18 +159,18 @@ export const getFiles = query({
       );
     }
 
-    if (args.favorites) {
-      const favorites = await ctx.db
-        .query("favorites")
-        .withIndex("by_userId_orgId_fileId", (q) =>
-          q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-        )
-        .collect();
+    // if (args.favorites) {
+    //   const favorites = await ctx.db
+    //     .query("favorites")
+    //     .withIndex("by_userId_orgId_fileId", (q) =>
+    //       q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
+    //     )
+    //     .collect();
 
-      files = files.filter((file) =>
-        favorites.some((favorite) => favorite.fileId === file._id)
-      );
-    }
+    //   files = files.filter((file) =>
+    //     favorites.some((favorite) => favorite.fileId === file._id)
+    //   );
+    // }
 
     if (args.deletedOnly) {
       files = files.filter((file) => file.shouldDelete);
@@ -287,56 +287,56 @@ export const restoreFile = mutation({
   },
 });
 
-export const toggleFavorite = mutation({
-  args: { fileId: v.id("files") },
-  async handler(ctx, args) {
-    const access = await hasAccessToFile(ctx, args.fileId);
+// export const toggleFavorite = mutation({
+//   args: { fileId: v.id("files") },
+//   async handler(ctx, args) {
+//     const access = await hasAccessToFile(ctx, args.fileId);
 
-    if (!access) {
-      throw new ConvexError("no access to file");
-    }
+//     if (!access) {
+//       throw new ConvexError("no access to file");
+//     }
 
-    const favorite = await ctx.db
-      .query("favorites")
-      .withIndex("by_userId_orgId_fileId", (q) =>
-        q
-          .eq("userId", access.user._id)
-          .eq("orgId", access.file.orgId)
-          .eq("fileId", access.file._id)
-      )
-      .first();
+//     const favorite = await ctx.db
+//       .query("favorites")
+//       .withIndex("by_userId_orgId_fileId", (q) =>
+//         q
+//           .eq("userId", access.user._id)
+//           .eq("orgId", access.file.orgId)
+//           .eq("fileId", access.file._id)
+//       )
+//       .first();
 
-    if (!favorite) {
-      await ctx.db.insert("favorites", {
-        fileId: access.file._id,
-        userId: access.user._id,
-        orgId: access.file.orgId,
-      });
-    } else {
-      await ctx.db.delete(favorite._id);
-    }
-  },
-});
+//     if (!favorite) {
+//       await ctx.db.insert("favorites", {
+//         fileId: access.file._id,
+//         userId: access.user._id,
+//         orgId: access.file.orgId,
+//       });
+//     } else {
+//       await ctx.db.delete(favorite._id);
+//     }
+//   },
+// });
 
-export const getAllFavorites = query({
-  args: { orgId: v.string() },
-  async handler(ctx, args) {
-    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
+// export const getAllFavorites = query({
+//   args: { orgId: v.string() },
+//   async handler(ctx, args) {
+//     const hasAccess = await hasAccessToOrg(ctx, args.orgId);
 
-    if (!hasAccess) {
-      return [];
-    }
+//     if (!hasAccess) {
+//       return [];
+//     }
 
-    const favorites = await ctx.db
-      .query("favorites")
-      .withIndex("by_userId_orgId_fileId", (q) =>
-        q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-      )
-      .collect();
+//     const favorites = await ctx.db
+//       .query("favorites")
+//       .withIndex("by_userId_orgId_fileId", (q) =>
+//         q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
+//       )
+//       .collect();
 
-    return favorites;
-  },
-});
+//     return favorites;
+//   },
+// });
 
 async function hasAccessToFile(
   ctx: QueryCtx | MutationCtx,

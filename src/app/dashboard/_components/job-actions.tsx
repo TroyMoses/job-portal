@@ -29,15 +29,11 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import { Protect } from "@clerk/nextjs";
+import Link from "next/link";
 
-export function JobCardActions({
-  job,
-}: {
-  job: Doc<"jobs">;
-}) {
+export function JobCardActions({ job }: { job: Doc<"jobs"> }) {
   // const deleteJob = useMutation(api.jobs.deleteJob);
   // const restoreJob = useMutation(api.jobs.restoreJob);
-  // const toggleFavorite = useMutation(api.jobs.toggleFavorite);
   const { toast } = useToast();
   const me = useQuery(api.users.getMe);
 
@@ -79,13 +75,6 @@ export function JobCardActions({
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem
-            onClick={() => {
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            <FileIcon className="w-4 h-4" /> View Job
-          </DropdownMenuItem>
 
           <Protect
             condition={(check) => {

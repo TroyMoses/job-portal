@@ -5,15 +5,13 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UploadButton } from "../../dashboard/_components/upload-button";
 import Image from "next/image";
-import { GridIcon, Loader2, RowsIcon } from "lucide-react";
+import { Loader2, RowsIcon } from "lucide-react";
 import { SearchBar } from "../../dashboard/_components/search-bar";
 import { useState } from "react";
 import { DataTable } from "../../dashboard/_components/jobs-table";
 import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -35,17 +33,14 @@ function Placeholder() {
 
 export default function JobBrowser({
   title,
-  favoritesOnly,
   deletedOnly,
 }: {
   title: string;
-  favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
-  const [type, setType] = useState<"all">("all");
 
   let orgId: string | undefined = undefined;
   if (organization.isLoaded && user.isLoaded) {
@@ -64,7 +59,7 @@ export default function JobBrowser({
   const isLoading = jobs === undefined;
 
   const modifiedJobs =
-    jobs?.map((job) => ({
+    jobs?.map((job: any) => ({
       ...job,
     })) ?? [];
 

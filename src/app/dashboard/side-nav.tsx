@@ -22,7 +22,7 @@ export function SideNav() {
         </Button>
       </Link>
 
-      <Link href="/dashboard/favorites">
+      {/* <Link href="/dashboard/favorites">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
@@ -31,7 +31,7 @@ export function SideNav() {
         >
           <StarIcon /> Favorites
         </Button>
-      </Link>
+      </Link> */}
 
       <Link href="/dashboard/trash">
         <Button
