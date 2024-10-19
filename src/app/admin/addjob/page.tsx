@@ -19,10 +19,9 @@ import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useState } from "react";
 import { useToast } from "../../../components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1).max(200),
@@ -65,6 +64,8 @@ export default function AddJob() {
   const { toast } = useToast();
   const organization = useOrganization();
   const user = useUser();
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -162,13 +163,12 @@ export default function AddJob() {
 
       form.reset();
 
-      setIsFileDialogOpen(false);
-
       toast({
         variant: "success",
         title: "Job Uploaded",
         description: "Now everyone can view the job",
       });
+      router.push(`/admin/jobs`);
     } catch (err) {
       toast({
         variant: "destructive",
@@ -182,8 +182,6 @@ export default function AddJob() {
   if (organization.isLoaded && user.isLoaded) {
     orgId = organization.organization?.id ?? user.user?.id;
   }
-
-  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
 
   const createJob = useMutation(api.jobs.createJob);
 
