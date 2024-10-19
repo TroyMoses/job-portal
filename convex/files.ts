@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { employmentType, fileTypes, officerType, referenceType, schoolType, uaceType, uceType, yesNoChoiceType } from "./schema";
+import { employmentType, fileTypes, officerType, referenceType, schoolType, uaceType, uceType, residenceType, consentmentType } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -60,7 +60,7 @@ export const createFile = mutation({
     orgId: v.string(),
     type: fileTypes,
     dateOfBirth: v.string(),
-    yesNoChoice: yesNoChoiceType,
+    residence: residenceType,
     email: v.string(),
     telephone: v.string(),
     postalAddress: v.string(),
@@ -84,7 +84,7 @@ export const createFile = mutation({
     available: v.string(),
     referencerecord: v.array(referenceType),
     officerrecord: v.array(officerType),
-    consentment: v.string(),
+    consentment: consentmentType,
   },
   
   async handler(ctx, args) {
@@ -102,8 +102,7 @@ export const createFile = mutation({
       uacefileId: args.uacefileId,
       type: args.type,
       userId: hasAccess.user._id,
-      dateOfBirth: args.dateOfBirth,
-      yesNoChoice: args.yesNoChoice,
+      residence: args.residence,
       email: args.email,
       telephone: args.telephone,
       postalAddress: args.postalAddress,
@@ -188,8 +187,6 @@ export const getFiles = query({
         ...file,
         uceFileUrl: file.ucefileId ? await ctx.storage.getUrl(file.ucefileId) : null,
         uaceFileUrl: file.uacefileId ? await ctx.storage.getUrl(file.uacefileId) : null,
-        dateOfBirth: file.dateOfBirth,
-        yesNoChoice: file.yesNoChoice,
         post: file.post,
         email: file.email,
         telephone: file.telephone,
@@ -198,6 +195,7 @@ export const getFiles = query({
         homeDistrict: file.homeDistrict,
         subcounty: file.subcounty,
         village: file.village,
+        residence: file.residence,
         presentministry: file.presentministry,
         presentpost: file.presentpost,
         presentsalary: file.presentsalary,

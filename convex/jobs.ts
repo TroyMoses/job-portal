@@ -6,9 +6,8 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { jobStatusTypes } from "./schema";
+import { ConvexError, v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
-
 
 export const generateUploadUrl = mutation(async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();

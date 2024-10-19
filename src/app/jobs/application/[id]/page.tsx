@@ -38,9 +38,6 @@ const formSchema = z.object({
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `UACE document is required`),
   dateOfBirth: z.string().min(1).max(200),
-  yesNoChoice: z.enum(["yes", "no"], {
-    required_error: "Yes or No choice is required",
-  }),
   email: z.string().min(1).max(200),
   telephone: z.string().min(1).max(200),
   postalAddress: z.string().min(1).max(500),
@@ -48,6 +45,9 @@ const formSchema = z.object({
   homeDistrict: z.string().min(1).max(200),
   subcounty: z.string().min(1).max(200),
   village: z.string().min(1).max(200),
+  residence: z.enum(["temporary", "permanent"], {
+    required_error: "Residence is required",
+  }),
   presentministry: z.string().min(1).max(500),
   presentpost: z.string().min(1).max(500),
   presentsalary: z.string().min(1).max(300),
@@ -103,7 +103,9 @@ const formSchema = z.object({
       contact: z.string().min(1, "Contact is required"),
     })
   ),
-  consentment: z.string().min(1).max(50),
+  consentment: z.enum(["yes", "no"], {
+    required_error: "Consentment is required",
+  }),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -122,7 +124,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       ucefile: undefined,
       uacefile: undefined,
       dateOfBirth: "",
-      yesNoChoice: "yes",
       email: "",
       telephone: "",
       postalAddress: "",
@@ -130,6 +131,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       homeDistrict: "",
       subcounty: "",
       village: "",
+      residence: "temporary",
       presentministry: "",
       presentpost: "",
       presentsalary: "",
@@ -146,7 +148,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       available: "",
       referencerecord: [{ name: "", address: "" }],
       officerrecord: [{ name: "", title: "", contact: "" }],
-      consentment: "",
+      consentment: "yes",
     },
   });
 
@@ -259,7 +261,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         orgId,
         type: types[uceFileType],
         dateOfBirth: values.dateOfBirth,
-        yesNoChoice: values.yesNoChoice,
         email: values.email,
         telephone: values.telephone,
         postalAddress: values.postalAddress,
@@ -267,6 +268,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         homeDistrict: values.homeDistrict,
         subcounty: values.subcounty,
         village: values.village,
+        residence: values.residence,
         presentministry: values.presentministry,
         presentpost: values.presentpost,
         presentsalary: values.presentsalary,
@@ -446,7 +448,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="post"
+                  name="postalAddress"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Postal Address</FormLabel>
@@ -522,7 +524,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="yesNoChoice"
+                  name="residence"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
