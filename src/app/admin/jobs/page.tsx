@@ -83,7 +83,7 @@ export default function JobBrowser({
   return (
     <DefaultLayout>
       <div>
-        <Breadcrumb pageName="Profile" />
+        <Breadcrumb pageName="Jobs" />
         <div className="hidden md:flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
 
