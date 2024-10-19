@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 
 import { z } from "zod";
@@ -109,7 +109,6 @@ const formSchema = z.object({
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
-  const singleJob = JobData.find((job) => job.id.toString() == params.id);
 
   const { toast } = useToast();
   const organization = useOrganization();
@@ -290,8 +289,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
       form.reset();
 
-      setIsFileDialogOpen(false);
-
       toast({
         variant: "success",
         title: "File Uploaded",
@@ -310,35 +307,33 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   if (organization.isLoaded && user.isLoaded) {
     orgId = organization.organization?.id ?? user.user?.id;
   }
-
-  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
-
+  
   const createFile = useMutation(api.files.createFile);
+
+  const singleJob = useQuery(
+    api.jobs.getJobById,
+    // @ts-ignore
+    { jobId: params.id }
+  );
+
+  const isLoading = singleJob === undefined;
+
+  if (isLoading) {
+    return <Loader2 className="animate-spin" />;
+  }
 
   return (
     <div className="mt-20 mb-12">
       <div className="block sm:flex items-center justify-between w-[80%] mx-auto">
         <div className="flex-[0.7]">
-          <JobCard job={singleJob!} />
+          <JobCard
+            //@ts-ignore
+            job={singleJob!}
+          />
         </div>
       </div>
-      <div className="mt-16 w-[80%] mx-auto">
-        <h1 className="text-[20px] font-semibold">Job Description</h1>
-        <p className="mt-4 text-black text-opacity-70">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus
-          neque consequuntur vero beatae accusantium cupiditate excepturi ex
-          optio, architecto unde fugit maiores eaque deserunt porro dolorem
-          omnis nobis earum. Cumque.
-        </p>
-        <h1 className="text-[20px] mt-8 font-semibold">Key Responsibilities</h1>
-        <p className="mt-4 text-black text-opacity-70">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus
-          neque consequuntur vero beatae accusantium cupiditate excepturi ex
-          optio, architecto unde fugit maiores eaque deserunt porro dolorem
-          omnis nobis earum. Cumque. Possimus neque consequuntur vero beatae
-          accusantium cupiditate excepturi ex optio, architecto unde fugit
-          maiores eaque deserunt porro dolorem omnis nobis earum. Cumque.
-        </p>
+      <div className="mt-4 w-[80%] mx-auto">
+    
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           APPLICATION FOR APPOINTMENT TO THE UGANDA PUBLIC SERVICE
         </h1>
