@@ -25,6 +25,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 function Placeholder() {
   return (
@@ -89,11 +90,23 @@ export default function JobBrowser({
 
           <SearchBar query={query} setQuery={setQuery} />
 
-          <UploadButton />
+          <Link href={"/admin/addjob"}>
+            <Button
+              type="button"
+              className="text-sm px-2 py-1"
+            >
+              Upload Job
+            </Button>
+          </Link>
         </div>
         <div className="md:hidden flex flex-col gap-5 mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
-          <UploadButton />
+          <Button
+            type="button"
+            className="text-sm px-2 py-1"
+          >
+            Upload Job
+          </Button>
 
           <SearchBar query={query} setQuery={setQuery} />
         </div>
