@@ -7,7 +7,7 @@ import {
   query,
 } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
-import { jobStatusTypes } from "./schema";
+import { competencesType, experiencesType, keyFunctionsType, keyOutputsType, qualificationsType, responsibleForType } from "./schema";
 
 export const generateUploadUrl = mutation(async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -54,14 +54,17 @@ export async function hasAccessToOrg(
 
 export const createJob = mutation({
     args: {
-        title: v.string(),
-        description: v.string(),
         orgId: v.string(),
-        imageId: v.optional(v.id("_storage")),
-        salary: v.string(),
-        location: v.string(),
-        jobType: v.string(),
-        status: v.array(jobStatusTypes),
+        title: v.string(),
+        salaryScale: v.string(),
+        reportsTo: v.string(),
+        responsibleFor: v.array(responsibleForType),
+        purpose: v.string(),
+        keyOutputs: v.array(keyOutputsType),
+        keyFunctions: v.array(keyFunctionsType),
+        qualifications: v.array(qualificationsType),
+        experiences: v.array(experiencesType),
+        competences: v.array(competencesType),
     },
     async handler(ctx, args) {
         const hasAccess = await hasAccessToOrg(ctx, args.orgId);
@@ -71,218 +74,221 @@ export const createJob = mutation({
         }
         await ctx.db.insert("jobs", {
             title: args.title,
-            description: args.description,
+            salaryScale: args.salaryScale,
             userId: hasAccess.user._id,
             orgId: args.orgId,
-            salary: args.salary,
-            location: args.location,
-            jobType: args.jobType,
-            imageId: args.imageId,
-            status: args.status,
+            reportsTo: args.reportsTo,
+            responsibleFor: args.responsibleFor,
+            purpose: args.purpose,
+            keyOutputs: args.keyOutputs,
+            keyFunctions: args.keyFunctions,
+            qualifications: args.qualifications,
+            experiences: args.experiences,
+            competences: args.competences,
         });
     }
 });
 
-export const getJobs = query({
-    args: {
-        orgId: v.string(),
-        query: v.optional(v.string()),
-        favoritesJob: v.optional(v.boolean()),
-        deletedOnly: v.optional(v.boolean()),
-        type: v.optional(jobStatusTypes),
-    },
-    async handler(ctx, args) {
-        const hasAccess = await hasAccessToOrg(ctx, args.orgId);
+// export const getJobs = query({
+//     args: {
+//         orgId: v.string(),
+//         query: v.optional(v.string()),
+//         favoritesJob: v.optional(v.boolean()),
+//         deletedOnly: v.optional(v.boolean()),
+//         type: v.optional(jobStatusTypes),
+//     },
+//     async handler(ctx, args) {
+//         const hasAccess = await hasAccessToOrg(ctx, args.orgId);
     
-        if (!hasAccess) {
-          return [];
-        }
+//         if (!hasAccess) {
+//           return [];
+//         }
     
-        let jobs = await ctx.db
-          .query("jobs")
-          .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
-          .collect();
+//         let jobs = await ctx.db
+//           .query("jobs")
+//           .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+//           .collect();
     
-        const query = args.query;
+//         const query = args.query;
     
-        if (query) {
-          jobs = jobs.filter((job) =>
-            job.title.toLowerCase().includes(query.toLowerCase())
-          );
-        }
+//         if (query) {
+//           jobs = jobs.filter((job) =>
+//             job.title.toLowerCase().includes(query.toLowerCase())
+//           );
+//         }
     
-        if (args.favoritesJob) {
-          const favorites = await ctx.db
-            .query("favoritesJob")
-            .withIndex("by_userId_orgId_jobId", (q) =>
-              q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-            )
-            .collect();
+//         if (args.favoritesJob) {
+//           const favorites = await ctx.db
+//             .query("favoritesJob")
+//             .withIndex("by_userId_orgId_jobId", (q) =>
+//               q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
+//             )
+//             .collect();
     
-          jobs = jobs.filter((job) =>
-            favorites.some((favorite) => favorite.jobId === job._id)
-          );
-        }
+//           jobs = jobs.filter((job) =>
+//             favorites.some((favorite) => favorite.jobId === job._id)
+//           );
+//         }
     
-        if (args.deletedOnly) {
-          jobs = jobs.filter((job) => job.shouldDelete);
-        } else {
-          jobs = jobs.filter((job) => !job.shouldDelete);
-        }
+//         if (args.deletedOnly) {
+//           jobs = jobs.filter((job) => job.shouldDelete);
+//         } else {
+//           jobs = jobs.filter((job) => !job.shouldDelete);
+//         }
     
-        if (args.type) {
-          jobs = jobs.filter((job) => job.status === args.type);
-        }
+//         if (args.type) {
+//           jobs = jobs.filter((job) => job.status === args.type);
+//         }
 
-        const modifiedJobs = await Promise.all(
-            jobs.map(async (job) => ({
-                ...job,
-                title: job.title,
-                description:job.description,
-                orgId: job.orgId,
-                salary: job.salary,
-                location: job.location,
-                jobType: job.jobType,
-                imageUrl: job.imageId ? await ctx.storage.getUrl(job.imageId) : null,
-                type: job.status,
-            }))
-    );
+//         const modifiedJobs = await Promise.all(
+//             jobs.map(async (job) => ({
+//                 ...job,
+//                 title: job.title,
+//                 description:job.description,
+//                 orgId: job.orgId,
+//                 salary: job.salary,
+//                 location: job.location,
+//                 jobType: job.jobType,
+//                 imageUrl: job.imageId ? await ctx.storage.getUrl(job.imageId) : null,
+//                 type: job.status,
+//             }))
+//     );
     
-        return modifiedJobs;
-    },
-});
+//         return modifiedJobs;
+//     },
+// });
 
-export const deleteAlljobs = internalMutation({
-    args: {},
-    async handler(ctx) {
-      const jobs = await ctx.db
-        .query("jobs")
-        .withIndex("by_shouldDelete", (q) => q.eq("shouldDelete", true))
-        .collect();
+// export const deleteAlljobs = internalMutation({
+//     args: {},
+//     async handler(ctx) {
+//       const jobs = await ctx.db
+//         .query("jobs")
+//         .withIndex("by_shouldDelete", (q) => q.eq("shouldDelete", true))
+//         .collect();
   
-        await Promise.all(
-          jobs.map(async (job) => {
-            if (job.imageId) {
-              await ctx.storage.delete(job.imageId);
-            }
-            return await ctx.db.delete(job._id);
-          })
-        );
-    },
-  });
+//         await Promise.all(
+//           jobs.map(async (job) => {
+//             if (job.imageId) {
+//               await ctx.storage.delete(job.imageId);
+//             }
+//             return await ctx.db.delete(job._id);
+//           })
+//         );
+//     },
+//   });
 
 
-  function assertCanDeleteJob(user: Doc<"users">, job: Doc<"jobs">) {
-    const canDelete =
-      job.userId === user._id ||
-      user.orgIds.find((org) => org.orgId === job.orgId)?.role === "admin";
+//   function assertCanDeleteJob(user: Doc<"users">, job: Doc<"jobs">) {
+//     const canDelete =
+//       job.userId === user._id ||
+//       user.orgIds.find((org) => org.orgId === job.orgId)?.role === "admin";
   
-    if (!canDelete) {
-      throw new ConvexError("you have no acces to delete this job");
-    }
-  }
+//     if (!canDelete) {
+//       throw new ConvexError("you have no acces to delete this job");
+//     }
+//   }
 
-  export const deletejob = mutation({
-    args: { jobId: v.id("jobs") },
-    async handler(ctx, args) {
-      const access = await hasAccessToJob(ctx, args.jobId);
+//   export const deletejob = mutation({
+//     args: { jobId: v.id("jobs") },
+//     async handler(ctx, args) {
+//       const access = await hasAccessToJob(ctx, args.jobId);
   
-      if (!access) {
-        throw new ConvexError("no access to job");
-      }
+//       if (!access) {
+//         throw new ConvexError("no access to job");
+//       }
   
-      assertCanDeleteJob(access.user, access.job);
+//       assertCanDeleteJob(access.user, access.job);
   
-      await ctx.db.patch(args.jobId, {
-        shouldDelete: true,
-      });
-    },
-  });
+//       await ctx.db.patch(args.jobId, {
+//         shouldDelete: true,
+//       });
+//     },
+//   });
 
-  export const restoreJob = mutation({
-    args: { jobId: v.id("jobs") },
-    async handler(ctx, args) {
-      const access = await hasAccessToJob(ctx, args.jobId);
+//   export const restoreJob = mutation({
+//     args: { jobId: v.id("jobs") },
+//     async handler(ctx, args) {
+//       const access = await hasAccessToJob(ctx, args.jobId);
   
-      if (!access) {
-        throw new ConvexError("no access to job");
-      }
+//       if (!access) {
+//         throw new ConvexError("no access to job");
+//       }
   
-      assertCanDeleteJob(access.user, access.job);
+//       assertCanDeleteJob(access.user, access.job);
   
-      await ctx.db.patch(args.jobId, {
-        shouldDelete: false,
-      });
-    },
-  });
+//       await ctx.db.patch(args.jobId, {
+//         shouldDelete: false,
+//       });
+//     },
+//   });
 
-  export const toggleFavorite = mutation({
-    args: { jobId: v.id("jobs") },
-    async handler(ctx, args) {
-      const access = await hasAccessToJob(ctx, args.jobId);
+//   export const toggleFavorite = mutation({
+//     args: { jobId: v.id("jobs") },
+//     async handler(ctx, args) {
+//       const access = await hasAccessToJob(ctx, args.jobId);
   
-      if (!access) {
-        throw new ConvexError("no access to job");
-      }
+//       if (!access) {
+//         throw new ConvexError("no access to job");
+//       }
   
-      const favoriteJob = await ctx.db
-        .query("favoritesJob")
-        .withIndex("by_userId_orgId_jobId", (q) =>
-          q
-            .eq("userId", access.user._id)
-            .eq("orgId", access.job.orgId)
-            .eq("jobId", access.job._id)
-        )
-        .first();
+//       const favoriteJob = await ctx.db
+//         .query("favoritesJob")
+//         .withIndex("by_userId_orgId_jobId", (q) =>
+//           q
+//             .eq("userId", access.user._id)
+//             .eq("orgId", access.job.orgId)
+//             .eq("jobId", access.job._id)
+//         )
+//         .first();
   
-      if (!favoriteJob) {
-        await ctx.db.insert("favoritesJob", {
-          jobId: access.job._id,
-          userId: access.user._id,
-          orgId: access.job.orgId,
-        });
-      } else {
-        await ctx.db.delete(favoriteJob._id);
-      }
-    },
-  });
+//       if (!favoriteJob) {
+//         await ctx.db.insert("favoritesJob", {
+//           jobId: access.job._id,
+//           userId: access.user._id,
+//           orgId: access.job.orgId,
+//         });
+//       } else {
+//         await ctx.db.delete(favoriteJob._id);
+//       }
+//     },
+//   });
   
-  export const getAllFavorites = query({
-    args: { orgId: v.string() },
-    async handler(ctx, args) {
-      const hasAccess = await hasAccessToOrg(ctx, args.orgId);
+//   export const getAllFavorites = query({
+//     args: { orgId: v.string() },
+//     async handler(ctx, args) {
+//       const hasAccess = await hasAccessToOrg(ctx, args.orgId);
   
-      if (!hasAccess) {
-        return [];
-      }
+//       if (!hasAccess) {
+//         return [];
+//       }
   
-      const favorites = await ctx.db
-        .query("favoritesJob")
-        .withIndex("by_userId_orgId_jobId", (q) =>
-          q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-        )
-        .collect();
+//       const favorites = await ctx.db
+//         .query("favoritesJob")
+//         .withIndex("by_userId_orgId_jobId", (q) =>
+//           q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
+//         )
+//         .collect();
   
-      return favorites;
-    },
-  });
+//       return favorites;
+//     },
+//   });
 
-async function hasAccessToJob(
-    ctx: QueryCtx | MutationCtx,
-    jobId: Id<"jobs">
-  ) {
-    const job = await ctx.db.get(jobId);
+// async function hasAccessToJob(
+//     ctx: QueryCtx | MutationCtx,
+//     jobId: Id<"jobs">
+//   ) {
+//     const job = await ctx.db.get(jobId);
   
-    if (!job) {
-      return null;
-    }
+//     if (!job) {
+//       return null;
+//     }
   
-    const hasAccess = await hasAccessToOrg(ctx, job.orgId);
+//     const hasAccess = await hasAccessToOrg(ctx, job.orgId);
   
-    if (!hasAccess) {
-      return null;
-    }
+//     if (!hasAccess) {
+//       return null;
+//     }
   
-    return { user: hasAccess.user, job };
-  }
+//     return { user: hasAccess.user, job };
+//   }
   
