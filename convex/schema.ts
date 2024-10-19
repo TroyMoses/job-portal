@@ -66,6 +66,36 @@ export const officerType = v.object({
   contact: v.string(),
 });
 
+// responsibleFor structure
+export const responsibleForType = v.object({
+  name: v.string(),
+});
+
+// keyOutputs structure
+export const keyOutputsType = v.object({
+  output: v.string(),
+});
+
+// keyFunctions structure
+export const keyFunctionsType = v.object({
+  function: v.string(),
+});
+
+// qualifications structure
+export const qualificationsType = v.object({
+  qualification: v.string(),
+});
+
+// experiences structure
+export const experiencesType = v.object({
+  experience: v.string(),
+});
+
+// competences structure
+export const competencesType = v.object({
+  competence: v.string(),
+});
+
 export const answerTypes = v.union(
   v.literal("text"),
   v.literal("essay"),
@@ -141,14 +171,17 @@ export default defineSchema({
 
   jobs: defineTable({
     title: v.string(),
-    description: v.string(),
-    imageId: v.optional(v.id("_storage")),
-    salary: v.string(),
+    salaryScale: v.string(),
+    reportsTo: v.string(),
+    responsibleFor: v.optional(v.array(responsibleForType)),
+    purpose: v.string(),
+    keyOutputs: v.optional(v.array(keyOutputsType)),
+    keyFunctions: v.optional(v.array(keyFunctionsType)),
+    qualifications: v.optional(v.array(qualificationsType)),
+    experiences: v.optional(v.array(experiencesType)),
+    competences: v.optional(v.array(competencesType)),
     userId: v.id("users"),
     orgId: v.string(),
-    location: v.string(),
-    jobType: v.string(),
-    status: v.optional(v.array(jobStatusTypes)), 
     shouldDelete: v.optional(v.boolean()),
   })
     .index("by_orgId", ["orgId"])
