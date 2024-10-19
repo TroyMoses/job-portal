@@ -8,13 +8,7 @@ import React, { useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Loader2 } from "lucide-react";
 
-const AllJobs = ({
-  title,
-  deletedOnly,
-}: {
-  title: string;
-  deletedOnly?: boolean;
-}) => {
+const AllJobs = () => {
   const organization = useOrganization();
   const user = useUser();
   const [query, setQuery] = useState("");
@@ -47,7 +41,7 @@ const AllJobs = ({
       </div>
       <div className="space-y-8">
         {isLoading && (
-          <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
+          <div className="flex flex-col justify-center gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
             <div className="text-2xl">Loading job listings...</div>
           </div>

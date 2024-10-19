@@ -41,7 +41,7 @@ const FeaturedJobs = () => {
         mainHeading="Featured Jobs"
         subHeading="Know your worth and find the job that qualify your life"
       />
-      <div className="mt-12 w-[80%] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="mt-12 w-[80%] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-12">
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />

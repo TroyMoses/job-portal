@@ -1,14 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-interface Props {
-  id: string;
-}
-
-const ApplyButton = ({ id }: Props) => {
-  const applyHandler = () => toast.success("Application Successful");
+const ApplyButton = ({ id }: { id: string }) => {
 
   return (
     <div>
@@ -17,7 +10,6 @@ const ApplyButton = ({ id }: Props) => {
       >
         Apply Now
       </Link>
-      <ToastContainer position="top-center"/>
     </div>
   );
 };
