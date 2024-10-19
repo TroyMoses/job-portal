@@ -4,27 +4,19 @@ import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UploadButton } from "../../dashboard/_components/upload-button";
-import { FileCard } from "../../dashboard/_components/file-card";
 import Image from "next/image";
 import { GridIcon, Loader2, RowsIcon } from "lucide-react";
 import { SearchBar } from "../../dashboard/_components/search-bar";
 import { useState } from "react";
-import { DataTable } from "../../dashboard/_components/file-table";
+import { DataTable } from "../../dashboard/_components/jobs-table";
 import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 function Placeholder() {
   return (
@@ -60,99 +52,74 @@ export default function JobBrowser({
     orgId = organization.organization?.id ?? user.user?.id;
   }
 
-  // const jobs = useQuery(
-  //   api.jobs.allJobs, // Change to your jobs API endpoint
-  //   orgId
-  //     ? {
-  //         orgId,
-  //         type: type === "all" ? undefined : type,
-  //         query,
-  //       }
-  //     : "skip"
-  // );
-  // const isLoading = jobs === undefined;
+  const jobs = useQuery(
+    api.jobs.getJobs,
+    orgId
+      ? {
+          orgId,
+          query,
+        }
+      : "skip"
+  );
+  const isLoading = jobs === undefined;
 
-  // const modifiedJobs =
-  //   jobs?.map((job) => ({
-  //     ...job,
-  //     isFavorited: (favorites ?? []).some(
-  //       (favorite) => favorite.jobId === job._id
-  //     ),
-  //   })) ?? [];
+  const modifiedJobs =
+    jobs?.map((job) => ({
+      ...job,
+    })) ?? [];
 
   return (
     <DefaultLayout>
       <div>
-        <Breadcrumb pageName="Profile" />
+        <Breadcrumb pageName="Jobs" />
         <div className="hidden md:flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
 
           <SearchBar query={query} setQuery={setQuery} />
 
-          <UploadButton />
+          <Link href={"/admin/addjob"}>
+            <Button
+              type="button"
+              className="text-sm px-2 py-1"
+            >
+              Upload Job
+            </Button>
+          </Link>
         </div>
         <div className="md:hidden flex flex-col gap-5 mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
-          <UploadButton />
+          <Button
+            type="button"
+            className="text-sm px-2 py-1"
+          >
+            Upload Job
+          </Button>
 
           <SearchBar query={query} setQuery={setQuery} />
         </div>
 
-        <Tabs defaultValue="grid">
+        <Tabs defaultValue="table">
           <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">
             <TabsList className="mb-2">
-              <TabsTrigger value="grid" className="flex gap-2 items-center">
-                <GridIcon />
-                Grid
-              </TabsTrigger>
               <TabsTrigger value="table" className="flex gap-2 items-center">
                 <RowsIcon /> Table
               </TabsTrigger>
             </TabsList>
 
-            <div className="flex gap-2 items-center">
-              <Label htmlFor="type-select">Job Type Filter</Label>
-              <Select
-                value={type}
-                onValueChange={(newType) => {
-                  setType(newType as any);
-                }}
-              >
-                <SelectTrigger id="type-select" className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="full-time">Full-Time</SelectItem>
-                  <SelectItem value="part-time">Part-Time</SelectItem>
-                  {/* Add more job types if needed */}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
 
-          {/* {isLoading && (
+          {isLoading && (
             <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
               <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
               <div className="text-2xl">Loading your jobs...</div>
             </div>
-          )} */}
-
-          <TabsContent value="grid">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
-              {/* {modifiedJobs?.map((job) => {
-                return <FileCard key={job._id} job={job} />;
-              })} */}
-            </div>
-          </TabsContent>
+          )}
+          
           <TabsContent value="table">
-            {/* Implement your job table component here */}
-            {/* <DataTable columns={columns} data={modifiedJobs} /> */}
+            <DataTable columns={columns} data={modifiedJobs} />
           </TabsContent>
         </Tabs>
 
-        {/* {jobs?.length === 0 && <Placeholder />} */}
-        <Placeholder />
       </div>
     </DefaultLayout>
   );

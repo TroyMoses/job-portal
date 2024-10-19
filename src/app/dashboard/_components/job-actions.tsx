@@ -30,16 +30,14 @@ import { api } from "../../../../convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import { Protect } from "@clerk/nextjs";
 
-export function FileCardActions({
-  file,
-  isFavorited,
+export function JobCardActions({
+  job,
 }: {
-  file: Doc<"files"> & { uceFileUrl: string | null };
-  isFavorited: boolean;
+  job: Doc<"jobs">;
 }) {
-  const deleteFile = useMutation(api.files.deleteFile);
-  const restoreFile = useMutation(api.files.restoreFile);
-  const toggleFavorite = useMutation(api.files.toggleFavorite);
+  // const deleteJob = useMutation(api.jobs.deleteJob);
+  // const restoreJob = useMutation(api.jobs.restoreJob);
+  // const toggleFavorite = useMutation(api.jobs.toggleFavorite);
   const { toast } = useToast();
   const me = useQuery(api.users.getMe);
 
@@ -52,7 +50,7 @@ export function FileCardActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will mark the file for our deletion process. Files are
+              This action will mark the job for our deletion process. Jobs are
               deleted periodically
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -60,13 +58,13 @@ export function FileCardActions({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => {
-                await deleteFile({
-                  fileId: file._id,
-                });
+                // await deleteJob({
+                //   jobId: file._id,
+                // });
                 toast({
                   variant: "default",
-                  title: "File marked for deletion",
-                  description: "Your file will be deleted soon",
+                  title: "Job marked for deletion",
+                  description: "Your job will be deleted soon",
                 });
               }}
             >
@@ -83,31 +81,10 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              if (!file.uceFileUrl) return;
-              window.open(file.uceFileUrl, "_blank");
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
-            <FileIcon className="w-4 h-4" /> Download
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={() => {
-              toggleFavorite({
-                fileId: file._id,
-              });
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            {isFavorited ? (
-              <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Unfavorite
-              </div>
-            ) : (
-              <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Favorite
-              </div>
-            )}
+            <FileIcon className="w-4 h-4" /> View Job
           </DropdownMenuItem>
 
           <Protect
@@ -115,7 +92,7 @@ export function FileCardActions({
               return (
                 check({
                   role: "org:admin",
-                }) || file.userId === me?._id
+                }) || job.userId === me?._id
               );
             }}
             fallback={<></>}
@@ -123,17 +100,17 @@ export function FileCardActions({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
-                if (file.shouldDelete) {
-                  restoreFile({
-                    fileId: file._id,
-                  });
-                } else {
-                  setIsConfirmOpen(true);
-                }
+                // if (job.shouldDelete) {
+                //   restoreJob({
+                //     jobId: job._id,
+                //   });
+                // } else {
+                //   setIsConfirmOpen(true);
+                // }
               }}
               className="flex gap-1 items-center cursor-pointer"
             >
-              {file.shouldDelete ? (
+              {job.shouldDelete ? (
                 <div className="flex gap-1 text-green-600 items-center cursor-pointer">
                   <UndoIcon className="w-4 h-4" /> Restore
                 </div>
