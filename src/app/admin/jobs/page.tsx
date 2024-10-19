@@ -59,7 +59,7 @@ export default function JobBrowser({
   const isLoading = jobs === undefined;
 
   const modifiedJobs =
-    jobs?.map((job) => ({
+    jobs?.map((job: any) => ({
       ...job,
     })) ?? [];
 

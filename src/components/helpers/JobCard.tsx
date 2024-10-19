@@ -1,11 +1,10 @@
-import { Job } from "@/jobs/data";
-import Image from "next/image";
 import React from "react";
 import { BiMoney } from "react-icons/bi";
 import { FaMapLocation, FaRegBookmark } from "react-icons/fa6";
+import { Doc } from "../../../convex/_generated/dataModel";
 
 interface Props {
-  job: Job;
+  job: Doc<"jobs">;
 }
 
 const JobCard = ({ job }: Props) => {
@@ -14,7 +13,7 @@ const JobCard = ({ job }: Props) => {
       <div className="flex items-center space-x-6">
         {/* Image */}
         <div>
-          <Image src={job?.image} alt={job.title} width={50} height={50} />
+          Simple Image
         </div>
         {/* Content */}
         <div>
@@ -26,20 +25,20 @@ const JobCard = ({ job }: Props) => {
             <div className="flex items-center space-x-2">
               <FaMapLocation className="w-[0.8rem] h-[0.8rem] text-pink-700" />
               <p className="text-[14px] text-black font-semibold text-opacity-60">
-                {job?.location}
+                Sth like location
               </p>
             </div>
             {/* Salary */}
             <div className="flex items-center space-x-2">
               <BiMoney className="w-[0.8rem] h-[0.8rem] text-pink-700" />
               <p className="text-[14px] text-black font-semibold text-opacity-60">
-                {job?.salary}
+                {job?.salaryScale}
               </p>
             </div>
           </div>
           <div className="flex items-center space-x-2 sm:space-x-4 mt-[1rem]">
             <div className="text-[10px] sm:text-[14px] text-black font-semibold text-opacity-80 px-3 sm:px-6 py-1 rounded-full bg-opacity-30 capitalize bg-green-400">
-                {job?.jobType}
+                Something here
             </div>
             <div className="text-[10px] sm:text-[14px] text-black font-semibold text-opacity-80 px-3 sm:px-6 py-1 rounded-full bg-opacity-30 capitalize bg-red-400">
                 Private

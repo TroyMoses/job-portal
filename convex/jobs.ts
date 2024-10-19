@@ -95,21 +95,6 @@ export const createJob = mutation({
   },
 });
 
-export const getJobById = query({
-  args: {
-    jobId: v.id("jobs"),
-  },
-  async handler(ctx, args) {
-    const job = await ctx.db.get(args.jobId);
-
-    if (!job) {
-      throw new ConvexError("Job not found");
-    }
-
-    return job;
-  },
-});
-
 export const getJobs = query({
   args: {
     orgId: v.string(),
@@ -159,42 +144,6 @@ export const getJobs = query({
     );
 
     return modifiedJobs;
-  },
-});
-
-export const updateJob = mutation({
-  args: {
-    jobId: v.id("jobs"),
-    title: v.string(),
-    salaryScale: v.string(),
-    reportsTo: v.string(),
-    responsibleFor: v.array(responsibleForType),
-    purpose: v.string(),
-    keyOutputs: v.array(keyOutputsType),
-    keyFunctions: v.array(keyFunctionsType),
-    qualifications: v.array(qualificationsType),
-    experiences: v.array(experiencesType),
-    competences: v.array(competencesType),
-  },
-  async handler(ctx, args) {
-    const access = await hasAccessToJob(ctx, args.jobId);
-
-    if (!access) {
-      throw new ConvexError("no access to job");
-    }
-
-    await ctx.db.patch(args.jobId, {
-      title: args.title,
-      salaryScale: args.salaryScale,
-      reportsTo: args.reportsTo,
-      responsibleFor: args.responsibleFor,
-      purpose: args.purpose,
-      keyOutputs: args.keyOutputs,
-      keyFunctions: args.keyFunctions,
-      qualifications: args.qualifications,
-      experiences: args.experiences,
-      competences: args.competences,
-    });
   },
 });
 
