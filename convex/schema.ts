@@ -14,15 +14,11 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
-<<<<<<< HEAD
-export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
-=======
 // Define residence as a union of literals
 export const residenceType = v.union(v.literal("temporary"), v.literal("permanent"));
 
 // Define consentment as a union of literals
 export const consentmentType = v.union(v.literal("yes"), v.literal("no"));
->>>>>>> main
 
 export const jobStatusTypes = v.union(
   v.literal("urgent"),
