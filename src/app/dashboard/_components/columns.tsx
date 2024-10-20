@@ -3,26 +3,24 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { formatRelative } from "date-fns";
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { JobCardActions } from "./job-actions";
+import { FileCardActions } from "./file-actions";
 
-export const columns: ColumnDef<Doc<"jobs">>[] = [
+export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean }>[] = [
   {
-    accessorKey: "title",
-    header: "Job Title",
+    accessorKey: "name",
+    header: "Applicant Name",
   },
   {
-    accessorKey: "salaryScale",
-    header: "Salary Scale",
+    accessorKey: "post",
+    header: "Post Applied For",
   },
   {
-    accessorKey: "reportsTo",
-    header: "Reports To",
+    accessorKey: "email",
+    header: "Email",
   },
   {
-    accessorKey: "purpose",
-    header: "Purpose",
+    accessorKey: "telephone",
+    header: "Telephone",
   },
   {
     header: "Uploaded On",
@@ -39,8 +37,9 @@ export const columns: ColumnDef<Doc<"jobs">>[] = [
     cell: ({ row }) => {
       return (
         <div>
-          <JobCardActions
-            job={row.original}
+          <FileCardActions
+            file={row.original}
+            isShortlisted={row.original.isShortlisted}
           />
         </div>
       );

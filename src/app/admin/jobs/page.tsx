@@ -1,13 +1,9 @@
 "use client";
 
-import { useOrganization, useUser } from "@clerk/nextjs";
+import * as React from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "../../dashboard/_components/upload-button";
-import Image from "next/image";
-import { Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "../../dashboard/_components/search-bar";
-import { useState } from "react";
+import { RowsIcon } from "lucide-react";
 import { DataTable } from "../../dashboard/_components/jobs-table";
 import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,21 +11,6 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-function Placeholder() {
-  return (
-    <div className="flex flex-col gap-8 w-full items-center mt-24">
-      <Image
-        alt="an image representing no jobs available"
-        width="300"
-        height="300"
-        src="/empty.svg"
-      />
-      <div className="text-2xl">You have no jobs, upload one now</div>
-      <UploadButton />
-    </div>
-  );
-}
 
 export default function JobBrowser({
   title,
@@ -40,7 +21,6 @@ export default function JobBrowser({
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
-
   const jobs = useQuery(api.jobs.getAllJobs);
 
   const isLoading = jobs === undefined;
@@ -58,23 +38,16 @@ export default function JobBrowser({
           <h1 className="text-4xl font-bold">{title}</h1>
 
           <Link href={"/admin/addjob"}>
-            <Button
-              type="button"
-              className="text-sm px-2 py-1"
-            >
+            <Button type="button" className="text-sm px-2 py-1">
               Upload Job
             </Button>
           </Link>
         </div>
         <div className="md:hidden flex flex-col gap-5 mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
-          <Button
-            type="button"
-            className="text-sm px-2 py-1"
-          >
+          <Button type="button" className="text-sm px-2 py-1">
             Upload Job
           </Button>
-
         </div>
 
         <Tabs defaultValue="table">
@@ -86,18 +59,14 @@ export default function JobBrowser({
             </TabsList>
           </div>
 
-          {isLoading && (
-            <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
-              <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-              <div className="text-2xl">Loading your jobs...</div>
-            </div>
-          )}
-          
           <TabsContent value="table">
-            <DataTable columns={columns} data={modifiedJobs} />
+            <DataTable
+              columns={columns}
+              //@ts-ignore
+              data={modifiedJobs}
+            />
           </TabsContent>
         </Tabs>
-
       </div>
     </DefaultLayout>
   );

@@ -3,13 +3,11 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "./upload-button";
 import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "./search-bar";
 import { useState } from "react";
-import { DataTable } from "./jobs-table";
-import { columns } from "./columns";
+import { DataTable } from "../../dashboard/_components/jobs-table";
+import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -25,18 +23,17 @@ function Placeholder() {
   return (
     <div className="flex flex-col gap-8 w-full items-center mt-24">
       <Image
-        alt="an image of a picture and directory icon"
+        alt="an image representing no jobs available"
         width="300"
         height="300"
         src="/empty.svg"
       />
-      <div className="text-2xl">You have no files, upload one now</div>
-      <UploadButton />
+      <div className="text-2xl">There are no applications submitted yet.</div>
     </div>
   );
 }
 
-export function JobBrowser({
+export default function ApplicationsBrowser({
   title,
   shortlistedOnly,
   deletedOnly,
@@ -46,7 +43,6 @@ export function JobBrowser({
   deletedOnly?: boolean;
 }) {
   const user = useUser();
-  const [query, setQuery] = useState("");
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
   const shortlisted = useQuery(api.files.getAllShortListed);
@@ -69,16 +65,9 @@ export function JobBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
-        <SearchBar query={query} setQuery={setQuery} />
-
-        <UploadButton />
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <UploadButton />
-
-        <SearchBar query={query} setQuery={setQuery} />
       </div>
 
       <Tabs defaultValue="table">
@@ -89,36 +78,12 @@ export function JobBrowser({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex gap-2 items-center">
-            <Label htmlFor="type-select">Type Filter</Label>
-            <Select
-              value={type}
-              onValueChange={(newType) => {
-                setType(newType as any);
-              }}
-            >
-              <SelectTrigger id="type-select" className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="image">Image</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="ppt">PPT</SelectItem>
-                <SelectItem value="pptx">PPTX</SelectItem>
-                <SelectItem value="doc">DOCS</SelectItem>
-                <SelectItem value="docx">DOCX</SelectItem>
-                <SelectItem value="xlsx">EXCEL</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading your files...</div>
+            <div className="text-2xl">Loading applications...</div>
           </div>
         )}
 
