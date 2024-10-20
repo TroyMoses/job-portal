@@ -155,10 +155,60 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "schools",
   });
 
-  // Manage the other arrays as before...
+   // Manage the "employmentrecord" array
+  const {
+    fields: employmentFields,
+    append: appendEmployment,
+    remove: removeEmployment,
+  } = useFieldArray({
+    control: form.control,
+    name: "employmentrecord",
+  })
+
+  // Manage the "ucerecord" array
+  const {
+    fields: uceFields,
+    append: appendUceRecord,
+    remove: removeUceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "ucerecord",
+  });
+
+   // Manage the "uacerecord" array
+   const {
+    fields: uaceFields,
+    append: appendUaceRecord,
+    remove: removeUaceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "uacerecord",
+  });
+
+  // Manage the "referencerecord" array
+  const {
+    fields: referenceFields,
+    append: appendReferenceRecord,
+    remove: removeReferenceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "referencerecord",
+  });
+
+  // Manage the "officerrecord" array
+  const {
+    fields: officerFields,
+    append: appendOfficerRecord,
+    remove: removeOfficerRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "officerrecord",
+  });
 
   const ucefileRef = form.register("ucefile");
   const uacefileRef = form.register("uacefile");
+
+  console.log("Users: ", user);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user.isSignedIn) {

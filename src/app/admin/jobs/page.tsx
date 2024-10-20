@@ -1,11 +1,13 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UploadButton } from "../../dashboard/_components/upload-button";
 import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
+import { SearchBar } from "../../dashboard/_components/search-bar";
+import { useState } from "react";
 import { DataTable } from "../../dashboard/_components/jobs-table";
 import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,31 +33,22 @@ function Placeholder() {
 
 export default function JobBrowser({
   title,
+  favoritesOnly,
   deletedOnly,
 }: {
   title: string;
+  favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
 
-  const { user, isLoaded } = useUser();
-
   const jobs = useQuery(api.jobs.getAllJobs);
 
-  if (!isLoaded) {
-    return null;
-  }
-
-  const isAdmin = user?.publicMetadata?.role === "admin";
-
-  if (!isAdmin){
-    return null;
-  }
-
   const isLoading = jobs === undefined;
+
   const modifiedJobs =
-  jobs?.map((job) => ({
-    ...job,
-  })) ?? [];
+    jobs?.map((job) => ({
+      ...job,
+    })) ?? [];
 
   return (
     <DefaultLayout>
@@ -81,6 +74,7 @@ export default function JobBrowser({
           >
             Upload Job
           </Button>
+
         </div>
 
         <Tabs defaultValue="table">
@@ -90,7 +84,6 @@ export default function JobBrowser({
                 <RowsIcon /> Table
               </TabsTrigger>
             </TabsList>
-
           </div>
 
           {isLoading && (

@@ -42,6 +42,9 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center space-x-4">
+          <Button size={"sm"} variant={"destructive"}>
+            <Link href="/">Application Guidelines</Link>
+          </Button>
           <SignedOut>
             <SignInButton>
               <button className="px-4 py-1.5 text-[14px] sm:text-[16px] sm:px-6 sm:py-2 bg-blue-600 font-semibold text-white rounded-lg hover:bg-blue-800 transition-all duration-300">
@@ -51,10 +54,10 @@ export default function Nav() {
           </SignedOut>
 
           <SignedIn>
-            <div className="flex gap-2">
+            <div className="flex gap-5">
               {isAdmin && (
-                <Button variant={"outline"}>
-                  <Link href="/admin/jobs">Admin</Link>
+                <Button size={"sm"} variant={"outline"}>
+                  <Link href="/admin/jobs">Admin Dashboard</Link>
                 </Button>
               )}
               <UserButton afterSignOutUrl="/" />
