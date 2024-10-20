@@ -40,14 +40,6 @@ export async function hasAccessToOrg(
     return null;
   }
 
-  const hasAccess =
-    user.orgIds.some((item) => item.orgId === orgId) ||
-    user.tokenIdentifier.includes(orgId);
-
-  if (!hasAccess) {
-    return null;
-  }
-
   return { user };
 }
 
@@ -57,7 +49,7 @@ export const createFile = mutation({
     name: v.string(),
     ucefileId: v.id("_storage"),
     uacefileId: v.id("_storage"),
-    orgId: v.string(),
+    userId: v.id("users"),
     type: fileTypes,
     dateOfBirth: v.string(),
     residence: residenceType,
@@ -88,20 +80,14 @@ export const createFile = mutation({
   },
   
   async handler(ctx, args) {
-    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
-
-    if (!hasAccess) {
-      throw new ConvexError("you do not have access to this org");
-    }
 
     await ctx.db.insert("files", {
       post: args.post,
       name: args.name,
-      orgId: args.orgId,
       ucefileId: args.ucefileId,
       uacefileId: args.uacefileId,
       type: args.type,
-      userId: hasAccess.user._id,
+      userId: args.userId,
       residence: args.residence,
       email: args.email,
       telephone: args.telephone,
@@ -148,7 +134,6 @@ export const getFiles = query({
 
     let files = await ctx.db
       .query("files")
-      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
       .collect();
 
     const query = args.query;
@@ -243,16 +228,6 @@ export const deleteAllFiles = internalMutation({
   },
 });
 
-function assertCanDeleteFile(user: Doc<"users">, file: Doc<"files">) {
-  const canDelete =
-    file.userId === user._id ||
-    user.orgIds.find((org) => org.orgId === file.orgId)?.role === "admin";
-
-  if (!canDelete) {
-    throw new ConvexError("you have no acces to delete this file");
-  }
-}
-
 export const deleteFile = mutation({
   args: { fileId: v.id("files") },
   async handler(ctx, args) {
@@ -261,8 +236,6 @@ export const deleteFile = mutation({
     if (!access) {
       throw new ConvexError("no access to file");
     }
-
-    assertCanDeleteFile(access.user, access.file);
 
     await ctx.db.patch(args.fileId, {
       shouldDelete: true,
@@ -278,8 +251,6 @@ export const restoreFile = mutation({
     if (!access) {
       throw new ConvexError("no access to file");
     }
-
-    assertCanDeleteFile(access.user, access.file);
 
     await ctx.db.patch(args.fileId, {
       shouldDelete: false,
@@ -348,11 +319,5 @@ async function hasAccessToFile(
     return null;
   }
 
-  const hasAccess = await hasAccessToOrg(ctx, file.orgId);
-
-  if (!hasAccess) {
-    return null;
-  }
-
-  return { user: hasAccess.user, file };
+  return { file };
 }

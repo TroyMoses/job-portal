@@ -39,14 +39,6 @@ export async function hasAccessToOrg(
     return null;
   }
 
-  const hasAccess =
-    user.orgIds.some((item) => item.orgId === orgId) ||
-    user.tokenIdentifier.includes(orgId);
-
-  if (!hasAccess) {
-    return null;
-  }
-
   return { user };
 }
 

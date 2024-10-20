@@ -481,12 +481,12 @@ export default function AddJob() {
           <Button
             type="submit"
             disabled={form.formState.isSubmitting}
-            className="flex gap-1"
+            className="flex gap-1 text-lg"
           >
             {form.formState.isSubmitting && (
               <Loader2 className="h-4 w-4 animate-spin" />
             )}
-            Submit
+            Upload Job
           </Button>
         </form>
       </Form>

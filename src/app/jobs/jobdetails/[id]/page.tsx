@@ -1,7 +1,6 @@
 "use client";
 
 import ApplyButton from "@/components/helpers/ApplyButton";
-import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import JobCard from "@/components/helpers/JobCard";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
@@ -10,13 +9,6 @@ import { Loader2 } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 
 const JobDetails = ({ params }: { params: { id: string } }) => {
-  const organization = useOrganization();
-  const user = useUser();
-
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
 
   const singleJob = useQuery(
     api.jobs.getJobById,
