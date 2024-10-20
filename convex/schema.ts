@@ -108,7 +108,6 @@ export default defineSchema({
   files: defineTable({
     name: v.string(),
     type: fileTypes,
-    orgId: v.string(),
     ucefileId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
@@ -141,19 +140,13 @@ export default defineSchema({
     officerrecord: v.optional(v.array(officerType)),
     consentment: v.optional(consentmentType),
   })
-    .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
 
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
-    orgIds: v.array(
-      v.object({
-        orgId: v.string(),
-        role: roles,
-      })
-    ),
+    userId: v.optional(v.string()),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   jobs: defineTable({
@@ -168,10 +161,8 @@ export default defineSchema({
     experiences: v.optional(v.array(experiencesType)),
     competences: v.optional(v.array(competencesType)),
     userId: v.id("users"),
-    orgId: v.string(),
     shouldDelete: v.optional(v.boolean()),
   })
-    .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
 
   questions: defineTable({
@@ -181,7 +172,6 @@ export default defineSchema({
     answerType: answerTypes,
     shouldDelete: v.optional(v.boolean()),
   })
-    .index("by_orgId", ["orgId"])
     .index("by_shouldDelete", ["shouldDelete"]),
 
   answers: defineTable({

@@ -26,41 +26,9 @@ export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
-export async function hasAccessToOrg(
-  ctx: QueryCtx | MutationCtx,
-  orgId: string
-) {
-  const identity = await ctx.auth.getUserIdentity();
-
-  if (!identity) {
-    return null;
-  }
-
-  const user = await ctx.db
-    .query("users")
-    .withIndex("by_tokenIdentifier", (q) =>
-      q.eq("tokenIdentifier", identity.tokenIdentifier)
-    )
-    .first();
-
-  if (!user) {
-    return null;
-  }
-
-  const hasAccess =
-    user.orgIds.some((item) => item.orgId === orgId) ||
-    user.tokenIdentifier.includes(orgId);
-
-  if (!hasAccess) {
-    return null;
-  }
-
-  return { user };
-}
-
 export const createJob = mutation({
   args: {
-    orgId: v.string(),
+    userId: v.id("users"),
     title: v.string(),
     salaryScale: v.string(),
     reportsTo: v.string(),
@@ -73,16 +41,11 @@ export const createJob = mutation({
     competences: v.array(competencesType),
   },
   async handler(ctx, args) {
-    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
-
-    if (!hasAccess) {
-      throw new ConvexError("you do not have access to this org");
-    }
+    
     await ctx.db.insert("jobs", {
       title: args.title,
       salaryScale: args.salaryScale,
-      userId: hasAccess.user._id,
-      orgId: args.orgId,
+      userId: args.userId,
       reportsTo: args.reportsTo,
       responsibleFor: args.responsibleFor,
       purpose: args.purpose,
@@ -108,20 +71,13 @@ export const getJobById = query({
 
 export const getJobs = query({
   args: {
-    orgId: v.string(),
     query: v.optional(v.string()),
     deletedOnly: v.optional(v.boolean()),
   },
   async handler(ctx, args) {
-    const hasAccess = await hasAccessToOrg(ctx, args.orgId);
-
-    if (!hasAccess) {
-      return [];
-    }
 
     let jobs = await ctx.db
       .query("jobs")
-      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
       .collect();
 
     const query = args.query;
@@ -158,6 +114,15 @@ export const getJobs = query({
   },
 });
 
+export const getAllJobs = query({
+  args: {},
+  async handler(ctx) {
+    
+    const jobs = await ctx.db.query("jobs").collect();
+  
+    return jobs;
+  },
+});
 
 export const deleteAllJobs = internalMutation({
   args: {},
@@ -175,16 +140,6 @@ export const deleteAllJobs = internalMutation({
   },
 });
 
-function assertCanDeleteJob(user: Doc<"users">, job: Doc<"jobs">) {
-  const canDelete =
-    job.userId === user._id ||
-    user.orgIds.find((org) => org.orgId === job.orgId)?.role === "admin";
-
-  if (!canDelete) {
-    throw new ConvexError("you have no acces to delete this job");
-  }
-}
-
   export const deletejob = mutation({
     args: { jobId: v.id("jobs") },
     async handler(ctx, args) {
@@ -193,8 +148,6 @@ function assertCanDeleteJob(user: Doc<"users">, job: Doc<"jobs">) {
       if (!access) {
         throw new ConvexError("no access to job");
       }
-
-      assertCanDeleteJob(access.user, access.job);
 
       await ctx.db.patch(args.jobId, {
         shouldDelete: true,
@@ -210,8 +163,6 @@ function assertCanDeleteJob(user: Doc<"users">, job: Doc<"jobs">) {
       if (!access) {
         throw new ConvexError("no access to job");
       }
-
-      assertCanDeleteJob(access.user, access.job);
 
       await ctx.db.patch(args.jobId, {
         shouldDelete: false,
@@ -229,11 +180,5 @@ async function hasAccessToJob(
       return null;
     }
 
-    const hasAccess = await hasAccessToOrg(ctx, job.orgId);
-
-    if (!hasAccess) {
-      return null;
-    }
-
-    return { user: hasAccess.user, job };
+    return { job };
   }

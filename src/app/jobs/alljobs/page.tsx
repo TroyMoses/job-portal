@@ -1,7 +1,6 @@
 "use client";
 
 import JobCard from "@/components/helpers/JobCard";
-import { useOrganization, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -9,24 +8,9 @@ import { api } from "../../../../convex/_generated/api";
 import { Loader2 } from "lucide-react";
 
 const AllJobs = () => {
-  const organization = useOrganization();
-  const user = useUser();
-  const [query, setQuery] = useState("");
 
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
+  const jobs = useQuery(api.jobs.getAllJobs);
 
-  const jobs = useQuery(
-    api.jobs.getJobs,
-    orgId
-      ? {
-          orgId,
-          query,
-        }
-      : "skip"
-  );
   const isLoading = jobs === undefined;
 
   const modifiedJobs =

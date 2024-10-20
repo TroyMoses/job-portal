@@ -15,29 +15,12 @@ export default function Nav() {
   return (
     <div className="h-[9vh] overflow-hidden shadow-md">
       <div className="items-center container mx-auto justify-between flex">
-        {/* <Link href="/" className="flex gap-2 items-center text-xl text-black -ml-5">
-          <Image src="/logo.png" width="50" height="50" alt="sycom file drive logo" />
-          <span className="hidden md:block">
-            Sycom FileDrive
-          </span>
-        </Link> */}
-
         {/* <div className="hidden md:block">
           <SignedIn>
             <Button variant={"outline"}>
               <Link href="/dashboard/files">Your Files</Link>
             </Button>
           </SignedIn>
-        </div> */}
-
-        {/* <div className="flex gap-2">
-          <OrganizationSwitcher />
-          <UserButton afterSignOutUrl="/"/>
-          <SignedOut>
-            <SignInButton>
-              <Button>Sign In</Button>
-            </SignInButton>
-          </SignedOut>
         </div> */}
       </div>
       <div className="w-[100%] md:w-[100%] h-[100%] mx-auto flex items-center justify-between">
@@ -52,9 +35,10 @@ export default function Nav() {
               className="w-[40%] h-[40%]  ml-4 mt-5"
             />
           </Link>
-          <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">Kakumiro District</span>
+          <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">
+            Kakumiro District
+          </span>
         </div>
-
 
         <div className="flex items-center space-x-4">
           <SignedOut>
@@ -64,8 +48,15 @@ export default function Nav() {
               </button>
             </SignInButton>
           </SignedOut>
+
           <SignedIn>
-            <UserButton afterSignOutUrl="/" />
+            <div className="flex gap-2">
+              <Button variant={"outline"}>
+                <Link href="/admin/jobs">Admin</Link>
+              </Button>
+              <OrganizationSwitcher />
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </SignedIn>
         </div>
       </div>
