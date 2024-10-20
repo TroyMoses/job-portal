@@ -3,7 +3,7 @@
 import ApplyButton from "@/components/helpers/ApplyButton";
 import { useQuery } from "convex/react";
 import JobCard from "@/components/helpers/JobCard";
-import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import React from "react";
 import { Loader2 } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
@@ -44,7 +44,7 @@ const JobDetails = ({ params }: { params: { id: string } }) => {
       </div>
       <div className="mt-5 w-[80%] mx-auto flex flex-col gap-5">
         <div>
-          <h1 className="text-[25px] uppercase mb-5 font-semibold">
+          <h1 className="text-[20px] uppercase mb-5 font-semibold">
             Job Details
           </h1>
         </div>

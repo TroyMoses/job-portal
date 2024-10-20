@@ -14,7 +14,7 @@ const JobCard = ({ job }: Props) => {
         
         {/* Content */}
         <div>
-          <h1 className="text-[17px] font-semibold mb-[0.4rem]">
+          <h1 className="text-[20px] font-semibold mb-[0.4rem]">
             {job?.title}
           </h1>
           <div className="flex items-center md:space-x-10 space-x-4">

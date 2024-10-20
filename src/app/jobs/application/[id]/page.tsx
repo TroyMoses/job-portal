@@ -3,7 +3,7 @@
 import JobCard from "../../../../components/helpers/JobCard";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs"; // Only use useUser now
+import { useSession, useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
@@ -105,7 +105,8 @@ const formSchema = z.object({
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
-  const user = useUser(); // Only use user now, no organization
+  const user = useUser();
+  const session = useSession();
 
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
@@ -208,8 +209,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   const ucefileRef = form.register("ucefile");
   const uacefileRef = form.register("uacefile");
 
-  console.log("Users: ", user);
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user.isSignedIn) {
       // If user is not signed in, stop here
@@ -258,7 +257,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         name: values.name,
         ucefileId: uceStorageId,
         uacefileId: uaceStorageId,
-        userId: user.user.id, // Use user ID instead of orgId
+        userId: user?.user?.id as Id<"users">,
         type: types[uceFileType],
         dateOfBirth: values.dateOfBirth,
         email: values.email,
