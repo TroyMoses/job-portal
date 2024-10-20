@@ -150,7 +150,6 @@ export function UploadButton() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!orgId) return;
 
     try {
       await createJob({
@@ -164,7 +163,6 @@ export function UploadButton() {
         qualifications: values.qualifications,
         experiences: values.experiences,
         competences: values.competences,
-        orgId,
       });
 
       form.reset();

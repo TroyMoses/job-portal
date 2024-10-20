@@ -1,28 +1,29 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
-  OrganizationSwitcher,
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
-  useSession,
+  useUser,
 } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import LogoImage from "../../../public/1234.png";
 
 export default function Nav() {
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+
   return (
-    <div className="h-[9vh] overflow-hidden shadow-md">
-      <div className="items-center container mx-auto justify-between flex">
-        {/* <div className="hidden md:block">
-          <SignedIn>
-            <Button variant={"outline"}>
-              <Link href="/dashboard/files">Your Files</Link>
-            </Button>
-          </SignedIn>
-        </div> */}
-      </div>
+    <div className="h-[15vh] overflow-hidden shadow-md px-8">
+      <div className="items-center container mx-auto justify-between flex"></div>
       <div className="w-[100%] md:w-[100%] h-[100%] mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="w-[200px] h-[150px] md:w-[250px] md:h-[250px] flex items-center space-x-2">
@@ -51,10 +52,11 @@ export default function Nav() {
 
           <SignedIn>
             <div className="flex gap-2">
-              <Button variant={"outline"}>
-                <Link href="/admin/jobs">Admin</Link>
-              </Button>
-              <OrganizationSwitcher />
+              {isAdmin && (
+                <Button variant={"outline"}>
+                  <Link href="/admin/jobs">Admin</Link>
+                </Button>
+              )}
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>

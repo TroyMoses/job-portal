@@ -146,7 +146,6 @@ export default defineSchema({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
-    userId: v.optional(v.string()),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   jobs: defineTable({
@@ -160,7 +159,6 @@ export default defineSchema({
     qualifications: v.optional(v.array(qualificationsType)),
     experiences: v.optional(v.array(experiencesType)),
     competences: v.optional(v.array(competencesType)),
-    userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
   })
     .index("by_shouldDelete", ["shouldDelete"]),

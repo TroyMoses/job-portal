@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button } from "../../../components/ui/button";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -62,8 +62,6 @@ const formSchema = z.object({
 
 export default function AddJob() {
   const { toast } = useToast();
-  const organization = useOrganization();
-  const user = useUser();
 
   const router = useRouter();
 
@@ -143,8 +141,18 @@ export default function AddJob() {
     name: "competences",
   });
 
+  const { user, isLoaded } = useUser();
+
+  const createJob = useMutation(api.jobs.createJob);
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+
+  if (!isLoaded && !isAdmin) {
+    return null;
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!orgId) return;
+    if (!isAdmin) return;
 
     try {
       await createJob({
@@ -158,7 +166,6 @@ export default function AddJob() {
         qualifications: values.qualifications,
         experiences: values.experiences,
         competences: values.competences,
-        orgId,
       });
 
       form.reset();
@@ -177,13 +184,6 @@ export default function AddJob() {
       });
     }
   }
-
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
-
-  const createJob = useMutation(api.jobs.createJob);
 
   return (
     <div className="mx-auto p-10 w-[80%]">

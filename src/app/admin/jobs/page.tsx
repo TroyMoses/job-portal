@@ -1,13 +1,11 @@
 "use client";
 
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { UploadButton } from "../../dashboard/_components/upload-button";
 import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "../../dashboard/_components/search-bar";
-import { useState } from "react";
 import { DataTable } from "../../dashboard/_components/jobs-table";
 import { columns } from "../../dashboard/_components/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,30 +36,26 @@ export default function JobBrowser({
   title: string;
   deletedOnly?: boolean;
 }) {
-  const organization = useOrganization();
-  const user = useUser();
-  const [query, setQuery] = useState("");
 
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
+  const { user, isLoaded } = useUser();
+
+  const jobs = useQuery(api.jobs.getAllJobs);
+
+  if (!isLoaded) {
+    return null;
   }
 
-  const jobs = useQuery(
-    api.jobs.getJobs,
-    orgId
-      ? {
-          orgId,
-          query,
-        }
-      : "skip"
-  );
-  const isLoading = jobs === undefined;
+  const isAdmin = user?.publicMetadata?.role === "admin";
 
+  if (!isAdmin){
+    return null;
+  }
+
+  const isLoading = jobs === undefined;
   const modifiedJobs =
-    jobs?.map((job: any) => ({
-      ...job,
-    })) ?? [];
+  jobs?.map((job) => ({
+    ...job,
+  })) ?? [];
 
   return (
     <DefaultLayout>
@@ -69,8 +63,6 @@ export default function JobBrowser({
         <Breadcrumb pageName="Jobs" />
         <div className="hidden md:flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
-
-          <SearchBar query={query} setQuery={setQuery} />
 
           <Link href={"/admin/addjob"}>
             <Button
@@ -89,8 +81,6 @@ export default function JobBrowser({
           >
             Upload Job
           </Button>
-
-          <SearchBar query={query} setQuery={setQuery} />
         </div>
 
         <Tabs defaultValue="table">
