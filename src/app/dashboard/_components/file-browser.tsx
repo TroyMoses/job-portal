@@ -1,21 +1,14 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { UploadButton } from "./upload-button";
 import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "../../dashboard/_components/jobs-table";
-import { columns } from "../../dashboard/_components/columns";
+import { DataTable } from "./files-table";
+import { columns } from "./columns-files";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
 
@@ -23,7 +16,7 @@ function Placeholder() {
   return (
     <div className="flex flex-col gap-8 w-full items-center mt-24">
       <Image
-        alt="an image representing no jobs available"
+        alt="an image of a picture and directory icon"
         width="300"
         height="300"
         src="/empty.svg"
@@ -33,7 +26,7 @@ function Placeholder() {
   );
 }
 
-export default function ApplicationsBrowser({
+export function FileBrowser({
   title,
   shortlistedOnly,
   deletedOnly,
@@ -42,7 +35,6 @@ export default function ApplicationsBrowser({
   shortlistedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
-  const user = useUser();
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
   const shortlisted = useQuery(api.files.getAllShortListed);
@@ -65,9 +57,11 @@ export default function ApplicationsBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
+
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
+
       </div>
 
       <Tabs defaultValue="table">

@@ -11,29 +11,51 @@ export function SideNav() {
 
   return (
     <div className="w-40 flex flex-row md:flex-col md:gap-4">
-      <Link href="/dashboard/files">
+      <Link href="/dashboard/jobs">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/files"),
+            "text-blue-500": pathname.includes("/dashboard/jobs"),
           })}
         >
-          <FileIcon /> All Files
+          <FileIcon /> All Jobs
         </Button>
       </Link>
 
-      {/* <Link href="/dashboard/favorites">
+      <Link href="/dashboard/applications">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/favorites"),
+            "text-blue-500": pathname.includes("/dashboard/applications"),
           })}
         >
-          <StarIcon /> Favorites
+          <FileIcon /> Applications
         </Button>
-      </Link> */}
+      </Link>
 
-      <Link href="/dashboard/trash">
+      <Link href="/dashboard/shortlist">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/shortlist"),
+          })}
+        >
+          <StarIcon /> Shortlist
+        </Button>
+      </Link>
+
+      <Link href="/dashboard/applicants">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/applicants"),
+          })}
+        >
+          <StarIcon /> Applicants
+        </Button>
+      </Link>
+
+      {/* <Link href="/dashboard/trash">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
@@ -41,8 +63,8 @@ export function SideNav() {
           })}
         >
           <TrashIcon /> Trash
-        </Button>
-      </Link>
+        </Button> 
+      </Link>*/}
     </div>
   );
 }
