@@ -11,6 +11,8 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function JobBrowser({
   title,
@@ -21,6 +23,8 @@ export default function JobBrowser({
   favoritesOnly?: boolean;
   deletedOnly?: boolean;
 }) {
+  const { user } = useUser();
+
   const jobs = useQuery(api.jobs.getAllJobs);
 
   const isLoading = jobs === undefined;
@@ -32,8 +36,7 @@ export default function JobBrowser({
 
   return (
     <DefaultLayout>
-      <div>
-        <Breadcrumb pageName="Jobs" />
+        {/* <Breadcrumb pageName="Jobs" /> */}
         <div className="hidden md:flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">{title}</h1>
 
@@ -67,7 +70,6 @@ export default function JobBrowser({
             />
           </TabsContent>
         </Tabs>
-      </div>
     </DefaultLayout>
   );
 }
