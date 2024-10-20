@@ -142,7 +142,7 @@ export function JobBrowser({
 
         <TabsContent value="table">
           {/* @ts-ignore */}
-          <DataTable columns={columns} data={modifiedFiles} />
+          {/* <DataTable columns={columns} data={modifiedFiles} /> */}
         </TabsContent>
       </Tabs>
 
