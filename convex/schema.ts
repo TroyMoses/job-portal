@@ -66,16 +66,6 @@ export const officerType = v.object({
   contact: v.string(),
 });
 
-// responsibleFor structure
-export const responsibleForType = v.object({
-  name: v.string(),
-});
-
-// keyOutputs structure
-export const keyOutputsType = v.object({
-  output: v.string(),
-});
-
 // keyFunctions structure
 export const keyFunctionsType = v.object({
   function: v.string(),
@@ -152,9 +142,7 @@ export default defineSchema({
     title: v.string(),
     salaryScale: v.string(),
     reportsTo: v.string(),
-    responsibleFor: v.optional(v.array(responsibleForType)),
     purpose: v.string(),
-    keyOutputs: v.optional(v.array(keyOutputsType)),
     keyFunctions: v.optional(v.array(keyFunctionsType)),
     qualifications: v.optional(v.array(qualificationsType)),
     experiences: v.optional(v.array(experiencesType)),

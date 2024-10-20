@@ -3,7 +3,7 @@
 import JobCard from "../../../../components/helpers/JobCard";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs"; // Only use useUser now
+import { useSession, useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
@@ -105,7 +105,8 @@ const formSchema = z.object({
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
-  const user = useUser(); // Only use user now, no organization
+  const user = useUser();
+  const session = useSession();
 
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
@@ -155,7 +156,55 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "schools",
   });
 
-  // Manage the other arrays as before...
+   // Manage the "employmentrecord" array
+  const {
+    fields: employmentFields,
+    append: appendEmployment,
+    remove: removeEmployment,
+  } = useFieldArray({
+    control: form.control,
+    name: "employmentrecord",
+  })
+
+  // Manage the "ucerecord" array
+  const {
+    fields: uceFields,
+    append: appendUceRecord,
+    remove: removeUceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "ucerecord",
+  });
+
+   // Manage the "uacerecord" array
+   const {
+    fields: uaceFields,
+    append: appendUaceRecord,
+    remove: removeUaceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "uacerecord",
+  });
+
+  // Manage the "referencerecord" array
+  const {
+    fields: referenceFields,
+    append: appendReferenceRecord,
+    remove: removeReferenceRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "referencerecord",
+  });
+
+  // Manage the "officerrecord" array
+  const {
+    fields: officerFields,
+    append: appendOfficerRecord,
+    remove: removeOfficerRecord,
+  } = useFieldArray({
+    control: form.control,
+    name: "officerrecord",
+  });
 
   const ucefileRef = form.register("ucefile");
   const uacefileRef = form.register("uacefile");
@@ -208,7 +257,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         name: values.name,
         ucefileId: uceStorageId,
         uacefileId: uaceStorageId,
-        userId: user.user.id, // Use user ID instead of orgId
+        userId: user?.user?.id as Id<"users">,
         type: types[uceFileType],
         dateOfBirth: values.dateOfBirth,
         email: values.email,
