@@ -12,20 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
 
-function Placeholder() {
-  return (
-    <div className="flex flex-col gap-8 w-full items-center mt-24">
-      <Image
-        alt="an image of a picture and directory icon"
-        width="300"
-        height="300"
-        src="/empty.svg"
-      />
-      <div className="text-2xl">There are no applications submitted yet.</div>
-    </div>
-  );
-}
-
 export function FileBrowser({
   title,
   shortlistedOnly,
@@ -87,7 +73,6 @@ export function FileBrowser({
         </TabsContent>
       </Tabs>
 
-      {files?.length === 0 && <Placeholder />}
     </div>
   );
 }

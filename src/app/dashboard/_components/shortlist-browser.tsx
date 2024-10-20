@@ -1,42 +1,40 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "./upload-button";
 import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "./search-bar";
 import { useState } from "react";
-import { DataTable } from "./jobs-table";
-import { columns } from "./columns";
+import { DataTable } from "./shortlist-table";
+import { columns } from "./columns-shortlist";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Doc } from "../../../../convex/_generated/dataModel";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
-export function JobBrowser({
+export function ShortListBrowser({
   title,
+  shortlistedOnly,
   deletedOnly,
 }: {
   title: string;
+  shortlistedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
+  const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
-  const jobs = useQuery(api.jobs.getAllJobs);
-  const isLoading = jobs === undefined;
+  const shortlisted = useQuery(api.files.getAllShortListed);
 
-  const modifiedJobs =
-  jobs?.map((job: Doc<"jobs">) => ({
-      ...job,
+  const files = useQuery(api.files.getFiles, {
+    shortlisted: shortlistedOnly,
+    deletedOnly,
+  });
+  const isLoading = files === undefined;
+
+  const modifiedFiles =
+    files?.map((file: Doc<"files">) => ({
+      ...file,
+      isShortlisted: (shortlisted ?? []).some(
+        (shortlisted) => shortlisted.userId === file.userId
+      ),
     })) ?? [];
 
   return (
@@ -44,19 +42,9 @@ export function JobBrowser({
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
 
-        <Link href={"/dashboard/addjob"}>
-            <Button type="button" className="text-sm px-2 py-1">
-              Upload Job
-            </Button>
-          </Link>
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <Link href={"/dashboard/addjob"}>
-            <Button type="button" className="text-sm px-2 py-1">
-              Upload Job
-            </Button>
-          </Link>
 
       </div>
 
@@ -73,13 +61,13 @@ export function JobBrowser({
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading jobs...</div>
+            <div className="text-2xl">Loading shortlist...</div>
           </div>
         )}
 
         <TabsContent value="table">
           {/* @ts-ignore */}
-          <DataTable columns={columns} data={modifiedJobs} />
+          <DataTable columns={columns} data={modifiedFiles} />
         </TabsContent>
       </Tabs>
 
