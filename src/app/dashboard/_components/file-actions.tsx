@@ -3,8 +3,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { StarHalf, StarIcon } from "lucide-react";
+import { MoreVertical, StarHalf, StarIcon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 
@@ -19,6 +20,9 @@ export function FileCardActions({
   return (
     <>
       <DropdownMenu>
+        <DropdownMenuTrigger>
+          <MoreVertical />
+        </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {

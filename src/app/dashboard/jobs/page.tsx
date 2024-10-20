@@ -1,9 +1,9 @@
 import { JobBrowser } from "../_components/job-browser";
 
-export default function FilesPage() {
+export default function JobsPage() {
   return (
     <div>
-      <JobBrowser title="All Your Files" />
+      <JobBrowser title="All Jobs" />
     </div>
   );
 }

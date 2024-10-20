@@ -132,7 +132,7 @@ export default function AddJob() {
         title: "Job Uploaded",
         description: "Now everyone can view the job",
       });
-      router.push(`/admin/jobs`);
+      router.push(`/dashboard/jobs`);
     } catch (err) {
       toast({
         variant: "destructive",

@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/select";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 function Placeholder() {
   return (
@@ -38,31 +40,18 @@ function Placeholder() {
 
 export function JobBrowser({
   title,
-  shortlistedOnly,
   deletedOnly,
 }: {
   title: string;
-  shortlistedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
-  const user = useUser();
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
-  const shortlisted = useQuery(api.files.getAllShortListed);
+  const jobs = useQuery(api.jobs.getAllJobs);
+  const isLoading = jobs === undefined;
 
-  const files = useQuery(api.files.getFiles, {
-    shortlisted: shortlistedOnly,
-    deletedOnly,
-  });
-  const isLoading = files === undefined;
-
-  const modifiedFiles =
-    files?.map((file: Doc<"files">) => ({
-      ...file,
-      isShortlisted: (shortlisted ?? []).some(
-        (shortlisted) => shortlisted.userId === file.userId
-      ),
+  const modifiedJobs =
+  jobs?.map((job: Doc<"jobs">) => ({
+      ...job,
     })) ?? [];
 
   return (
@@ -70,15 +59,20 @@ export function JobBrowser({
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
 
-        <SearchBar query={query} setQuery={setQuery} />
-
-        <UploadButton />
+        <Link href={"/dashboard/addjob"}>
+            <Button type="button" className="text-sm px-2 py-1">
+              Upload Job
+            </Button>
+          </Link>
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <UploadButton />
+        <Link href={"/dashboard/addjob"}>
+            <Button type="button" className="text-sm px-2 py-1">
+              Upload Job
+            </Button>
+          </Link>
 
-        <SearchBar query={query} setQuery={setQuery} />
       </div>
 
       <Tabs defaultValue="table">
@@ -89,46 +83,22 @@ export function JobBrowser({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex gap-2 items-center">
-            <Label htmlFor="type-select">Type Filter</Label>
-            <Select
-              value={type}
-              onValueChange={(newType) => {
-                setType(newType as any);
-              }}
-            >
-              <SelectTrigger id="type-select" className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="image">Image</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-                <SelectItem value="pdf">PDF</SelectItem>
-                <SelectItem value="ppt">PPT</SelectItem>
-                <SelectItem value="pptx">PPTX</SelectItem>
-                <SelectItem value="doc">DOCS</SelectItem>
-                <SelectItem value="docx">DOCX</SelectItem>
-                <SelectItem value="xlsx">EXCEL</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
 
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading your files...</div>
+            <div className="text-2xl">Loading jobs...</div>
           </div>
         )}
 
         <TabsContent value="table">
           {/* @ts-ignore */}
-          <DataTable columns={columns} data={modifiedFiles} />
+          <DataTable columns={columns} data={modifiedJobs} />
         </TabsContent>
       </Tabs>
 
-      {files?.length === 0 && <Placeholder />}
+      {jobs?.length === 0 && <Placeholder />}
     </div>
   );
 }
