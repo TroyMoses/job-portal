@@ -19,6 +19,8 @@ import {
 } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
+
+
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await ctx.auth.getUserIdentity();
 
@@ -71,6 +73,8 @@ export const createFile = mutation({
     if (!identity) {
       throw new ConvexError("You must be logged in to upload a file");
     }
+
+    
 
     // Find the Convex user using Clerk's tokenIdentifier
     const user = await ctx.db
@@ -147,6 +151,10 @@ export const getFiles = query({
       files = files.filter((file) => !file.shouldDelete);
     }
 
+    interface ApplicationsCountByMonth {
+      [month: string]: number; // Allow any string as a key
+    }
+
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
@@ -185,7 +193,17 @@ export const getFiles = query({
       }))
     );
 
-    return filesWithUrl;
+    const applicationsCountByMonth: ApplicationsCountByMonth = files.reduce((acc, file) => {
+      const month = new Date(file._creationTime).toLocaleString('default', { month: 'long', year: 'numeric' });
+      acc[month] = (acc[month] || 0) + 1; 
+      return acc;
+    }, {} as ApplicationsCountByMonth); 
+
+    return {
+      filesWithUrl, 
+      applicationsCountByMonth, 
+    };
+
   },
 });
 

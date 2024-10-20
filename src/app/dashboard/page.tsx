@@ -1,15 +1,13 @@
 "use client";
 import dynamic from "next/dynamic";
 import React from "react";
-import ChartOne from "../Charts/ChartOne";
-import ChartTwo from "../Charts/ChartTwo";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
-import CardDataStats from "../CardDataStats";
+import ChartOne from "@/components/Charts/ChartOne";
+import ChartTwo from "@/components/Charts/ChartTwo";
+import CardDataStats from "@/components/CardDataStats";
 
-const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
-  ssr: false,
-});
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
 
 const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
   ssr: false,
@@ -17,11 +15,22 @@ const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
 
 const ECommerce: React.FC = () => {
 
-  
+    const { files } = useQuery(api.files.getFiles);
+
+    const series = [
+      {
+        name: "Product One",
+        data: files.map(item => item.value1), 
+      },
+      {
+        name: "Product Two",
+        data: files.map(item => item.value2), 
+      },
+    ];
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+        <CardDataStats title="Total Applicants" total="2" rate="1.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -40,7 +49,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+        <CardDataStats title="Total Usera" total="6" rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -63,7 +72,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Product" total="2.450" rate="2.59%" levelUp>
+        <CardDataStats title="Short Listed" total="1" rate="2.59%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -82,7 +91,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Users" total="3.456" rate="0.95%" levelDown>
+        <CardDataStats title="Rejectesd " total="0" rate="0.0%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -108,14 +117,9 @@ const ECommerce: React.FC = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
+        <ChartOne series={series} />
         <ChartTwo />
         <ChartThree />
-        <MapOne />
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
-        </div>
-        <ChatCard />
       </div>
     </>
   );
