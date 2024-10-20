@@ -15,7 +15,10 @@ export const fileTypes = v.union(
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
 // Define residence as a union of literals
-export const residenceType = v.union(v.literal("temporary"), v.literal("permanent"));
+export const residenceType = v.union(
+  v.literal("temporary"),
+  v.literal("permanent")
+);
 
 // Define consentment as a union of literals
 export const consentmentType = v.union(v.literal("yes"), v.literal("no"));
@@ -26,7 +29,6 @@ export const jobStatusTypes = v.union(
   v.literal("closed"),
   v.literal("all")
 );
-
 
 export const schoolType = v.object({
   year: v.string(),
@@ -129,8 +131,11 @@ export default defineSchema({
     referencerecord: v.optional(v.array(referenceType)),
     officerrecord: v.optional(v.array(officerType)),
     consentment: v.optional(consentmentType),
-  })
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
+
+  shortlisted: defineTable({
+    userId: v.id("users"),
+  }).index("by_userId", ["userId"]),
 
   users: defineTable({
     tokenIdentifier: v.string(),
@@ -148,8 +153,7 @@ export default defineSchema({
     experiences: v.optional(v.array(experiencesType)),
     competences: v.optional(v.array(competencesType)),
     shouldDelete: v.optional(v.boolean()),
-  })
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
 
   questions: defineTable({
     jobId: v.id("jobs"),
@@ -157,14 +161,12 @@ export default defineSchema({
     orgId: v.string(),
     answerType: answerTypes,
     shouldDelete: v.optional(v.boolean()),
-  })
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
 
   answers: defineTable({
     jobId: v.id("jobs"),
     questionId: v.id("questions"),
     orgId: v.string(),
     answer: v.any(),
-  })
-    .index("by_orgId", ["orgId"]),
+  }).index("by_orgId", ["orgId"]),
 });

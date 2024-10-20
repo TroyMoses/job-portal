@@ -125,44 +125,26 @@ export const createFile = mutation({
 
 export const getFiles = query({
   args: {
-    orgId: v.string(),
-    query: v.optional(v.string()),
-    favorites: v.optional(v.boolean()),
+    shortlisted: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
-    type: v.optional(fileTypes),
   },
   async handler(ctx, args) {
     let files = await ctx.db.query("files").collect();
 
-    const query = args.query;
+    if (args.shortlisted) {
+      const shortlisted = await ctx.db
+        .query("shortlisted")
+        .collect();
 
-    if (query) {
       files = files.filter((file) =>
-        file.name.toLowerCase().includes(query.toLowerCase())
+        shortlisted.some((shortlist) => shortlist.userId === file.userId)
       );
     }
-
-    // if (args.favorites) {
-    //   const favorites = await ctx.db
-    //     .query("favorites")
-    //     .withIndex("by_userId_orgId_fileId", (q) =>
-    //       q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-    //     )
-    //     .collect();
-
-    //   files = files.filter((file) =>
-    //     favorites.some((favorite) => favorite.fileId === file._id)
-    //   );
-    // }
 
     if (args.deletedOnly) {
       files = files.filter((file) => file.shouldDelete);
     } else {
       files = files.filter((file) => !file.shouldDelete);
-    }
-
-    if (args.type) {
-      files = files.filter((file) => file.type === args.type);
     }
 
     const filesWithUrl = await Promise.all(
@@ -259,50 +241,34 @@ export const restoreFile = mutation({
   },
 });
 
-// export const toggleFavorite = mutation({
-//   args: { fileId: v.id("files") },
-//   async handler(ctx, args) {
-//     const access = await hasAccessToFile(ctx, args.fileId);
+export const toggleShortlisted = mutation({
+  args: { userId: v.id("users" )},
+  async handler(ctx, args) {
 
-//     if (!access) {
-//       throw new ConvexError("no access to file");
-//     }
+    const shortlisted = await ctx.db
+      .query("shortlisted")
+      .first();
 
-//     const favorite = await ctx.db
-//       .query("favorites")
-//       .withIndex("by_userId_orgId_fileId", (q) =>
-//         q
-//           .eq("userId", access.user._id)
-//           .eq("orgId", access.file.orgId)
-//           .eq("fileId", access.file._id)
-//       )
-//       .first();
+    if (!shortlisted) {
+      await ctx.db.insert("shortlisted", {
+        userId: args.userId,
+      });
+    } else {
+      await ctx.db.delete(shortlisted._id);
+    }
+  },
+});
 
-//     if (!favorite) {
-//       await ctx.db.insert("favorites", {
-//         fileId: access.file._id,
-//         userId: access.user._id,
-//         orgId: access.file.orgId,
-//       });
-//     } else {
-//       await ctx.db.delete(favorite._id);
-//     }
-//   },
-// });
+export const getAllShortListed = query({
+  args: {},
+  async handler(ctx, args) {
+    const shortlisted = await ctx.db
+      .query("shortlisted")
+      .collect();
 
-// export const getAllFavorites = query({
-//   args: { orgId: v.string() },
-//   async handler(ctx, args) {
-//     const favorites = await ctx.db
-//       .query("favorites")
-//       .withIndex("by_userId_orgId_fileId", (q) =>
-//         q.eq("userId", hasAccess.user._id).eq("orgId", args.orgId)
-//       )
-//       .collect();
-
-//     return favorites;
-//   },
-// });
+    return shortlisted;
+  },
+});
 
 async function hasAccessToFile(
   ctx: QueryCtx | MutationCtx,
