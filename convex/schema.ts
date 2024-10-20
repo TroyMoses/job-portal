@@ -14,15 +14,14 @@ export const fileTypes = v.union(
 
 export const roles = v.union(v.literal("admin"), v.literal("member"));
 
-<<<<<<< HEAD
-export const yesNoChoiceType = v.union(v.literal("yes"), v.literal("no"));
-=======
 // Define residence as a union of literals
-export const residenceType = v.union(v.literal("temporary"), v.literal("permanent"));
+export const residenceType = v.union(
+  v.literal("temporary"),
+  v.literal("permanent")
+);
 
 // Define consentment as a union of literals
 export const consentmentType = v.union(v.literal("yes"), v.literal("no"));
->>>>>>> main
 
 export const jobStatusTypes = v.union(
   v.literal("urgent"),
@@ -30,7 +29,6 @@ export const jobStatusTypes = v.union(
   v.literal("closed"),
   v.literal("all")
 );
-
 
 export const schoolType = v.object({
   year: v.string(),
@@ -70,6 +68,26 @@ export const officerType = v.object({
   contact: v.string(),
 });
 
+// keyFunctions structure
+export const keyFunctionsType = v.object({
+  function: v.string(),
+});
+
+// qualifications structure
+export const qualificationsType = v.object({
+  qualification: v.string(),
+});
+
+// experiences structure
+export const experiencesType = v.object({
+  experience: v.string(),
+});
+
+// competences structure
+export const competencesType = v.object({
+  competence: v.string(),
+});
+
 export const answerTypes = v.union(
   v.literal("text"),
   v.literal("essay"),
@@ -82,7 +100,6 @@ export default defineSchema({
   files: defineTable({
     name: v.string(),
     type: fileTypes,
-    orgId: v.string(),
     ucefileId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
@@ -114,49 +131,29 @@ export default defineSchema({
     referencerecord: v.optional(v.array(referenceType)),
     officerrecord: v.optional(v.array(officerType)),
     consentment: v.optional(consentmentType),
-  })
-    .index("by_orgId", ["orgId"])
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
 
-  favorites: defineTable({
-    fileId: v.id("files"),
-    orgId: v.string(),
+  shortlisted: defineTable({
     userId: v.id("users"),
-  }).index("by_userId_orgId_fileId", ["userId", "orgId", "fileId"]),
-
-  favoritesJob: defineTable({
-    jobId: v.id("jobs"),
-    orgId: v.string(),
-    userId: v.id("users"),
-  }).index("by_userId_orgId_jobId", ["userId", "orgId", "jobId"]),
-
+  }).index("by_userId", ["userId"]),
 
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
     image: v.optional(v.string()),
-    orgIds: v.array(
-      v.object({
-        orgId: v.string(),
-        role: roles,
-      })
-    ),
   }).index("by_tokenIdentifier", ["tokenIdentifier"]),
 
   jobs: defineTable({
     title: v.string(),
-    description: v.string(),
-    imageId: v.optional(v.id("_storage")),
-    salary: v.string(),
-    userId: v.id("users"),
-    orgId: v.string(),
-    location: v.string(),
-    jobType: v.string(),
-    status: v.optional(v.array(jobStatusTypes)), 
+    salaryScale: v.string(),
+    reportsTo: v.string(),
+    purpose: v.string(),
+    keyFunctions: v.optional(v.array(keyFunctionsType)),
+    qualifications: v.optional(v.array(qualificationsType)),
+    experiences: v.optional(v.array(experiencesType)),
+    competences: v.optional(v.array(competencesType)),
     shouldDelete: v.optional(v.boolean()),
-  })
-    .index("by_orgId", ["orgId"])
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
 
   questions: defineTable({
     jobId: v.id("jobs"),
@@ -164,15 +161,12 @@ export default defineSchema({
     orgId: v.string(),
     answerType: answerTypes,
     shouldDelete: v.optional(v.boolean()),
-  })
-    .index("by_orgId", ["orgId"])
-    .index("by_shouldDelete", ["shouldDelete"]),
+  }).index("by_shouldDelete", ["shouldDelete"]),
 
   answers: defineTable({
     jobId: v.id("jobs"),
     questionId: v.id("questions"),
     orgId: v.string(),
     answer: v.any(),
-  })
-    .index("by_orgId", ["orgId"]),
+  }).index("by_orgId", ["orgId"]),
 });

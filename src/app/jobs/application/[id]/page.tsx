@@ -1,10 +1,9 @@
 "use client";
 
 import JobCard from "../../../../components/helpers/JobCard";
-import { JobData } from "../../../../jobs/data";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useOrganization, useUser } from "@clerk/nextjs";
+import { useSession, useUser } from "@clerk/nextjs";
 import {
   Form,
   FormControl,
@@ -14,18 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
-
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
-import { Doc } from "../../../../../convex/_generated/dataModel";
-
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formSchema = z.object({
@@ -109,11 +104,10 @@ const formSchema = z.object({
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
-  const singleJob = JobData.find((job) => job.id.toString() == params.id);
-
   const { toast } = useToast();
-  const organization = useOrganization();
   const user = useUser();
+  const session = useSession();
+
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -162,7 +156,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "schools",
   });
 
-  // Manage the "employmentrecord" array
+   // Manage the "employmentrecord" array
   const {
     fields: employmentFields,
     append: appendEmployment,
@@ -170,7 +164,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   } = useFieldArray({
     control: form.control,
     name: "employmentrecord",
-  });
+  })
 
   // Manage the "ucerecord" array
   const {
@@ -182,8 +176,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "ucerecord",
   });
 
-  // Manage the "uacerecord" array
-  const {
+   // Manage the "uacerecord" array
+   const {
     fields: uaceFields,
     append: appendUaceRecord,
     remove: removeUaceRecord,
@@ -216,7 +210,15 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   const uacefileRef = form.register("uacefile");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!orgId) return;
+    if (!user.isSignedIn) {
+      // If user is not signed in, stop here
+      toast({
+        variant: "destructive",
+        title: "Not signed in",
+        description: "You must sign in to apply for the job",
+      });
+      return;
+    }
 
     // Upload UCE file
     const ucePostUrl = await generateUploadUrl();
@@ -243,13 +245,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       "application/pdf": "pdf",
       "text/csv": "csv",
       "application/vnd.ms-powerpoint": "ppt",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        "pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
       "application/msword": "doc",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        "docx",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        "xlsx",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
     } as Record<string, Doc<"files">["type"]>;
 
     try {
@@ -258,7 +257,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         name: values.name,
         ucefileId: uceStorageId,
         uacefileId: uaceStorageId,
-        orgId,
+        userId: user?.user?.id as Id<"users">,
         type: types[uceFileType],
         dateOfBirth: values.dateOfBirth,
         email: values.email,
@@ -290,55 +289,46 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
       form.reset();
 
-      setIsFileDialogOpen(false);
-
       toast({
         variant: "success",
-        title: "File Uploaded",
-        description: "Now everyone can view your file",
+        title: "Application Submitted",
+        description: "Your application has been submitted successfully",
       });
     } catch (err) {
       toast({
         variant: "destructive",
         title: "Something went wrong",
-        description: "Your file could not be uploaded, try again later",
+        description: "Your application could not be submitted, try again later",
       });
     }
   }
 
-  let orgId: string | undefined = undefined;
-  if (organization.isLoaded && user.isLoaded) {
-    orgId = organization.organization?.id ?? user.user?.id;
-  }
-
-  const [isFileDialogOpen, setIsFileDialogOpen] = useState(false);
-
   const createFile = useMutation(api.files.createFile);
+
+  const singleJob = useQuery(
+    api.jobs.getJobById,
+    //@ts-ignore
+    { jobId: params.id }
+  );
+
+  const isLoading = singleJob === undefined;
+
+  if (isLoading) {
+    return <Loader2 className="animate-spin" />;
+  }
 
   return (
     <div className="mt-20 mb-12">
       <div className="block sm:flex items-center justify-between w-[80%] mx-auto">
         <div className="flex-[0.7]">
-          <JobCard job={singleJob!} />
+          <JobCard
+            //@ts-ignore
+            job={singleJob!}
+          />
         </div>
       </div>
-      <div className="mt-16 w-[80%] mx-auto">
-        <h1 className="text-[20px] font-semibold">Job Description</h1>
-        <p className="mt-4 text-black text-opacity-70">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus
-          neque consequuntur vero beatae accusantium cupiditate excepturi ex
-          optio, architecto unde fugit maiores eaque deserunt porro dolorem
-          omnis nobis earum. Cumque.
-        </p>
-        <h1 className="text-[20px] mt-8 font-semibold">Key Responsibilities</h1>
-        <p className="mt-4 text-black text-opacity-70">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus
-          neque consequuntur vero beatae accusantium cupiditate excepturi ex
-          optio, architecto unde fugit maiores eaque deserunt porro dolorem
-          omnis nobis earum. Cumque. Possimus neque consequuntur vero beatae
-          accusantium cupiditate excepturi ex optio, architecto unde fugit
-          maiores eaque deserunt porro dolorem omnis nobis earum. Cumque.
-        </p>
+      <div className="mt-4 w-[80%] mx-auto">
+    
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           APPLICATION FOR APPOINTMENT TO THE UGANDA PUBLIC SERVICE
         </h1>
