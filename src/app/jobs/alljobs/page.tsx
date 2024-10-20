@@ -3,7 +3,7 @@
 import JobCard from "@/components/helpers/JobCard";
 import { useQuery } from "convex/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Loader2 } from "lucide-react";
 

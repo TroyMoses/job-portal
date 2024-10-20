@@ -28,7 +28,6 @@ export const generateUploadUrl = mutation(async (ctx) => {
 
 export const createJob = mutation({
   args: {
-    userId: v.id("users"),
     title: v.string(),
     salaryScale: v.string(),
     reportsTo: v.string(),
@@ -45,7 +44,6 @@ export const createJob = mutation({
     await ctx.db.insert("jobs", {
       title: args.title,
       salaryScale: args.salaryScale,
-      userId: args.userId,
       reportsTo: args.reportsTo,
       responsibleFor: args.responsibleFor,
       purpose: args.purpose,
