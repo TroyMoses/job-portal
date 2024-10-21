@@ -8,6 +8,7 @@ import {
 import { ConvexError, v } from "convex/values";
 import { answerTypes } from "./schema";
 
+
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await ctx.auth.getUserIdentity();
 
@@ -23,6 +24,7 @@ export async function hasAccessToOrg(
   orgId: string
 ) {
   const identity = await ctx.auth.getUserIdentity();
+
 
   if (!identity) {
     return null;
