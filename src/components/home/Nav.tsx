@@ -37,7 +37,7 @@ export default function Nav() {
             />
           </Link>
           <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">
-            Kakumiro District
+            Kakumiro District Local Government
           </span>
         </div>
 
