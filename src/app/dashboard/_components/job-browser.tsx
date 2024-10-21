@@ -3,23 +3,11 @@
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { UploadButton } from "./upload-button";
-import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
-import { SearchBar } from "./search-bar";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DataTable } from "./jobs-table";
 import { columns } from "./columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Doc } from "../../../../convex/_generated/dataModel";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -30,14 +18,31 @@ export function JobBrowser({
   title: string;
   deletedOnly?: boolean;
 }) {
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
 
+  // Fetch jobs from Convex
   const jobs = useQuery(api.jobs.getAllJobs);
   const isLoading = jobs === undefined;
 
-  const modifiedJobs =
-  jobs?.map((job: Doc<"jobs">) => ({
-      ...job,
-    })) ?? [];
+  // Modify jobs for the table
+  const modifiedJobs = jobs?.map((job) => ({
+    ...job,
+  })) ?? [];
+
+  // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  // Check if the user is an admin
+  const isAdmin = user?.publicMetadata?.role === "admin";
+
+  // If the user is not an admin, redirect them or show an error
+  if (!isAdmin) {
+    router.push("/");  // Redirect to home page if not an admin
+    return null;  // Prevent the rendering of the page for non-admin users
+  }
 
   return (
     <div>
@@ -45,19 +50,18 @@ export function JobBrowser({
         <h1 className="text-4xl font-bold">{title}</h1>
 
         <Link href={"/dashboard/addjob"}>
-            <Button type="button" className="text-sm px-2 py-1">
-              Upload Job
-            </Button>
-          </Link>
+          <Button type="button" className="text-sm px-2 py-1">
+            Upload Job
+          </Button>
+        </Link>
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
         <Link href={"/dashboard/addjob"}>
-            <Button type="button" className="text-sm px-2 py-1">
-              Upload Job
-            </Button>
-          </Link>
-
+          <Button type="button" className="text-sm px-2 py-1">
+            Upload Job
+          </Button>
+        </Link>
       </div>
 
       <Tabs defaultValue="table">
@@ -67,7 +71,6 @@ export function JobBrowser({
               <RowsIcon /> Table
             </TabsTrigger>
           </TabsList>
-
         </div>
 
         {isLoading && (
@@ -78,11 +81,9 @@ export function JobBrowser({
         )}
 
         <TabsContent value="table">
-          {/* @ts-ignore */}
           <DataTable columns={columns} data={modifiedJobs} />
         </TabsContent>
       </Tabs>
-
     </div>
   );
 }

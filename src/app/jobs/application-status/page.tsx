@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 
 const AptitudeTest = () => {
@@ -62,10 +62,6 @@ const AptitudeTest = () => {
     (applicant) => applicant.userId === convexUserId
   );
 
-  if (!isShortlisted) {
-    return <p>You are not shortlisted for the aptitude test.</p>;
-  }
-
   // Fetch the aptitude test data
 
   if (!tests) {
@@ -106,10 +102,13 @@ const AptitudeTest = () => {
                   <>
                     <p className="text-2xl font-semibold">Status: Approved</p>
                     <p className="text-lg text-gray-600">
-                      <span className="text-green-500 text-xl">Congratulations!</span><br /> You
-                      have been shortlisted for the position of {jobPost}
+                      <span className="text-green-500 text-xl">
+                        Congratulations!
+                      </span>
+                      <br /> You have been shortlisted for the position of{" "}
+                      {jobPost}
                     </p>
-                    <Link href={`/aptitude-test/${convexUserId}`}>
+                    <Link href={`/jobs/aptitude-test/${convexUserId}`}>
                       <Button className="mt-4">Attempt Aptitude Test</Button>
                     </Link>
                   </>
