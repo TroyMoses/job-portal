@@ -34,11 +34,11 @@ export default function Nav() {
               alt="Log"
               width={100}
               height={100}
-              className="w-[40%] h-[40%]  ml-4 mt-5"
+              className="w-[50%] h-[40%]  ml-4 mt-5"
             />
           </Link>
-          <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">
-            Kakumiro District
+          <span className="w-[100%] h-[40%] py-6 mt-5 font-extrabold">
+            Kakumiro District Local Government
           </span>
         </div>
 
