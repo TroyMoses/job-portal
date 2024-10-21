@@ -100,6 +100,18 @@ export const testType = v.object({
   answers: v.array(answerType),
 });
 
+export const resultType = v.object({
+  userId: v.id("users"),
+  testId: v.id("aptitude_test"),
+  selectedAnswers: v.array(
+    v.object({
+      question: v.string(),
+      selectedAnswer: v.string(),
+    })
+  ),
+  score: v.number(),
+});
+
 export const answerTypes = v.union(
   v.literal("text"),
   v.literal("essay"),
@@ -176,18 +188,6 @@ export default defineSchema({
     shouldDelete: v.optional(v.boolean()),
   }).index("by_shouldDelete", ["shouldDelete"]),
 
-  questions: defineTable({
-    jobId: v.id("jobs"),
-    question: v.string(),
-    orgId: v.string(),
-    answerType: answerTypes,
-    shouldDelete: v.optional(v.boolean()),
-  }).index("by_shouldDelete", ["shouldDelete"]),
+  results: defineTable(resultType).index("by_userId", ["userId"]),
 
-  answers: defineTable({
-    jobId: v.id("jobs"),
-    questionId: v.id("questions"),
-    orgId: v.string(),
-    answer: v.any(),
-  }).index("by_orgId", ["orgId"]),
 });
