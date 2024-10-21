@@ -4,7 +4,7 @@ import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
-import { api } from "../../../convex/_generated/api"; // Update the path to your Convex queries
+import { api } from "../../../convex/_generated/api";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -132,7 +132,7 @@ const ChartOne = () => {
 
         const weeks = await Object.keys(shortlistedByWeek);
 
-        setCategories(weeks); // Set the categories as weeks
+        setCategories(weeks);
         setSeries([
           { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
           { name: "Rejected", data: weeks.map(week => rejectedByWeek[week] || 0) },
@@ -145,7 +145,6 @@ const ChartOne = () => {
     fetchData();
   }, [getAllRejected, getAllShortListed]);
 
-  // Function to group data by weeks
   const processWeeklyData = (data: any[]) => {
     const weeklyData: Record<string, number> = {};
     data.forEach((item) => {
@@ -156,7 +155,6 @@ const ChartOne = () => {
     return weeklyData;
   };
 
-  // Function to get the week number from a date
   const getWeekNumber = (date: Date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
     const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
@@ -172,8 +170,8 @@ const ChartOne = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Status Chart</p>
+              <p className="text-sm font-medium">Double Line Chart</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -181,8 +179,8 @@ const ChartOne = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-secondary"></p>
+              <p className="text-sm font-medium"></p>
             </div>
           </div>
         </div>
