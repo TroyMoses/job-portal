@@ -5,20 +5,34 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Id } from "../../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 
 const AptitudeTest = ({ params }: { params: { id: Id<"users"> } }) => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const tests = useQuery(api.aptitude.getAllTests);
   const router = useRouter();
   const submitResults = useMutation(api.results.submitResults);
+  const convexUser = useQuery(api.users.getMe, {});
 
-  if (!tests) {
+  // Fetch all applications
+  const applications = useQuery(api.files.getFiles, {});
+  
+  if (!tests || !applications) {
     return <p>Loading...</p>;
   }
+  
+    // Get a random test from the fetched tests
+    const randomTest = tests[Math.floor(Math.random() * tests.length)];
 
-  // Get a random test from the fetched tests
-  const randomTest = tests[Math.floor(Math.random() * tests.length)];
+    // Get the applicant details
+  const application = applications?.find((app: Doc<"files">) => app.userId === convexUser?._id);
+
+  const applicantName = application?.name;
+  const jobPost = application?.post;
+
+  if (!application || !applicantName || !jobPost) {
+    return <p>Unable to find application details.</p>;
+  }
 
   // Handle answer selection
   const handleAnswerSelect = (questionIndex: number, selectedAnswer: string) => {
@@ -54,7 +68,9 @@ const AptitudeTest = ({ params }: { params: { id: Id<"users"> } }) => {
         userId: params.id ,
         testId: randomTest._id,
         selectedAnswers: resultData,
-        score: score,
+        aptitudetestscore: score,
+        applicantName: applicantName,
+        jobPost: jobPost,
       });
 
       router.push(`/jobs/results/${score}`);

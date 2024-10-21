@@ -91,6 +91,19 @@ export function SideNav() {
         </Button>
       </Link>
 
+      {isCommissioner && (
+        <Link href="/dashboard/applicant-results">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/applicant-results"),
+          })}
+        >
+          <StarIcon /> Applicant Results
+        </Button>
+      </Link>
+      )}
+
       {/* <Link href="/dashboard/trash">
         <Button
           variant={"link"}
