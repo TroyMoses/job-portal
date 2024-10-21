@@ -5,34 +5,28 @@ const ApplicationGuidelines = () => {
     <div className="w-[80%] my-4">
       <ul className="flex flex-col gap-2">
         <li>
-          <strong>1. Review Job Requirements Carefully:</strong> Ensure you meet
-          the qualifications, skills, and experience required for the job you{"'"}re
-          applying for. Read through the job description and responsibilities to
-          fully understand the role.
+          <strong>1.</strong> Click on the link provided which will the viewer to the Job listing page.
         </li>
         <li>
-          <strong>2. Prepare Your Resume/CV:</strong> Update your resume with
-          your most recent education, employment history, and relevant skills.
-          Tailor your resume to highlight the experience that is most relevant
-          to the job.
+          <strong>2.</strong> Against each job post, on the list, click on any job/post to view the detailed job composition.
         </li>
         <li>
-          <strong>3. Craft a Strong Cover Letter {"("}if required{")"}:</strong> If the
-          job posting asks for a cover letter, personalize it for the position.
-          Explain why you{"'"}re the right fit for the role, and mention specific
-          experiences that make you stand out.
+          <strong>3.</strong> One is required to register/create an account in order to apply for a job or post he/she is interested in. After registering, an email will be sent to the user with the login link and user credentials.
         </li>
         <li>
-          <strong>4. Gather Required Documents:</strong> Have all required
-          documents {"("}e.g., certificates, references, portfolio{")"} ready for
-          submission. Ensure that all documents are up to date and properly
-          scanned if required to upload them online.
+          <strong>4.</strong> The user will now login.
         </li>
         <li>
-          <strong>5. Follow the Job Application Format:</strong> Complete the
-          online application form carefully and accurately. Ensure that all
-          mandatory fields are filled out. Double-check your contact details
-          {"("}email, phone number{")"} to avoid any communication issues.
+          <strong>5.</strong> For a job post the applicant is interested in, click Apply Now.
+        </li>
+        <li>
+          <strong>6.</strong> The user will be given chance to Review the details supplied before clicking the Submit Button after filling the application form and attaching the all the necessary requirements.
+        </li>
+        <li>
+          <strong>7.</strong> The user will have chance to edit in case he/she made mistakes. This should be done before clicking the Submit button.
+        </li>
+        <li>
+          <strong>8.</strong> On clicking submit, a list of your submitted applications will be shown on the applicant dashboard.
         </li>
       </ul>
     </div>

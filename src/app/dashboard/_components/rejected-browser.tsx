@@ -8,6 +8,8 @@ import { DataTable } from "./rejected-table";
 import { columns } from "./columns-rejected";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 export function RejectedBrowser({
   title,
@@ -18,6 +20,9 @@ export function RejectedBrowser({
   rejectedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
+
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
   const rejected = useQuery(api.files.getAllRejected);
@@ -35,6 +40,19 @@ export function RejectedBrowser({
         (rejected) => rejected.userId === file.userId
       ),
     })) ?? [];
+
+    // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div>

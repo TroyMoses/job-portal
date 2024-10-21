@@ -20,6 +20,7 @@ export default function Nav() {
   }
 
   const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
 
   return (
     <div className="h-[15vh] overflow-hidden shadow-md px-8">
@@ -48,21 +49,27 @@ export default function Nav() {
           <SignedOut>
             <SignInButton>
               <button className="px-4 py-1.5 text-[14px] sm:text-[16px] sm:px-6 sm:py-2 bg-blue-600 font-semibold text-white rounded-lg hover:bg-blue-800 transition-all duration-300">
-                Sign Up
+                Log In
               </button>
             </SignInButton>
           </SignedOut>
 
           <SignedIn>
             <div className="flex gap-5">
-              {isAdmin ? (
+              {isAdmin && (
                 <Button size={"sm"} variant={"outline"}>
                   <Link href="/dashboard/jobs">Admin Dashboard</Link>
                 </Button>
-              ) : (
+              )}
+              {isCommissioner && (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/jobs/application-status">Application Status</Link>
+                  <Link href="/dashboard/jobs">Commissioner Dashboard</Link>
                 </Button>
+              )}
+              {!isAdmin && !isCommissioner && (
+                <Button size={"sm"} variant={"outline"}>
+                <Link href="/jobs/application-status">Applicant Dashboard</Link>
+              </Button>
               )}
               <UserButton afterSignOutUrl="/" />
             </div>

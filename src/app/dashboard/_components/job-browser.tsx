@@ -21,48 +21,50 @@ export function JobBrowser({
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
-  // Fetch jobs from Convex
   const jobs = useQuery(api.jobs.getAllJobs);
   const isLoading = jobs === undefined;
 
-  // Modify jobs for the table
-  const modifiedJobs = jobs?.map((job) => ({
-    ...job,
-  })) ?? [];
+  const modifiedJobs =
+    jobs?.map((job) => ({
+      ...job,
+    })) ?? [];
 
   // Ensure user is loaded
   if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
 
-  // Check if the user is an admin
   const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
 
-  // If the user is not an admin, redirect them or show an error
-  if (!isAdmin) {
-    router.push("/");  // Redirect to home page if not an admin
-    return null;  // Prevent the rendering of the page for non-admin users
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
   }
 
   return (
     <div>
-      <div className="hidden md:flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">{title}</h1>
+      {isAdmin && (
+        <div>
+          <div className="hidden md:flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-bold">{title}</h1>
 
-        <Link href={"/dashboard/addjob"}>
-          <Button type="button" className="text-sm px-2 py-1">
-            Upload Job
-          </Button>
-        </Link>
-      </div>
-      <div className="md:hidden flex flex-col gap-5 mb-8">
-        <h1 className="text-4xl font-bold">{title}</h1>
-        <Link href={"/dashboard/addjob"}>
-          <Button type="button" className="text-sm px-2 py-1">
-            Upload Job
-          </Button>
-        </Link>
-      </div>
+            <Link href={"/dashboard/addjob"}>
+              <Button type="button" className="text-sm px-2 py-1">
+                Upload Job
+              </Button>
+            </Link>
+          </div>
+          <div className="md:hidden flex flex-col gap-5 mb-8">
+            <h1 className="text-4xl font-bold">{title}</h1>
+            <Link href={"/dashboard/addjob"}>
+              <Button type="button" className="text-sm px-2 py-1">
+                Upload Job
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <Tabs defaultValue="table">
         <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">

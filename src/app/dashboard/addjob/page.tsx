@@ -46,8 +46,8 @@ const formSchema = z.object({
 
 export default function AddJob() {
   const { toast } = useToast();
-  const user = useUser();
 
+  const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -125,7 +125,7 @@ export default function AddJob() {
         title: "Job Uploaded",
         description: "Now everyone can view the job",
       });
-      router.push(`/admin/jobs`);
+      router.push(`/dashboard/jobs`);
     } catch (err) {
       toast({
         variant: "destructive",
@@ -136,6 +136,18 @@ export default function AddJob() {
   }
 
   const createJob = useMutation(api.jobs.createJob);
+
+  // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+
+  if (!isAdmin ) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div className="mx-auto p-10 w-[80%]">
