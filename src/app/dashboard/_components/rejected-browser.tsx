@@ -4,26 +4,26 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Loader2, RowsIcon } from "lucide-react";
 import { useState } from "react";
-import { DataTable } from "./files-table";
-import { columns } from "./columns-files";
+import { DataTable } from "./rejected-table";
+import { columns } from "./columns-rejected";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
 
-export function FileBrowser({
+export function RejectedBrowser({
   title,
-  shortlistedOnly,
+  rejectedOnly,
   deletedOnly,
 }: {
   title: string;
-  shortlistedOnly?: boolean;
+  rejectedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
-  const shortlisted = useQuery(api.files.getAllShortListed);
+  const rejected = useQuery(api.files.getAllRejected);
 
   const files = useQuery(api.files.getFiles, {
-    shortlisted: shortlistedOnly,
+    rejectedOnly: rejectedOnly,
     deletedOnly,
   });
   const isLoading = files === undefined;
@@ -31,8 +31,8 @@ export function FileBrowser({
   const modifiedFiles =
     files?.map((file: Doc<"files">) => ({
       ...file,
-      isShortlisted: (shortlisted ?? []).some(
-        (shortlisted) => shortlisted.userId === file.userId
+      isRejected: (rejected ?? []).some(
+        (rejected) => rejected.userId === file.userId
       ),
     })) ?? [];
 
@@ -60,7 +60,7 @@ export function FileBrowser({
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
             <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-            <div className="text-2xl">Loading applications...</div>
+            <div className="text-2xl">Loading shortlist...</div>
           </div>
         )}
 

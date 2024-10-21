@@ -1,3 +1,5 @@
+"use client";
+
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import {
   DropdownMenu,
@@ -8,15 +10,20 @@ import {
 import { MoreVertical, StarHalf, StarIcon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 export function FileCardActions({
   file,
   isShortlisted,
+  isRejected,
 }: {
   file: Doc<"files">;
   isShortlisted: boolean;
+  isRejected: boolean;
 }) {
+  const router = useRouter();
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
+  const toggleRejected = useMutation(api.files.toggleRejected);
   return (
     <>
       <DropdownMenu>
@@ -24,6 +31,16 @@ export function FileCardActions({
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+        <DropdownMenuItem
+            onClick={() => {
+              router.push(`/dashboard/applicant/${file.userId}`)
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+              <div className="flex gap-1 items-center">
+                <StarIcon className="w-4 h-4" /> View
+              </div>
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               toggleShortlisted({
@@ -34,11 +51,29 @@ export function FileCardActions({
           >
             {isShortlisted ? (
               <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Reject
+                <StarHalf className="w-4 h-4" /> Reject
               </div>
             ) : (
               <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Approve
+                <StarIcon className="w-4 h-4" /> Approve
+              </div>
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              toggleRejected({
+                userId: file.userId,
+              });
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            {isRejected ? (
+              <div className="flex gap-1 items-center">
+                <StarIcon className="w-4 h-4" /> Approve
+              </div>
+            ) : (
+              <div className="flex gap-1 items-center">
+                <StarHalf className="w-4 h-4" /> Reject
               </div>
             )}
           </DropdownMenuItem>
