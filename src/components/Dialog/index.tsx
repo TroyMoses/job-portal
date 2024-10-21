@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useToast } from "../ui/use-toast";
+import { Id } from "../../../convex/_generated/dataModel";
 
 export function AddScoreDialog({
   applicantId,
   commissionerField,
   onClose,
 }: {
-  applicantId: string;
+  applicantId: Id<"results">;
   commissionerField: string;
   onClose: () => void;
 }) {
-    const { toast } = useToast();
+  const { toast } = useToast();
   const [score, setScore] = useState("");
   const updateInterviewScore = useMutation(api.results.updateInterviewScore);
 
@@ -33,14 +39,18 @@ export function AddScoreDialog({
     onClose();
 
     toast({
-        variant: "success",
-        title: "Score Added",
-        description: "The interview score has been added successfully!",
-      });
+      variant: "success",
+      title: "Score Added",
+      description: "The interview score has been added successfully!",
+    });
   };
 
   return (
-    <Dialog open onClose={onClose}>
+    <Dialog
+      open
+      //@ts-ignore
+      onClose={onClose}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Interview Score</DialogTitle>

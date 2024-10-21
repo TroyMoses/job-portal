@@ -8,6 +8,7 @@ import { Button } from "../../../components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { AddScoreDialog } from "@/components/Dialog";
+import { Id } from "../../../../convex/_generated/dataModel";
 // import { AddScoreDialog } from "./AddScoreDialog";
 
 const ResultsPage = () => {
@@ -18,7 +19,7 @@ const ResultsPage = () => {
   const results = useQuery(api.results.getAllResults);
   
   const [openDialog, setOpenDialog] = useState<{
-    applicantId: string;
+    applicantId: Id<"results">;
     commissionerField: string;
   } | null>(null);
 
@@ -42,7 +43,7 @@ const ResultsPage = () => {
     return <p>Loading results...</p>;
   }
 
-  const handleOpenDialog = (applicantId: string, commissionerField: string) => {
+  const handleOpenDialog = (applicantId: Id<"results">, commissionerField: string) => {
     setOpenDialog({ applicantId, commissionerField });
   };
 
