@@ -88,10 +88,16 @@ export const competencesType = v.object({
   competence: v.string(),
 });
 
+// structure for answers with a label indicating correctness
+export const answerType = v.object({
+  answer: v.string(),
+  isCorrect: v.boolean(),
+});
+
 // test structure
 export const testType = v.object({
   question: v.string(),
-  answer: v.string(),
+  answers: v.array(answerType),
 });
 
 export const answerTypes = v.union(
