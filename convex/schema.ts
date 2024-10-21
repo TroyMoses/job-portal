@@ -88,6 +88,12 @@ export const competencesType = v.object({
   competence: v.string(),
 });
 
+// test structure
+export const testType = v.object({
+  question: v.string(),
+  answer: v.string(),
+});
+
 export const answerTypes = v.union(
   v.literal("text"),
   v.literal("essay"),
@@ -137,6 +143,10 @@ export default defineSchema({
     userId: v.id("users"),
   }).index("by_userId", ["userId"]),
 
+  rejected: defineTable({
+    userId: v.id("users"),
+  }).index("by_userId", ["userId"]),
+
   users: defineTable({
     tokenIdentifier: v.string(),
     name: v.optional(v.string()),
@@ -152,6 +162,11 @@ export default defineSchema({
     qualifications: v.optional(v.array(qualificationsType)),
     experiences: v.optional(v.array(experiencesType)),
     competences: v.optional(v.array(competencesType)),
+    shouldDelete: v.optional(v.boolean()),
+  }).index("by_shouldDelete", ["shouldDelete"]),
+
+  aptitude_test: defineTable({
+    aptitudeTest: v.optional(v.array(testType)),
     shouldDelete: v.optional(v.boolean()),
   }).index("by_shouldDelete", ["shouldDelete"]),
 

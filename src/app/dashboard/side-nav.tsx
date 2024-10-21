@@ -44,14 +44,34 @@ export function SideNav() {
         </Button>
       </Link>
 
-      <Link href="/dashboard/applicants">
+      <Link href="/dashboard/rejected">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/applicants"),
+            "text-blue-500": pathname.includes("/dashboard/rejected"),
           })}
         >
-          <StarIcon /> Applicants
+          <StarIcon /> Rejected
+        </Button>
+      </Link>
+
+      <Button
+        variant={"link"}
+        className={clsx("flex gap-2", {
+          "text-blue-500": pathname.includes("/dashboard/applicant"),
+        })}
+      >
+        <StarIcon /> Applicant
+      </Button>
+
+      <Link href="/dashboard/aptitude-test">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/aptitude-test"),
+          })}
+        >
+          <StarIcon /> Aptitude Test
         </Button>
       </Link>
 

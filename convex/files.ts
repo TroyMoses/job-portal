@@ -125,6 +125,7 @@ export const createFile = mutation({
 
 export const getFiles = query({
   args: {
+    rejectedOnly: v.optional(v.boolean()),
     shortlisted: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
   },
@@ -138,6 +139,16 @@ export const getFiles = query({
 
       files = files.filter((file) =>
         shortlisted.some((shortlist) => shortlist.userId === file.userId)
+      );
+    }
+
+    if (args.rejectedOnly) {
+      const rejected = await ctx.db
+        .query("rejected")
+        .collect();
+
+      files = files.filter((file) =>
+        rejected.some((rejected) => rejected.userId === file.userId)
       );
     }
 
@@ -259,6 +270,24 @@ export const toggleShortlisted = mutation({
   },
 });
 
+export const toggleRejected = mutation({
+  args: { userId: v.id("users" )},
+  async handler(ctx, args) {
+
+    const rejected = await ctx.db
+      .query("rejected")
+      .first();
+
+    if (!rejected) {
+      await ctx.db.insert("rejected", {
+        userId: args.userId,
+      });
+    } else {
+      await ctx.db.delete(rejected._id);
+    }
+  },
+});
+
 export const getAllShortListed = query({
   args: {},
   async handler(ctx, args) {
@@ -267,6 +296,17 @@ export const getAllShortListed = query({
       .collect();
 
     return shortlisted;
+  },
+});
+
+export const getAllRejected = query({
+  args: {},
+  async handler(ctx, args) {
+    const rejected = await ctx.db
+      .query("rejected")
+      .collect();
+
+    return rejected;
   },
 });
 

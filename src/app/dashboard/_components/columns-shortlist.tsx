@@ -5,7 +5,7 @@ import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { formatRelative } from "date-fns";
 import { FileCardActions } from "./file-actions";
 
-export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean }>[] = [
+export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean } & { isRejected: boolean }>[] = [
   {
     accessorKey: "name",
     header: "Applicant Name",
@@ -40,6 +40,7 @@ export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean }>[] = [
           <FileCardActions
             file={row.original}
             isShortlisted={row.original.isShortlisted}
+            isRejected={row.original.isRejected}
           />
         </div>
       );
