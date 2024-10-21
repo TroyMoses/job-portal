@@ -37,7 +37,7 @@ export function TestBrowser({
 
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <Link href={"/dashboard/addjob"}>
+        <Link href={"/dashboard/addtest"}>
           <Button type="button" className="text-sm px-2 py-1">
             Upload Test
           </Button>
@@ -53,16 +53,26 @@ export function TestBrowser({
             <div key={test._id} className="p-4 border rounded-md shadow-sm">
               <h2 className="text-2xl font-semibold">Test {index + 1}</h2>
 
-              {/* Loop over questions and answers */}
+              {/* Loop over questions and their answers */}
               <div className="mt-4 space-y-4">
                 {test.aptitudeTest?.map((qna, qIndex) => (
                   <div key={qIndex} className="p-2 border-b">
+                    {/* Display the question */}
                     <p className="font-bold text-lg">
                       Question {qIndex + 1}: {qna.question}
                     </p>
-                    <p className="mt-2">
-                      <strong>Answer:</strong> {qna.answer}
-                    </p>
+
+                    {/* Loop over the answers and display them */}
+                    <div className="mt-2 space-y-1">
+                      {qna.answers.map((answer, aIndex) => (
+                        <p key={aIndex}>
+                          <strong>Answer {aIndex + 1}:</strong> {answer.answer}{" "}
+                          {answer.isCorrect && (
+                            <span className="text-green-600">(Correct)</span>
+                          )}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>

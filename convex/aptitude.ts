@@ -8,10 +8,6 @@ import {
 } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 import {
-  competencesType,
-  experiencesType,
-  keyFunctionsType,
-  qualificationsType,
   testType,
 } from "./schema";
 
