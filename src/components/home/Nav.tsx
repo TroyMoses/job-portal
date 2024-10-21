@@ -48,7 +48,7 @@ export default function Nav() {
           <SignedOut>
             <SignInButton>
               <button className="px-4 py-1.5 text-[14px] sm:text-[16px] sm:px-6 sm:py-2 bg-blue-600 font-semibold text-white rounded-lg hover:bg-blue-800 transition-all duration-300">
-                Sign Up
+                Log In
               </button>
             </SignInButton>
           </SignedOut>
