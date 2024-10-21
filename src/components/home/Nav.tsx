@@ -57,11 +57,11 @@ export default function Nav() {
             <div className="flex gap-5">
               {isAdmin ? (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/admin/jobs">Admin Dashboard</Link>
+                  <Link href="/dashboard/jobs">Admin Dashboard</Link>
                 </Button>
               ) : (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/application-status">Application Status</Link>
+                  <Link href="/jobs/application-status">Application Status</Link>
                 </Button>
               )}
               <UserButton afterSignOutUrl="/" />
