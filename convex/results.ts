@@ -102,3 +102,37 @@ export const addOralInterviewScore = mutation({
   },
 });
 
+// Mutation to update the commissioner's interview score
+export const updateInterviewScore = mutation({
+  args: {
+    applicantId: v.id("results"),
+    score: v.number(),
+    field: v.string(), // Field to update (commOne, commTwo, etc.)
+  },
+  async handler(ctx, { applicantId, score, field }) {
+    const result = await ctx.db.get(applicantId);
+
+    if (!result) {
+      throw new Error("Applicant result not found");
+    }
+
+    // Update the correct commissioner field with the score
+    await ctx.db.patch(applicantId, { [field]: score });
+
+    // Recalculate the interview average if all scores are available
+    const scores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(
+      (s) => s !== undefined
+    );
+
+    if (scores.length === 4) {
+      //@ts-ignore
+      const oralInterviewAverage = scores.reduce((a, b) => a + b, 0) / 4;
+      const overallAverageScore = (oralInterviewAverage + result.aptitudetestscore) / 2;
+
+      await ctx.db.patch(applicantId, {
+        oralInterviewAverage,
+        overallAverageScore,
+      });
+    }
+  },
+});

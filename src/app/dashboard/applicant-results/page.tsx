@@ -1,20 +1,26 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
 import { Button } from "../../../components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { AddScoreDialog } from "@/components/Dialog";
+// import { AddScoreDialog } from "./AddScoreDialog";
 
 const ResultsPage = () => {
-
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
   
   // Fetch all results
   const results = useQuery(api.results.getAllResults);
+  
+  const [openDialog, setOpenDialog] = useState<{
+    applicantId: string;
+    commissionerField: string;
+  } | null>(null);
 
   // Ensure user is loaded
   if (!userLoaded) {
@@ -35,6 +41,14 @@ const ResultsPage = () => {
   if (!results) {
     return <p>Loading results...</p>;
   }
+
+  const handleOpenDialog = (applicantId: string, commissionerField: string) => {
+    setOpenDialog({ applicantId, commissionerField });
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(null);
+  };
 
   return (
     <div className="p-10">
@@ -61,22 +75,47 @@ const ResultsPage = () => {
               <TableCell>{result.applicantName}</TableCell>
               <TableCell>{result.jobPost}</TableCell>
               <TableCell>{result.aptitudetestscore}%</TableCell>
-              <TableCell>{result.commOne ?? 'Pending'}</TableCell>
-              <TableCell>{result.commTwo ?? 'Pending'}</TableCell>
-              <TableCell>{result.commThree ?? 'Pending'}</TableCell>
-              <TableCell>{result.commFour ?? 'Pending'}</TableCell>
-              <TableCell>{result.oralInterviewAverage ?? 'Pending'}</TableCell>
-              <TableCell>{result.overallAverageScore ?? 'Pending'}</TableCell>
+              <TableCell>{result.commOne ?? '0'}%</TableCell>
+              <TableCell>{result.commTwo ?? '0'}%</TableCell>
+              <TableCell>{result.commThree ?? '0'}%</TableCell>
+              <TableCell>{result.commFour ?? '0'}%</TableCell>
+              <TableCell>{result.oralInterviewAverage ?? '0'}%</TableCell>
+              <TableCell>{result.overallAverageScore ?? '0'}%</TableCell>
               <TableCell>
-                {isCommissioner1 && result.commOne === undefined && <Button>Add Interview Score</Button>}
-                {isCommissioner2 && result.commTwo === undefined && <Button>Add Interview Score</Button>}
-                {isCommissioner3 && result.commThree === undefined && <Button>Add Interview Score</Button>}
-                {isCommissioner4 && result.commFour === undefined && <Button>Add Interview Score</Button>}
+                {isCommissioner1 && result.commOne === undefined && (
+                  <Button onClick={() => handleOpenDialog(result._id, "commOne")}>
+                    Add Interview Score
+                  </Button>
+                )}
+                {isCommissioner2 && result.commTwo === undefined && (
+                  <Button onClick={() => handleOpenDialog(result._id, "commTwo")}>
+                    Add Interview Score
+                  </Button>
+                )}
+                {isCommissioner3 && result.commThree === undefined && (
+                  <Button onClick={() => handleOpenDialog(result._id, "commThree")}>
+                    Add Interview Score
+                  </Button>
+                )}
+                {isCommissioner4 && result.commFour === undefined && (
+                  <Button onClick={() => handleOpenDialog(result._id, "commFour")}>
+                    Add Interview Score
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Dialog to add interview score */}
+      {openDialog && (
+        <AddScoreDialog
+          applicantId={openDialog.applicantId}
+          commissionerField={openDialog.commissionerField}
+          onClose={handleCloseDialog}
+        />
+      )}
     </div>
   );
 };

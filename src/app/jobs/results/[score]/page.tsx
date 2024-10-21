@@ -20,6 +20,11 @@ const ResultsPage = ({ params }: { params: { score: string } }) => {
             Back to Home
         </Button>
       </Link>
+      <Link href={"/jobs/my-scores"}>
+        <Button variant={"outline"} size={"sm"}>
+            View All My Scores
+        </Button>
+      </Link>
       </div>
     </div>
   );

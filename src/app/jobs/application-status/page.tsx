@@ -6,15 +6,11 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
-import { Id } from "../../../../convex/_generated/dataModel";
 
 const ApplicationStatus = () => {
   const { user, isLoaded: userLoaded } = useUser();
 
   const [convexUserId, setConvexUserId] = useState<string | null>(null);
-
-  
-
 
   // Fetch all shortlisted users
   const shortlisted = useQuery(api.files.getAllShortListed);
@@ -36,9 +32,6 @@ const ApplicationStatus = () => {
 
   // Fetch all results
   const results = useQuery(api.results.getAllResults);
-
-  const applicantResult = results?.find(
-    (result) => result.userId === convexUserId);
 
   if (!userLoaded || shortlisted === undefined) {
     return <p>Loading...</p>;
@@ -90,35 +83,9 @@ const ApplicationStatus = () => {
                       <br /> You have been shortlisted for the position of{" "}
                       {jobPost}
                     </p>
-                    {applicantResult ? (
-                      <div className="mt-5 grid grid-cols-1 gap-3">
-                        <p>
-                          <strong>Applicant Name:</strong> {applicantName}
-                        </p>
-                        <p>
-                          <strong>Job applied for:</strong> {jobPost}
-                        </p>
-                        <p>
-                          <strong>Aptitude Test Score:</strong>{" "}
-                          {applicantResult.aptitudetestscore}%
-                        </p>
-                        <p>
-                          <strong>Interview Average:</strong>{" "}
-                          {applicantResult.oralInterviewAverage ?? "Pending"}
-                        </p>
-                        <p>
-                          <strong>Overall Average:</strong>{" "}
-                          {applicantResult.overallAverageScore ?? "Pending"}
-                        </p>
-                      </div>
-                    ) : (
-                      <Link href={`/jobs/aptitude-test/${convexUserId}`}>
+                    <Link href={`/jobs/aptitude-test/${convexUserId}`}>
                       <Button className="mt-4">Attempt Aptitude Test</Button>
                     </Link>
-                    )}
-                    {/* <Link href={`/jobs/aptitude-test/${convexUserId}`}>
-                      <Button className="mt-4">Attempt Aptitude Test</Button>
-                    </Link> */}
                   </>
                 )}
                 {isRejected && (
