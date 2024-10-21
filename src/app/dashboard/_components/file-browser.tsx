@@ -8,6 +8,8 @@ import { DataTable } from "./files-table";
 import { columns } from "./columns-files";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export function FileBrowser({
   title,
@@ -19,6 +21,9 @@ export function FileBrowser({
   deletedOnly?: boolean;
 }) {
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
 
   const shortlisted = useQuery(api.files.getAllShortListed);
 
@@ -35,6 +40,19 @@ export function FileBrowser({
         (shortlisted) => shortlisted.userId === file.userId
       ),
     })) ?? [];
+
+     if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div>

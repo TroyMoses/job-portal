@@ -7,8 +7,10 @@ import { Doc } from "../../../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 const Applicant = ({ params }: { params: { id: string } }) => {
+  const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
   const toggleRejected = useMutation(api.files.toggleRejected);
@@ -31,6 +33,19 @@ const Applicant = ({ params }: { params: { id: string } }) => {
   }
 
   const file = filteredFiles[0]; 
+
+  // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div className="mx-auto p-10 w-[80%]">

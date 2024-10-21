@@ -31,7 +31,7 @@ const formSchema = z.object({
 
 export default function AddTest() {
   const { toast } = useToast();
-  const user = useUser();
+  const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -81,6 +81,19 @@ export default function AddTest() {
   }
 
   const createTest = useMutation(api.aptitude.createTest);
+
+  // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div className="mx-auto p-10 w-[80%]">

@@ -5,6 +5,8 @@ import { api } from "../../../../convex/_generated/api";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export function TestBrowser({
   title,
@@ -13,6 +15,9 @@ export function TestBrowser({
   title: string;
   deletedOnly?: boolean;
 }) {
+
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
 
   // Fetch all tests
   const aptitudeTests = useQuery(api.aptitude.getAllTests);
@@ -23,6 +28,19 @@ export function TestBrowser({
     aptitudeTests?.map((test: Doc<"aptitude_test">) => ({
       ...test,
     })) ?? [];
+
+    // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div>

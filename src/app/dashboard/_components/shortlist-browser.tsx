@@ -2,13 +2,14 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import Image from "next/image";
 import { Loader2, RowsIcon } from "lucide-react";
 import { useState } from "react";
 import { DataTable } from "./shortlist-table";
 import { columns } from "./columns-shortlist";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export function ShortListBrowser({
   title,
@@ -19,6 +20,9 @@ export function ShortListBrowser({
   shortlistedOnly?: boolean;
   deletedOnly?: boolean;
 }) {
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
+
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
 
   const shortlisted = useQuery(api.files.getAllShortListed);
@@ -36,6 +40,19 @@ export function ShortListBrowser({
         (shortlisted) => shortlisted.userId === file.userId
       ),
     })) ?? [];
+
+    // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div>
