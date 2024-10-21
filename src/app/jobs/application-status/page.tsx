@@ -1,18 +1,20 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useMutation, useQuery } from "convex/react";
-import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
+import { Id } from "../../../../convex/_generated/dataModel";
 
-const AptitudeTest = () => {
+const ApplicationStatus = () => {
   const { user, isLoaded: userLoaded } = useUser();
-  const router = useRouter();
 
   const [convexUserId, setConvexUserId] = useState<string | null>(null);
+
+  
+
 
   // Fetch all shortlisted users
   const shortlisted = useQuery(api.files.getAllShortListed);
@@ -23,31 +25,28 @@ const AptitudeTest = () => {
   // Fetch all applications
   const applications = useQuery(api.files.getFiles, {});
 
-  // Get the Clerk user id
-  const clerkUserId = user?.id;
-
-  // Fetch Convex user data based on the tokenIdentifier
+  // Fetch user
   const convexUser = useQuery(api.users.getMe, {});
 
-  // Check if the user's Convex ID matches any of the shortlisted users
   useEffect(() => {
     if (convexUser && convexUser._id) {
       setConvexUserId(convexUser._id);
     }
   }, [convexUser]);
 
-  console.log("COnvexUser: ", convexUser);
+  // Fetch all results
+  const results = useQuery(api.results.getAllResults);
 
-  const tests = useQuery(api.aptitude.getAllTests);
-  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const applicantResult = results?.find(
+    (result) => result.userId === convexUserId);
 
-  // Check if user is loaded and part of the shortlist
   if (!userLoaded || shortlisted === undefined) {
     return <p>Loading...</p>;
   }
 
   const givenJob = applications?.find((job) => job.userId === convexUserId);
 
+  const applicantName = givenJob?.name;
   const jobPost = givenJob?.post;
 
   const isShortlisted = shortlisted?.some(
@@ -60,27 +59,11 @@ const AptitudeTest = () => {
   // Fetch the corresponding rejected applicant to show rejection reason
   const rejectedApplicant = rejected?.find(
     (applicant) => applicant.userId === convexUserId
-  );
+  ); 
 
-  // Fetch the aptitude test data
-
-  if (!tests) {
-    return <p>Loading test...</p>;
+  if (!results) {
+    return <p>Loading your application status...</p>;
   }
-
-  // Get a random test from the fetched tests
-  const randomTest = tests[Math.floor(Math.random() * tests.length)];
-
-  // Handle answer selection
-  const handleAnswerSelect = (
-    questionIndex: number,
-    selectedAnswer: string
-  ) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
-      [questionIndex]: selectedAnswer,
-    });
-  };
 
   return (
     <div className="pt-[3rem] pb-[3rem]">
@@ -92,25 +75,50 @@ const AptitudeTest = () => {
               Your Application Status
             </h1>
             {!user ? (
-              // If user is not logged in
               <p className="text-lg text-gray-600">
                 Please log in to view your application status.
               </p>
             ) : (
-              <div className="mt-4 text-center w-[500px]">
+              <div className="mt-4 text-center w-[600px]">
                 {isShortlisted && (
                   <>
-                    <p className="text-2xl font-semibold">Status: Approved</p>
+                    <p className="text-2xl font-semibold mb-2">Status: Approved</p>
                     <p className="text-lg text-gray-600">
                       <span className="text-green-500 text-xl">
-                        Congratulations!
+                        Congratulations! {applicantName}
                       </span>
                       <br /> You have been shortlisted for the position of{" "}
                       {jobPost}
                     </p>
-                    <Link href={`/jobs/aptitude-test/${convexUserId}`}>
+                    {applicantResult ? (
+                      <div className="mt-5 grid grid-cols-1 gap-3">
+                        <p>
+                          <strong>Applicant Name:</strong> {applicantName}
+                        </p>
+                        <p>
+                          <strong>Job applied for:</strong> {jobPost}
+                        </p>
+                        <p>
+                          <strong>Aptitude Test Score:</strong>{" "}
+                          {applicantResult.aptitudetestscore}%
+                        </p>
+                        <p>
+                          <strong>Interview Average:</strong>{" "}
+                          {applicantResult.oralInterviewAverage ?? "Pending"}
+                        </p>
+                        <p>
+                          <strong>Overall Average:</strong>{" "}
+                          {applicantResult.overallAverageScore ?? "Pending"}
+                        </p>
+                      </div>
+                    ) : (
+                      <Link href={`/jobs/aptitude-test/${convexUserId}`}>
                       <Button className="mt-4">Attempt Aptitude Test</Button>
                     </Link>
+                    )}
+                    {/* <Link href={`/jobs/aptitude-test/${convexUserId}`}>
+                      <Button className="mt-4">Attempt Aptitude Test</Button>
+                    </Link> */}
                   </>
                 )}
                 {isRejected && (
@@ -146,4 +154,4 @@ const AptitudeTest = () => {
   );
 };
 
-export default AptitudeTest;
+export default ApplicationStatus;
