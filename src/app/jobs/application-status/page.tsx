@@ -62,10 +62,6 @@ const AptitudeTest = () => {
     (applicant) => applicant.userId === convexUserId
   );
 
-  // if (!isShortlisted) {
-  //   return <p>You are not shortlisted for the aptitude test.</p>;
-  // }
-
   // Fetch the aptitude test data
 
   if (!tests) {
