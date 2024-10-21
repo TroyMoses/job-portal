@@ -33,11 +33,11 @@ export default function Nav() {
               alt="Log"
               width={100}
               height={100}
-              className="w-[40%] h-[40%]  ml-4 mt-5"
+              className="w-[50%] h-[40%]  ml-4 mt-5"
             />
           </Link>
-          <span className="w-[40%] h-[40%] py-6 mt-5 font-extrabold">
-            Kakumiro District
+          <span className="w-[100%] h-[40%] py-6 mt-5 font-extrabold">
+            Kakumiro District Local Government
           </span>
         </div>
 
@@ -48,7 +48,7 @@ export default function Nav() {
           <SignedOut>
             <SignInButton>
               <button className="px-4 py-1.5 text-[14px] sm:text-[16px] sm:px-6 sm:py-2 bg-blue-600 font-semibold text-white rounded-lg hover:bg-blue-800 transition-all duration-300">
-                Sign Up
+                Log In
               </button>
             </SignInButton>
           </SignedOut>
