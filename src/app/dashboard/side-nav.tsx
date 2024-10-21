@@ -1,13 +1,29 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/nextjs";
 import clsx from "clsx";
 import { FileIcon, StarIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function SideNav() {
   const pathname = usePathname();
+  const { user, isLoaded: userLoaded } = useUser();
+  const router = useRouter();
+
+  // Ensure user is loaded
+  if (!userLoaded) {
+    return <p>Loading user data...</p>;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+
+  if (!isAdmin && !isCommissioner) {
+    router.push("/");
+    return null;
+  }
 
   return (
     <div className="w-40 flex flex-row md:flex-col md:gap-4">
