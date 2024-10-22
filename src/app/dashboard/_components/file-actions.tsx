@@ -1,6 +1,6 @@
 "use client";
 
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,61 +24,53 @@ export function FileCardActions({
   const router = useRouter();
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
   const toggleRejected = useMutation(api.files.toggleRejected);
+
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <MoreVertical />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <MoreVertical />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
         <DropdownMenuItem
-            onClick={() => {
-              router.push(`/dashboard/applicant/${file.userId}`)
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-              <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> View
-              </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              toggleShortlisted({
-                userId: file.userId,
-              });
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            {isShortlisted ? (
-              <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Reject
-              </div>
-            ) : (
+          onClick={() => {
+            router.push(`/dashboard/applicant/${file.userId}`);
+          }}
+          className="flex gap-1 items-center cursor-pointer"
+        >
+          <div className="flex gap-1 items-center">
+            <StarIcon className="w-4 h-4" /> View
+          </div>
+        </DropdownMenuItem>
+
+        {!isShortlisted && !isRejected && (
+          <>
+            <DropdownMenuItem
+              onClick={() => {
+                toggleShortlisted({
+                  userId: file.userId,
+                });
+              }}
+              className="flex gap-1 items-center cursor-pointer"
+            >
               <div className="flex gap-1 items-center">
                 <StarIcon className="w-4 h-4" /> Approve
               </div>
-            )}
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              toggleRejected({
-                userId: file.userId,
-              });
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            {isRejected ? (
-              <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Approve
-              </div>
-            ) : (
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                toggleRejected({
+                  userId: file.userId,
+                });
+              }}
+              className="flex gap-1 items-center cursor-pointer"
+            >
               <div className="flex gap-1 items-center">
                 <StarHalf className="w-4 h-4" /> Reject
               </div>
-            )}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
