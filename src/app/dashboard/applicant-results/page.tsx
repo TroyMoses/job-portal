@@ -109,7 +109,6 @@ const ResultsPage = () => {
         </TableBody>
       </Table>
 
-      {/* Dialog to add interview score */}
       {openDialog && (
         <AddScoreDialog
           applicantId={openDialog.applicantId}
