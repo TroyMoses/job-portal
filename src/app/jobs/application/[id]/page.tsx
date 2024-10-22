@@ -893,7 +893,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   name="ucefile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>UCE Certificate/Document</FormLabel>
+                      <FormLabel>Upload your Image</FormLabel>
                       <FormControl>
                         <Input type="file" {...ucefileRef} />
                       </FormControl>
@@ -975,7 +975,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   name="uacefile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>UACE Certificate/Document</FormLabel>
+                      <FormLabel>Have all your Docements attached here{" "}
+                      {"["}ACADEMIC DOCUMENTS{"]"}? </FormLabel>
                       <FormControl>
                         <Input type="file" {...uacefileRef} />
                       </FormControl>
