@@ -25,15 +25,14 @@ export default function Nav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
-  useEffect(() => {
-    if (isAdmin) {
-      router.push("/dashboard/home");
-    } else if (isCommissioner) {
-      router.push("/dashboard/home");
-    } else {
-      router.push("/")
-    }
-  }, [isAdmin, isCommissioner, router]);
+
+  if (isAdmin) {
+    router.push("/dashboard/home");
+  } else if (isCommissioner) {
+    router.push("/dashboard/home");
+  } else {
+    router.push("/")
+  }
 
 
   return (
