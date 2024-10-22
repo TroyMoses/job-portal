@@ -45,6 +45,7 @@ const ApplicationStatus = () => {
   const hasNotApplied = !applications?.some(
     (applicant) => applicant.userId === convexUserId
   );
+  
   const isRejected = rejected?.some(
     (applicant) => applicant.userId === convexUserId
   );
@@ -121,7 +122,6 @@ const ApplicationStatus = () => {
                       <Link href="/jobs/alljobs">
                         <Button className="mt-4">View Jobs</Button>
                       </Link>
-                      
                     </p>
                   </>
                 )}
