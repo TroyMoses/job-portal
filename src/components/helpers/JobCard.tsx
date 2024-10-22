@@ -9,7 +9,7 @@ interface Props {
 
 const JobCard = ({ job }: Props) => {
   return (
-    <div className="p-4 mb-6 relative border-2 cursor-pointer hover:scale-110 hover:shadow-sm transition-all duration-300 border-gray-500 rounded-lg border-opacity-10">
+    <div className=" hover:bg-red-500 p-4 mb-6 relative border-2 cursor-pointer hover:scale-110 hover:shadow-sm transition-all duration-300 border-gray-500 rounded-lg border-opacity-10">
       <div className="items-center space-x-6">
         
         {/* Content */}

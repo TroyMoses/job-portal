@@ -1,5 +1,6 @@
 "use client";
 
+import {  useEffect  } from "react";
 import { Button } from "@/components/ui/button";
 import {
   SignInButton,
@@ -11,9 +12,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import LogoImage from "../../../public/1234.png";
+import { useRouter } from "next/navigation";
+
 
 export default function Nav() {
   const { user, isLoaded } = useUser();
+  const router = useRouter();
 
   if (!isLoaded) {
     return null;
@@ -21,9 +25,17 @@ export default function Nav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  // useEffect(() => {
+  //   if (isAdmin) {
+  //     router.push("/dashboard/home");
+  //   } else if (isCommissioner) {
+  //     router.push("/dashboard/home");
+  //   } 
+  // }, [isAdmin, isCommissioner]);
+
 
   return (
-    <div className="h-[15vh] overflow-hidden shadow-md px-8">
+    <div className="h-[15vh] bg-green-500 overflow-hidden shadow-md px-8">
       <div className="items-center container mx-auto justify-between flex"></div>
       <div className="w-[100%] md:w-[100%] h-[100%] mx-auto flex items-center justify-between">
         {/* Logo */}
@@ -58,12 +70,12 @@ export default function Nav() {
             <div className="flex gap-5">
               {isAdmin && (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/dashboard/jobs">Admin Dashboard</Link>
+                  <Link href="/dashboard/home">Admin Dashboard</Link>
                 </Button>
               )}
               {isCommissioner && (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/dashboard/jobs">Commissioner Dashboard</Link>
+                  <Link href="/dashboard/home">Commissioner Dashboard</Link>
                 </Button>
               )}
               {!isAdmin && !isCommissioner && (

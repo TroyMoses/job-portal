@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import clsx from "clsx";
-import { FileIcon, StarIcon, TrashIcon } from "lucide-react";
+import { FileIcon, StarIcon, TrashIcon, HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -27,6 +27,16 @@ export function SideNav() {
 
   return (
     <div className="w-40 flex flex-row md:flex-col md:gap-4">
+      <Link href="/dashboard/home">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/home"),
+          })}
+        >
+          <HomeIcon /> Dashboard
+        </Button>
+      </Link>
       <Link href="/dashboard/jobs">
         <Button
           variant={"link"}
