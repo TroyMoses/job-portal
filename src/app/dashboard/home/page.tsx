@@ -17,7 +17,7 @@ const ECommerce: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total Applicants" total="2" rate="1.43%" levelUp>
+        <CardDataStats title="Appointed" total="0" rate="0%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -36,7 +36,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Applicant" total="6" rate="4.35%" levelUp>
+        <CardDataStats title="Total Applicant" total="2" rate="100%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -59,7 +59,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Short Listed" total="1" rate="2.59%" levelUp>
+        <CardDataStats title="Short Listed" total="1" rate="50%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -78,7 +78,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Rejectesd " total="0" rate="0.0%" levelDown>
+        <CardDataStats title="Not Shortlisted " total="1" rate="50%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -106,7 +106,7 @@ const ECommerce: React.FC = () => {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
-        <ChartThree />
+        {/* <ChartThree /> */}
       </div>
     </>
   );
