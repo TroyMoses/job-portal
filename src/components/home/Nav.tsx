@@ -25,13 +25,14 @@ export default function Nav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
-  // useEffect(() => {
-  //   if (isAdmin) {
-  //     router.push("/dashboard/home");
-  //   } else if (isCommissioner) {
-  //     router.push("/dashboard/home");
-  //   } 
-  // }, [isAdmin, isCommissioner]);
+
+  if (isAdmin) {
+    router.push("/dashboard/home");
+  } else if (isCommissioner) {
+    router.push("/dashboard/home");
+  } else {
+    router.push("/")
+  }
 
 
   return (
@@ -55,7 +56,7 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button size={"sm"} variant={"destructive"}>
+          <Button  size={"sm"} variant={"destructive"}>
             <Link href="/">Application Guidelines</Link>
           </Button>
           <SignedOut>
