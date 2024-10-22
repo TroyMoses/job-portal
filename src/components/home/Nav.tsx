@@ -26,13 +26,13 @@ export default function Nav() {
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
 
-  if (isAdmin) {
-    router.push("/dashboard/home");
-  } else if (isCommissioner) {
-    router.push("/dashboard/home");
-  } else {
-    router.push("/")
-  }
+  // if (isAdmin) {
+  //   router.push("/dashboard/home");
+  // } else if (isCommissioner) {
+  //   router.push("/dashboard/home");
+  // } else {
+  //   router.push("/")
+  // }
 
 
   return (
