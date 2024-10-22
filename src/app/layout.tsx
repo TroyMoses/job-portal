@@ -12,8 +12,8 @@ const font = Plus_Jakarta_Sans({
   subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Job Portal",
-  description: "A place to find your dream job",
+  title: "Kakumiro District Local Government EHRMS",
+  description: "A place to jobs and applications",
 };
 
 export default function RootLayout({

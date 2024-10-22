@@ -100,25 +100,24 @@ export const testType = v.object({
   answers: v.array(answerType),
 });
 
+// result structure
 export const resultType = v.object({
   userId: v.id("users"),
+  applicantName: v.optional(v.string()),
+  jobPost: v.optional(v.string()),
   testId: v.id("aptitude_test"),
-  selectedAnswers: v.array(
-    v.object({
-      question: v.string(),
-      selectedAnswer: v.string(),
-    })
-  ),
-  score: v.number(),
+  selectedAnswers: v.array(v.object({
+    question: v.string(),
+    selectedAnswer: v.string(),
+  })),
+  aptitudetestscore: v.number(),
+  commOne: v.optional(v.number()),
+  commTwo: v.optional(v.number()),
+  commThree: v.optional(v.number()),
+  commFour: v.optional(v.number()),
+  oralInterviewAverage: v.optional(v.number()),
+  overallAverageScore: v.optional(v.number()),
 });
-
-export const answerTypes = v.union(
-  v.literal("text"),
-  v.literal("essay"),
-  v.literal("number"),
-  v.literal("boolean"),
-  v.literal("file")
-);
 
 export default defineSchema({
   files: defineTable({
