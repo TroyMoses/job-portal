@@ -30,6 +30,8 @@ export default function Nav() {
       router.push("/dashboard/home");
     } else if (isCommissioner) {
       router.push("/dashboard/home");
+    } else {
+      router.push("/")
     }
   }, [isAdmin, isCommissioner, router]);
 
@@ -55,7 +57,7 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button size={"sm"} variant={"destructive"}>
+          <Button  size={"sm"} variant={"destructive"}>
             <Link href="/">Application Guidelines</Link>
           </Button>
           <SignedOut>
