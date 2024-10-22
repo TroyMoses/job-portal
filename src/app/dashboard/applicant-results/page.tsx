@@ -85,22 +85,22 @@ const ResultsPage = () => {
               <TableCell>
                 {isCommissioner1 && result.commOne === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commOne")}>
-                    Add Interview Score
+                    Add Score
                   </Button>
                 )}
                 {isCommissioner2 && result.commTwo === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commTwo")}>
-                    Add Interview Score
+                    Add Score
                   </Button>
                 )}
                 {isCommissioner3 && result.commThree === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commThree")}>
-                    Add Interview Score
+                    Add Score
                   </Button>
                 )}
                 {isCommissioner4 && result.commFour === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commFour")}>
-                    Add Interview Score
+                    Add Score
                   </Button>
                 )}
               </TableCell>

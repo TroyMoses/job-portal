@@ -65,6 +65,43 @@ export const getAllResults = query({
   },
 });
 
+// export const addOralInterviewScore1 = mutation({
+//   args: {
+//     userId: v.id("users"),
+//     commissioner: v.string(),  // E.g., "commOne", "commTwo"
+//     score: v.number(),
+//   },
+//   async handler(ctx, args) {
+//     const result = await ctx.db.query("results").withIndex("by_userId", (q) =>
+//       q.eq("userId", args.userId)
+//     ).first();
+
+//     if (!result) {
+//       throw new Error("No result found for this user.");
+//     }
+
+//     const updatedFields: Partial<Record<string, number>> = {};
+//     updatedFields[args.commissioner] = args.score;
+
+//     // Calculate oral interview average if all fields are available
+//     const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
+//     if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined) {
+//       const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
+//       if (interviewScores.length === 4) {
+//         updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 4;
+//       }
+//     }
+
+//     // Calculate overall average if oral interview average is available
+//     if (updatedFields.oralInterviewAverage) {
+//       updatedFields.overallAverageScore = (result.aptitudetestscore + updatedFields.oralInterviewAverage) / 2;
+//     }
+
+//     // Patch the result
+//     await ctx.db.patch(result._id, updatedFields);
+//   },
+// });
+
 export const addOralInterviewScore = mutation({
   args: {
     userId: v.id("users"),
@@ -80,27 +117,46 @@ export const addOralInterviewScore = mutation({
       throw new Error("No result found for this user.");
     }
 
+    if (args.score > 100 || args.score < 0) {
+      throw new Error("Interview score must be between 0 and 100.");
+    }
+
     const updatedFields: Partial<Record<string, number>> = {};
     updatedFields[args.commissioner] = args.score;
 
-    // Calculate oral interview average if all fields are available
-    const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
-    if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined) {
-      const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
-      if (interviewScores.length === 4) {
-        updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 4;
-      }
-    }
+    // Update the appropriate commissioner's score
+    await ctx.db.patch(result._id, updatedFields);
 
-    // Calculate overall average if oral interview average is available
+    // Check if all commissioner scores are filled, then calculate interview average
+    const interviewScores = [
+      updatedFields.commOne || result.commOne,
+      updatedFields.commTwo || result.commTwo,
+      updatedFields.commThree || result.commThree,
+      updatedFields.commFour || result.commFour,
+    ].filter((score) => score !== undefined);
+
+    if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined) {
+      const interviewScores = [
+        updatedFields.commOne || result.commOne,
+        updatedFields.commTwo || result.commTwo,
+        updatedFields.commThree || result.commThree,
+        updatedFields.commFour || result.commFour,
+      ].filter((score) => score !== undefined);
+            if (interviewScores.length === 4) {
+              updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 4;
+            }
+          }
+
+      // Calculate overall average if oral interview average is available
     if (updatedFields.oralInterviewAverage) {
       updatedFields.overallAverageScore = (result.aptitudetestscore + updatedFields.oralInterviewAverage) / 2;
     }
 
-    // Patch the result
+       // Patch the result
     await ctx.db.patch(result._id, updatedFields);
   },
 });
+
 
 // Mutation to update the commissioner's interview score
 export const updateInterviewScore = mutation({
