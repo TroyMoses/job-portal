@@ -17,12 +17,14 @@ const Hero = () => {
               height={50}
               className="w-[10%] h-[10%] rounded-full"
             />
-            <h1 className="text-[28px] sm:text-[35px] lg:text-[40px] text-[#05264e] leading-[3rem] lg:leading-[4rem] font-extrabold">
-              Kakumiro District Local Government
-            </h1>
-            <h2 className="text-[18px] sm:text-[35px] lg:text-[40px] text-[#05264e] leading-[3rem]">
-              Application Guidelines
+            <h2 className="text-[20px] sm:text-[35px] text-center lg:text-[40px] text-[#05264e] leading-[3rem] lg:leading-[4rem] font-extrabold">
+              Kakumiro District Local Government <br /> 
+              e-Human Resource <br /> Management System (e-HRMS)
+
             </h2>
+            <h3 className="text-[15px] sm:text-[35px] lg:text-[40px] text-[#05264e] leading-[3rem]">
+              Application Guidelines
+            </h3>
             <ApplicationGuidelines />
           </div>
         </div>

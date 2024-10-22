@@ -20,7 +20,7 @@ const FeaturedJobs = () => {
     })) ?? [];
 
   return (
-    <div className=" mt-30 pt-20 pb-12">
+    <div className=" mt-45 pt-20 pb-12">
       <Heading
         mainHeading="Featured Jobs"
         subHeading="Know your worth and find the job that qualify your life"
