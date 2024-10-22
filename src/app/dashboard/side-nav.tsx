@@ -31,6 +31,16 @@ export function SideNav() {
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
+            "text-blue-500": pathname.includes("/dashboard/"),
+          })}
+        >
+          <FileIcon /> Dashboard
+        </Button>
+      </Link>
+      <Link href="/dashboard/jobs">
+        <Button
+          variant={"link"}
+          className={clsx("flex gap-2", {
             "text-blue-500": pathname.includes("/dashboard/jobs"),
           })}
         >
