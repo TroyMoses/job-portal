@@ -23,7 +23,7 @@ export default function Nav() {
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
 
   return (
-    <div className="h-[15vh] overflow-hidden shadow-md px-8">
+    <div className="h-[15vh] bg-green-500 overflow-hidden shadow-md px-8">
       <div className="items-center container mx-auto justify-between flex"></div>
       <div className="w-[100%] md:w-[100%] h-[100%] mx-auto flex items-center justify-between">
         {/* Logo */}
