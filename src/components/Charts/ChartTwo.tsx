@@ -1,8 +1,10 @@
 "use client";
 
 import { ApexOptions } from "apexcharts";
-import React from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { api } from "../../../convex/_generated/api"; 
+import { useQuery } from "convex/react";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -76,23 +78,62 @@ interface ChartTwoState {
 }
 
 const ChartTwo: React.FC = () => {
-  const series = [
-    {
-      name: "Sales",
-      data: [44, 55, 41, 67, 22, 43, 65],
-    },
-    {
-      name: "Revenue",
-      data: [13, 23, 20, 8, 13, 27, 15],
-    },
-  ];
+  const getAllRejected = useQuery(api.files.getAllRejected);
+  const getAllShortListed = useQuery(api.files.getAllShortListed);
+
+  const [series, setSeries] = useState<{ name: string; data: number[] }[]>([
+    { name: "Shortlisted", data: [] },
+    { name: "Rejected", data: [] },
+  ]);
+
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const shortlistedData = getAllShortListed || [];
+        const rejectedData = getAllRejected || [];
+
+        const shortlistedByWeek = processWeeklyData(shortlistedData);
+        const rejectedByWeek = processWeeklyData(rejectedData);
+
+        const weeks = await Object.keys(shortlistedByWeek);
+
+        setCategories(weeks);
+        setSeries([
+          { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
+          { name: "Unsuccessful", data: weeks.map(week => rejectedByWeek[week] || 0) },
+        ]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [getAllRejected, getAllShortListed]);
+
+  const processWeeklyData = (data: any[]) => {
+    const weeklyData: Record<string, number> = {};
+    data.forEach((item) => {
+      const date = new Date(item.date);
+      const week = getWeekNumber(date); 
+      weeklyData[week] = (weeklyData[week] || 0) + 1;
+    });
+    return weeklyData;
+  };
+
+  const getWeekNumber = (date: Date) => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+    return `Week ${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
+  };
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
       <div className="mb-4 justify-between gap-4 sm:flex">
         <div>
           <h4 className="text-xl font-semibold text-black dark:text-white">
-            Profit this week
+            Status Bar Chart
           </h4>
         </div>
         <div>

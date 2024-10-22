@@ -1,12 +1,12 @@
 "use client";
 
-import { ApexOptions } from "apexcharts";
-import React from "react";
+import { useQuery } from "convex/react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { ApexOptions } from "apexcharts";
+import { api } from "../../../convex/_generated/api";
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
-  ssr: false,
-});
+const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const options: ApexOptions = {
   legend: {
@@ -27,7 +27,6 @@ const options: ApexOptions = {
       left: 0,
       opacity: 0.1,
     },
-
     toolbar: {
       show: false,
     },
@@ -52,12 +51,8 @@ const options: ApexOptions = {
   ],
   stroke: {
     width: [2, 2],
-    curve: "straight",
+    curve: "smooth",
   },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
   grid: {
     xaxis: {
       lines: {
@@ -79,9 +74,7 @@ const options: ApexOptions = {
     strokeColors: ["#3056D3", "#80CAEE"],
     strokeWidth: 3,
     strokeOpacity: 0.9,
-    strokeDashArray: 0,
     fillOpacity: 1,
-    discrete: [],
     hover: {
       size: undefined,
       sizeOffset: 5,
@@ -90,19 +83,14 @@ const options: ApexOptions = {
   xaxis: {
     type: "category",
     categories: [
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-    ],
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun",
+    ], 
     axisBorder: {
       show: false,
     },
@@ -121,25 +109,57 @@ const options: ApexOptions = {
   },
 };
 
-interface ChartOneState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
+const ChartOne = () => {
+  const getAllRejected = useQuery(api.files.getAllRejected);
+  const getAllShortListed = useQuery(api.files.getAllShortListed);
+  
 
-const ChartOne: React.FC = () => {
-  const series = [
-      {
-        name: "Product One",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
+  const [series, setSeries] = useState<{ name: string; data: number[] }[]>([
+    { name: "Shortlisted", data: [] },
+    { name: "Rejected", data: [] },
+  ]);
 
-      {
-        name: "Product Two",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
-    ]
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const shortlistedData = getAllShortListed || [];
+        const rejectedData = getAllRejected || [];
+
+        const shortlistedByWeek = processWeeklyData(shortlistedData);
+        const rejectedByWeek = processWeeklyData(rejectedData);
+
+        const weeks = await Object.keys(shortlistedByWeek);
+
+        setCategories(weeks);
+        setSeries([
+          { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
+          { name: "Rejected", data: weeks.map(week => rejectedByWeek[week] || 0) },
+        ]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [getAllRejected, getAllShortListed]);
+
+  const processWeeklyData = (data: any[]) => {
+    const weeklyData: Record<string, number> = {};
+    data.forEach((item) => {
+      const date = new Date(item.date);
+      const week = getWeekNumber(date); 
+      weeklyData[week] = (weeklyData[week] || 0) + 1;
+    });
+    return weeklyData;
+  };
+
+  const getWeekNumber = (date: Date) => {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000;
+    return `Week ${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
+  };
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -150,8 +170,8 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Status Chart</p>
+              <p className="text-sm font-medium">Double Line Chart</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -159,8 +179,8 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-secondary"></p>
+              <p className="text-sm font-medium"></p>
             </div>
           </div>
         </div>
@@ -173,7 +193,7 @@ const ChartOne: React.FC = () => {
               Week
             </button>
             <button className="rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
+              Year
             </button>
           </div>
         </div>
@@ -181,13 +201,7 @@ const ChartOne: React.FC = () => {
 
       <div>
         <div id="chartOne" className="-ml-5">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="area"
-            height={350}
-            width={"100%"}
-          />
+          <ReactApexChart options={options} series={series} type="area" height={350} />
         </div>
       </div>
     </div>
