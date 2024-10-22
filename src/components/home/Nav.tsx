@@ -1,5 +1,6 @@
 "use client";
 
+import {  useEffect  } from "react";
 import { Button } from "@/components/ui/button";
 import {
   SignInButton,
@@ -11,9 +12,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import LogoImage from "../../../public/1234.png";
+import { useRouter } from "next/navigation";
+
 
 export default function Nav() {
   const { user, isLoaded } = useUser();
+  const router = useRouter();
 
   if (!isLoaded) {
     return null;
@@ -21,6 +25,14 @@ export default function Nav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  useEffect(() => {
+    if (isAdmin) {
+      router.push("/dashboard/home");
+    } else if (isCommissioner) {
+      router.push("/dashboard/home");
+    } 
+  }, [isAdmin, isCommissioner]);
+
 
   return (
     <div className="h-[15vh] bg-green-500 overflow-hidden shadow-md px-8">
