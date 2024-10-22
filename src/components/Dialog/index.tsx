@@ -23,16 +23,21 @@ export function AddScoreDialog({
 }) {
   const { toast } = useToast();
   const [score, setScore] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const updateInterviewScore = useMutation(api.results.updateInterviewScore);
 
   const handleSubmit = async () => {
-    if (!score || isNaN(Number(score))) {
-      return alert("Please enter a valid score");
+    const parsedScore = Number(score);
+
+    if (isNaN(parsedScore) || parsedScore < 0 || parsedScore > 100) {
+      setError("Please enter a valid score between 0 and 100.");
+      return;
     }
 
+    setError(null); // Clear previous errors
     await updateInterviewScore({
       applicantId,
-      score: Number(score),
+      score: parsedScore,
       field: commissionerField,
     });
 
@@ -56,11 +61,12 @@ export function AddScoreDialog({
           <DialogTitle>Add Interview Score</DialogTitle>
         </DialogHeader>
         <Input
-          placeholder="Enter Score"
+          placeholder="Enter Score (0-100)"
           value={score}
           onChange={(e) => setScore(e.target.value)}
           className="mb-4"
         />
+        {error && <p className="text-red-600">{error}</p>}
         <Button onClick={handleSubmit}>Submit Score</Button>
       </DialogContent>
     </Dialog>

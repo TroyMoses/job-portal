@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import React from "react";
 
 const ResultsPage = ({ params }: { params: { score: string } }) => {
-
   return (
     <div className="pt-10 pb-10">
       <div className="w-[80%] mx-auto">
@@ -15,16 +14,16 @@ const ResultsPage = ({ params }: { params: { score: string } }) => {
           Your test score is: <strong>{params.score}%</strong>
         </p>
         <p className="mt-2 mb-3">Thank you for taking the aptitude test!</p>
-      <Link href={"/"}>
-        <Button size={"sm"}>
-            Back to Home
-        </Button>
-      </Link>
-      <Link href={"/jobs/my-scores"}>
-        <Button variant={"outline"} size={"sm"}>
-            View All My Scores
-        </Button>
-      </Link>
+        <div className="flex gap-2">
+          <Link href={"/"}>
+            <Button size={"sm"}>Back to Home</Button>
+          </Link>
+          <Link href={"/jobs/my-scores"}>
+            <Button variant={"outline"} size={"sm"}>
+              View All My Scores
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );

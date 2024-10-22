@@ -22,7 +22,7 @@ const AptitudeTest = ({ params }: { params: { id: Id<"users"> } }) => {
   }
   
     // Get a random test from the fetched tests
-    const randomTest = tests[Math.floor(Math.random() * tests.length)];
+    const randomTest = tests[1];
 
     // Get the applicant details
   const application = applications?.find((app: Doc<"files">) => app.userId === convexUser?._id);
