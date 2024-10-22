@@ -27,14 +27,14 @@ export function SideNav() {
 
   return (
     <div className="w-40 flex flex-row md:flex-col md:gap-4">
-      <Link href="/dashboard/">
+      <Link href="/dashboard/home">
         <Button
           variant={"link"}
           className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/"),
+            "text-blue-500": pathname.includes("/dashboard/home"),
           })}
         >
-          <FileIcon /> Dashboard
+          <HomeIcon /> Dashboard
         </Button>
       </Link>
       <Link href="/dashboard/jobs">

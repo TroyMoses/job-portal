@@ -14,7 +14,7 @@ const options: ApexOptions = {
     position: "top",
     horizontalAlign: "left",
   },
-  colors: ["#3C50E0", "#80CAEE"],
+  colors: ["#3C50E0", "#80CAEE", "#08D35DFF"],
   chart: {
     fontFamily: "Satoshi, sans-serif",
     height: 335,
@@ -71,7 +71,7 @@ const options: ApexOptions = {
   markers: {
     size: 4,
     colors: "#fff",
-    strokeColors: ["#3056D3", "#80CAEE"],
+    strokeColors: ["#3056D3", "#80CAEE", "#08D35DFF"],
     strokeWidth: 3,
     strokeOpacity: 0.9,
     fillOpacity: 1,
@@ -105,18 +105,19 @@ const options: ApexOptions = {
       },
     },
     min: 0,
-    max: 100,
   },
 };
 
 const ChartOne = () => {
   const getAllRejected = useQuery(api.files.getAllRejected);
   const getAllShortListed = useQuery(api.files.getAllShortListed);
+  const getFiles = useQuery(api.files.getFiles, {});
   
 
   const [series, setSeries] = useState<{ name: string; data: number[] }[]>([
     { name: "Shortlisted", data: [] },
     { name: "Rejected", data: [] },
+    { name: "Applicants", data: [] },
   ]);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -126,16 +127,19 @@ const ChartOne = () => {
       try {
         const shortlistedData = getAllShortListed || [];
         const rejectedData = getAllRejected || [];
+        const getFilesData = getFiles || [];
 
         const shortlistedByWeek = processWeeklyData(shortlistedData);
         const rejectedByWeek = processWeeklyData(rejectedData);
+        const applicantsByWeek = processWeeklyData(getFilesData);
 
-        const weeks = await Object.keys(shortlistedByWeek);
+        const weeks = await Object.keys(applicantsByWeek);
 
         setCategories(weeks);
         setSeries([
           { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
           { name: "Rejected", data: weeks.map(week => rejectedByWeek[week] || 0) },
+          { name: "Applicants", data: weeks.map(week => applicantsByWeek[week] || 0) },
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -143,7 +147,7 @@ const ChartOne = () => {
     };
 
     fetchData();
-  }, [getAllRejected, getAllShortListed]);
+  }, [getAllRejected, getAllShortListed, getFiles]);
 
   const processWeeklyData = (data: any[]) => {
     const weeklyData: Record<string, number> = {};

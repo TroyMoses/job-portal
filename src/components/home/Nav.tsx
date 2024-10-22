@@ -58,12 +58,12 @@ export default function Nav() {
             <div className="flex gap-5">
               {isAdmin && (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/dashboard/jobs">Admin Dashboard</Link>
+                  <Link href="/dashboard/home">Admin Dashboard</Link>
                 </Button>
               )}
               {isCommissioner && (
                 <Button size={"sm"} variant={"outline"}>
-                  <Link href="/dashboard/jobs">Commissioner Dashboard</Link>
+                  <Link href="/dashboard/home">Commissioner Dashboard</Link>
                 </Button>
               )}
               {!isAdmin && !isCommissioner && (
