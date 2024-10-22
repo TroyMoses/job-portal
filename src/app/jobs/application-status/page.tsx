@@ -12,16 +12,13 @@ const ApplicationStatus = () => {
 
   const [convexUserId, setConvexUserId] = useState<string | null>(null);
 
-  // Fetch all shortlisted users
   const shortlisted = useQuery(api.files.getAllShortListed);
 
   // Fetch all rejected users
   const rejected = useQuery(api.files.getAllRejected);
 
-  // Fetch all applications
   const applications = useQuery(api.files.getFiles, {});
 
-  // Fetch user
   const convexUser = useQuery(api.users.getMe, {});
 
   useEffect(() => {
@@ -30,7 +27,6 @@ const ApplicationStatus = () => {
     }
   }, [convexUser]);
 
-  // Fetch all results
   const results = useQuery(api.results.getAllResults);
 
   if (!userLoaded || shortlisted === undefined) {
@@ -45,11 +41,14 @@ const ApplicationStatus = () => {
   const isShortlisted = shortlisted?.some(
     (applicant) => applicant.userId === convexUserId
   );
+
+  const hasNotApplied = !applications?.some(
+    (applicant) => applicant.userId === convexUserId
+  );
   const isRejected = rejected?.some(
     (applicant) => applicant.userId === convexUserId
   );
 
-  // Fetch the corresponding rejected applicant to show rejection reason
   const rejectedApplicant = rejected?.find(
     (applicant) => applicant.userId === convexUserId
   ); 
@@ -91,24 +90,38 @@ const ApplicationStatus = () => {
                 {isRejected && (
                   <>
                     <p className="text-xl font-semibold text-red-600">
-                      Status: Rejected
+                      Status: Unsuccessfull
                     </p>
-                    <p className="text-lg text-gray-600">
-                      Rejection Reason:{" "}
+                    {/* <p className="text-lg text-gray-600">
+                       Reason:{" "}
                       {
                         //@ts-ignore
                         rejectedApplicant?.reason || "Not provided"
                       }
-                    </p>
+                    </p> */}
                   </>
                 )}
-                {!isShortlisted && !isRejected && (
+                {!isShortlisted && !isRejected && !hasNotApplied &&(
                   <>
                     <p className="text-xl font-semibold text-yellow-600">
                       Status: Pending
                     </p>
                     <p className="text-lg text-gray-600">
                       Your application is under review.
+                    </p>
+                  </>
+                )}
+                {!isShortlisted && !isRejected && hasNotApplied && (
+                  <>
+                    <p className="text-xl font-semibold text-red-600">
+                      Status: Not Applied
+                    </p>
+                    <p className="text-lg text-gray-600">
+                      You have not applied for any job yet. <br/>
+                      <Link href="/jobs/alljobs">
+                        <Button className="mt-4">View Jobs</Button>
+                      </Link>
+                      
                     </p>
                   </>
                 )}
