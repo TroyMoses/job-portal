@@ -1192,7 +1192,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   {form.formState.isSubmitting && (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   )}
-                  Submit Form
+                  Submit Application
                 </Button>
               </form>
             </Form>
