@@ -77,7 +77,7 @@ export function SideNav() {
             "text-blue-500": pathname.includes("/dashboard/rejected"),
           })}
         >
-          <StarIcon /> Rejected
+          <StarIcon /> Not Shortlisted
         </Button>
       </Link>
 
