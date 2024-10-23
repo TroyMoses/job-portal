@@ -37,7 +37,7 @@ const JobDetails = ({ params }: { params: { id: string } }) => {
         <SignedOut>
           <SignInButton>
             <button className="px-8 py-3 bg-emerald-600 rounded-lg text-white">
-              Sign Up To Apply
+              Log In To Apply
             </button>
           </SignInButton>
         </SignedOut>

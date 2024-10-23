@@ -11,8 +11,7 @@ export function SideNav() {
   const pathname = usePathname();
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
-
-  // Ensure user is loaded
+  
   if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
@@ -78,7 +77,7 @@ export function SideNav() {
             "text-blue-500": pathname.includes("/dashboard/rejected"),
           })}
         >
-          <StarIcon /> Rejected
+          <StarIcon /> Not Shortlisted
         </Button>
       </Link>
 
