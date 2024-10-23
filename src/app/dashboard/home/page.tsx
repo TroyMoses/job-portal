@@ -8,6 +8,10 @@ import CardDataStats from "@/components/CardDataStats";
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 
+interface CardDataStatsProps {
+  total: number; 
+}
+
 
 const ECommerce: React.FC = () => {
   const getAllRejected = useQuery(api.files.getAllRejected);
@@ -52,7 +56,7 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Total Applicant" 
-          total={totalApplicants}
+          total={totalApplicants.toString()}
           rate={`${(totalApplicants > 0 ? 100 : 0)}%`}
           levelUp
         >
@@ -80,7 +84,7 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Short Listed" 
-          total={shortListed}
+          total={shortListed.toString()}
           rate={`${((shortListed / totalApplicants) * 100).toFixed(2)}%`}
           levelUp
         >
@@ -104,7 +108,7 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
         <CardDataStats 
           title="Not Shortlisted " 
-          total={notShortListed}
+          total={notShortListed.toString()}
           rate={`${((notShortListed / totalApplicants) * 100).toFixed(2)}%`}
           levelDown
         >
