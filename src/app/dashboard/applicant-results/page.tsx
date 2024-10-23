@@ -61,10 +61,10 @@ const ResultsPage = () => {
             <TableHead>Name</TableHead>
             <TableHead>Post</TableHead>
             <TableHead>Aptitude</TableHead>
-            <TableHead>Interview{"("}i{")"}</TableHead>
-            <TableHead>Interview{"("}ii{")"}</TableHead>
-            <TableHead>Interview{"("}iii{")"}</TableHead>
-            <TableHead>Interview{"("}iv{")"}</TableHead>
+            <TableHead>Com{"("}i{")"}</TableHead>
+            <TableHead>Com{"("}ii{")"}</TableHead>
+            <TableHead>Com{"("}iii{")"}</TableHead>
+            <TableHead>Com{"("}iv{")"}</TableHead>
             <TableHead>Interview Average</TableHead>
             <TableHead>Overall Average</TableHead>
             <TableHead>Action</TableHead>
