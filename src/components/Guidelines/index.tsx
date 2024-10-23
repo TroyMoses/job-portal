@@ -5,7 +5,7 @@ const ApplicationGuidelines = () => {
     <div className="w-[80%] my-4">
       <ul className="flex flex-col gap-2">
         <li>
-          <strong>1.</strong> Click <span><a className="text-red-600" href="/jobs/alljobs">here</a></span>.
+          <strong>1.</strong> Click <span><a className="text-red-600" href="/jobs/alljobs">here</a> To apply. </span>.
         </li>
         <li>
           <strong>2.</strong> Click on any job/post to view the detailed job composition.

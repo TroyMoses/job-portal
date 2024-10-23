@@ -328,7 +328,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className="mt-4 w-[80%] mx-auto">
-    
+      <h1 className="text-[20px] mt-8 mb-2 font-semibold">
+          PUBLIC SERVICE FORM (PSF-3)
+        </h1>
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           APPLICATION FOR APPOINTMENT TO THE UGANDA PUBLIC SERVICE
         </h1>
@@ -379,10 +381,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>
-                          Full name {"("}Surname first in capital letters{")"}
+                          Full name {"("}Surname first in capital letters{")"}*
                         </FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -395,9 +397,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     name="dateOfBirth"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Date of Birth</FormLabel>
+                        <FormLabel>Date of Birth*</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -413,7 +415,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -428,7 +430,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Telephone Number</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -458,7 +460,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Nationality</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -471,9 +473,9 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     name="homeDistrict"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Home District</FormLabel>
+                        <FormLabel>Home District*</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -489,7 +491,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Sub-county</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -504,7 +506,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Village</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} />
+                          <Input className="w-[500px]" {...field} required/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -548,10 +550,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     <FormItem>
                       <FormLabel>
                         Present Ministry/Local Government/ Department/Any other
-                        Employer
+                        Employer*
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} required/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -567,7 +569,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Present post and date appointment to it
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input {...field} required/>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
