@@ -18,7 +18,7 @@ const Hero = () => {
               className="w-[10%] h-[10%] rounded-full"
             />
             <h3 className="text-[16px] sm:text-[16px] text-center lg:text-[16px] text-[#05264e] leading-[3rem] lg:leading-[4rem] font-extrabold">
-              Kakumiro District Local Government
+              Kakumiro District Local Government <br />
               e-Human Resource Management System <span className="text-red-600" >(e-HRMS)</span>
 
             </h3>
