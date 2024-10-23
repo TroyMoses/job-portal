@@ -18,8 +18,9 @@ export function SideNav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
 
-  if (!isAdmin && !isCommissioner) {
+  if (!isAdmin && !isCommissioner && !isCAO) {
     router.push("/");
     return null;
   }
@@ -102,15 +103,47 @@ export function SideNav() {
 
       {isCommissioner && (
         <Link href="/dashboard/applicant-results">
-        <Button
-          variant={"link"}
-          className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/applicant-results"),
-          })}
-        >
-          <StarIcon /> Applicant Results
-        </Button>
-      </Link>
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/applicant-results"
+              ),
+            })}
+          >
+            <StarIcon /> Applicant Results
+          </Button>
+        </Link>
+      )}
+
+      {isAdmin && (
+        <Link href="/dashboard/applicant-results">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/applicant-results"
+              ),
+            })}
+          >
+            <StarIcon /> Applicant Results
+          </Button>
+        </Link>
+      )}
+
+      {isCAO && (
+        <Link href="/dashboard/applicant-results">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/applicant-results"
+              ),
+            })}
+          >
+            <StarIcon /> Applicant Results
+          </Button>
+        </Link>
       )}
 
       {/* <Link href="/dashboard/trash">

@@ -48,8 +48,9 @@ export function ShortListBrowser({
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
 
-  if (!isAdmin && !isCommissioner) {
+  if (!isAdmin && !isCommissioner && !isCAO) {
     router.push("/");
     return null;
   }
