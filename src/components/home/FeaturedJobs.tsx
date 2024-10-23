@@ -22,7 +22,7 @@ const FeaturedJobs = () => {
   return (
     <div className=" mt-45 pt-20 pb-12">
       <Heading
-        mainHeading="Featured Jobs"
+        mainHeading="Available Jobs"
         subHeading="Know your worth and find the job that qualify your life"
       />
       <div className="mt-12 w-[80%] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-12">
