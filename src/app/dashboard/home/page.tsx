@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import { useEffect, useState } from "react";
 import ChartOne from "@/components/Charts/ChartOne";
 import ChartTwo from "@/components/Charts/ChartTwo";
 import CardDataStats from "@/components/CardDataStats";
@@ -9,15 +9,29 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 
 
-const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
-  ssr: false,
-});
-
 const ECommerce: React.FC = () => {
+  const getAllRejected = useQuery(api.files.getAllRejected);
+  const getAllShortListed = useQuery(api.files.getAllShortListed);
+  const getFiles = useQuery(api.files.getFiles, {});
+
+  if (!getAllRejected || !getAllShortListed || !getFiles) {
+    return <div>Loading...</div>; 
+  }
+
+  const totalApplicants = getFiles.length || 0;
+  const shortListed = getAllShortListed.length || 0;
+  const notShortListed = getAllRejected.length || 0;
+  const appointed = 0; 
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Appointed" total="0" rate="0%" levelUp>
+        <CardDataStats 
+          title="Appointed" 
+          total="0" 
+          rate="0%" 
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -36,7 +50,12 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Applicant" total="2" rate="100%" levelUp>
+        <CardDataStats 
+          title="Total Applicant" 
+          total={totalApplicants}
+          rate={`${(totalApplicants > 0 ? 100 : 0)}%`}
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -59,7 +78,12 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Short Listed" total="1" rate="50%" levelUp>
+        <CardDataStats 
+          title="Short Listed" 
+          total={shortListed}
+          rate={`${((shortListed / totalApplicants) * 100).toFixed(2)}%`}
+          levelUp
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -78,7 +102,12 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Not Shortlisted " total="1" rate="50%" levelDown>
+        <CardDataStats 
+          title="Not Shortlisted " 
+          total={notShortListed}
+          rate={`${((notShortListed / totalApplicants) * 100).toFixed(2)}%`}
+          levelDown
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
