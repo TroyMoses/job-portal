@@ -15,7 +15,6 @@ export function TestBrowser({
   title: string;
   deletedOnly?: boolean;
 }) {
-
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
@@ -29,15 +28,16 @@ export function TestBrowser({
       ...test,
     })) ?? [];
 
-    // Ensure user is loaded
+  // Ensure user is loaded
   if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
 
-  if (!isAdmin && !isCommissioner) {
+  if (!isAdmin && !isCommissioner && !isCAO) {
     router.push("/");
     return null;
   }
@@ -46,11 +46,13 @@ export function TestBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-        <Link href={"/dashboard/addtest"}>
-          <Button type="button" className="text-sm px-2 py-1">
-            Upload Test
-          </Button>
-        </Link>
+        {isAdmin && (
+          <Link href={"/dashboard/addtest"}>
+            <Button type="button" className="text-sm px-2 py-1">
+              Upload Test
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div className="md:hidden flex flex-col gap-5 mb-8">
