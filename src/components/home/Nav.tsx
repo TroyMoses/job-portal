@@ -25,6 +25,7 @@ export default function Nav() {
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
 
   // if (isAdmin) {
   //   router.push("/dashboard/home");
@@ -79,7 +80,12 @@ export default function Nav() {
                   <Link href="/dashboard/home">Commissioner Dashboard</Link>
                 </Button>
               )}
-              {!isAdmin && !isCommissioner && (
+              {isCAO && (
+                <Button size={"sm"} variant={"outline"}>
+                  <Link href="/dashboard/home">CAO Dashboard</Link>
+                </Button>
+              )}
+              {!isAdmin && !isCommissioner && !isCAO && (
                 <Button size={"sm"} variant={"outline"}>
                 <Link href="/jobs/application-status">Applicant Dashboard</Link>
               </Button>

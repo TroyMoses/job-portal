@@ -123,7 +123,7 @@ export default defineSchema({
   files: defineTable({
     name: v.string(),
     type: fileTypes,
-    ucefileId: v.optional(v.id("_storage")),
+    imageId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
@@ -133,10 +133,11 @@ export default defineSchema({
     telephone: v.optional(v.string()),
     postalAddress: v.optional(v.string()),
     nationality: v.optional(v.string()),
+    nin: v.optional(v.string()),
     homeDistrict: v.optional(v.string()),
     subcounty: v.optional(v.string()),
     village: v.optional(v.string()),
-    residence: v.optional(residenceType),
+    residence: v.optional(v.string()),
     presentministry: v.optional(v.string()),
     presentpost: v.optional(v.string()),
     presentsalary: v.optional(v.string()),
@@ -153,7 +154,7 @@ export default defineSchema({
     available: v.optional(v.string()),
     referencerecord: v.optional(v.array(referenceType)),
     officerrecord: v.optional(v.array(officerType)),
-    consentment: v.optional(consentmentType),
+    consentment: v.optional(v.string()),
   }).index("by_shouldDelete", ["shouldDelete"]),
 
   shortlisted: defineTable({
