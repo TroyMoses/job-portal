@@ -88,9 +88,8 @@ export default function AddTest() {
   }
 
   const isAdmin = user?.publicMetadata?.role === "admin";
-  const isCommissioner = user?.publicMetadata?.role === "commissioner";
 
-  if (!isAdmin && !isCommissioner) {
+  if (!isAdmin) {
     router.push("/");
     return null;
   }

@@ -29,12 +29,14 @@ const ResultsPage = () => {
   }
 
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
+  const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner1 = user?.publicMetadata?.title === "commissioner1";
   const isCommissioner2 = user?.publicMetadata?.title === "commissioner2";
   const isCommissioner3 = user?.publicMetadata?.title === "commissioner3";
   const isCommissioner4 = user?.publicMetadata?.title === "commissioner4";
 
-  if (!isCommissioner) {
+  if (!isCommissioner && !isCAO && !isAdmin) {
     router.push("/");
     return null;
   }
