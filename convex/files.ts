@@ -33,16 +33,17 @@ export const createFile = mutation({
   args: {
     post: v.string(),
     name: v.string(),
-    ucefileId: v.id("_storage"),
+    imageId: v.id("_storage"),
     uacefileId: v.id("_storage"),
     userId: v.string(),
     type: fileTypes,
     dateOfBirth: v.string(),
-    residence: residenceType,
+    residence: v.string(),
     email: v.string(),
     telephone: v.string(),
     postalAddress: v.string(),
     nationality: v.string(),
+    nin: v.string(),
     homeDistrict: v.string(),
     subcounty: v.string(),
     village: v.string(),
@@ -62,7 +63,7 @@ export const createFile = mutation({
     available: v.string(),
     referencerecord: v.array(referenceType),
     officerrecord: v.array(officerType),
-    consentment: consentmentType,
+    consentment: v.string(),
   },
 
   async handler(ctx, args) {
@@ -90,7 +91,7 @@ export const createFile = mutation({
     await ctx.db.insert("files", {
       post: args.post,
       name: args.name,
-      ucefileId: args.ucefileId,
+      imageId: args.imageId,
       uacefileId: args.uacefileId,
       type: args.type,
       userId: userId,
@@ -99,6 +100,7 @@ export const createFile = mutation({
       telephone: args.telephone,
       postalAddress: args.postalAddress,
       nationality: args.nationality,
+      nin: args.nationality,
       homeDistrict: args.homeDistrict,
       subcounty: args.subcounty,
       village: args.village,
@@ -161,8 +163,8 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        uceFileUrl: file.ucefileId
-          ? await ctx.storage.getUrl(file.ucefileId)
+        imageUrl: file.imageId
+          ? await ctx.storage.getUrl(file.imageId)
           : null,
         uaceFileUrl: file.uacefileId
           ? await ctx.storage.getUrl(file.uacefileId)
@@ -172,6 +174,7 @@ export const getFiles = query({
         telephone: file.telephone,
         postalAddress: file.postalAddress,
         nationality: file.nationality,
+        nin: file.nin,
         homeDistrict: file.homeDistrict,
         subcounty: file.subcounty,
         village: file.village,
@@ -210,8 +213,8 @@ export const deleteAllFiles = internalMutation({
 
     await Promise.all(
       files.map(async (file) => {
-        if (file.ucefileId) {
-          await ctx.storage.delete(file.ucefileId);
+        if (file.imageId) {
+          await ctx.storage.delete(file.imageId);
         }
         if (file.uacefileId) {
           await ctx.storage.delete(file.uacefileId);

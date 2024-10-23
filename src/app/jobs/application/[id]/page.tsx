@@ -26,9 +26,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 const formSchema = z.object({
   post: z.string().min(1).max(200),
   name: z.string().min(1).max(200),
-  ucefile: z
+  image: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `UCE document is required`),
+    .refine((files) => files.length > 0, `Applicant photo is required`),
   uacefile: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `UACE document is required`),
@@ -37,12 +37,11 @@ const formSchema = z.object({
   telephone: z.string().min(1).max(200),
   postalAddress: z.string().min(1).max(500),
   nationality: z.string().min(1).max(200),
+  nin: z.string().min(1).max(200),
   homeDistrict: z.string().min(1).max(200),
   subcounty: z.string().min(1).max(200),
   village: z.string().min(1).max(200),
-  residence: z.enum(["temporary", "permanent"], {
-    required_error: "Residence is required",
-  }),
+  residence: z.string().min(1).max(100),
   presentministry: z.string().min(1).max(500),
   presentpost: z.string().min(1).max(500),
   presentsalary: z.string().min(1).max(300),
@@ -98,9 +97,7 @@ const formSchema = z.object({
       contact: z.string().min(1, "Contact is required"),
     })
   ),
-  consentment: z.enum(["yes", "no"], {
-    required_error: "Consentment is required",
-  }),
+  consentment: z.string().min(1).max(100),
 });
 
 const JobApplication = ({ params }: { params: { id: string } }) => {
@@ -115,7 +112,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     defaultValues: {
       post: "",
       name: "",
-      ucefile: undefined,
+      image: undefined,
       uacefile: undefined,
       dateOfBirth: "",
       email: "",
@@ -125,7 +122,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       homeDistrict: "",
       subcounty: "",
       village: "",
-      residence: "temporary",
+      residence: "",
       presentministry: "",
       presentpost: "",
       presentsalary: "",
@@ -142,7 +139,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       available: "",
       referencerecord: [{ name: "", address: "" }],
       officerrecord: [{ name: "", title: "", contact: "" }],
-      consentment: "yes",
+      consentment: "",
     },
   });
 
@@ -156,7 +153,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "schools",
   });
 
-   // Manage the "employmentrecord" array
+  // Manage the "employmentrecord" array
   const {
     fields: employmentFields,
     append: appendEmployment,
@@ -164,7 +161,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   } = useFieldArray({
     control: form.control,
     name: "employmentrecord",
-  })
+  });
 
   // Manage the "ucerecord" array
   const {
@@ -176,8 +173,8 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "ucerecord",
   });
 
-   // Manage the "uacerecord" array
-   const {
+  // Manage the "uacerecord" array
+  const {
     fields: uaceFields,
     append: appendUaceRecord,
     remove: removeUaceRecord,
@@ -206,7 +203,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     name: "officerrecord",
   });
 
-  const ucefileRef = form.register("ucefile");
+  const imageRef = form.register("image");
   const uacefileRef = form.register("uacefile");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -220,15 +217,15 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       return;
     }
 
-    // Upload UCE file
-    const ucePostUrl = await generateUploadUrl();
-    const uceFileType = values.ucefile[0].type;
-    const uceResult = await fetch(ucePostUrl, {
+    // Upload Image file
+    const imagePostUrl = await generateUploadUrl();
+    const imageFileType = values.image[0].type;
+    const imageResult = await fetch(imagePostUrl, {
       method: "POST",
-      headers: { "Content-Type": uceFileType },
-      body: values.ucefile[0],
+      headers: { "Content-Type": imageFileType },
+      body: values.image[0],
     });
-    const { storageId: uceStorageId } = await uceResult.json();
+    const { storageId: imageStorageId } = await imageResult.json();
 
     // Upload UACE file
     const uacePostUrl = await generateUploadUrl();
@@ -245,25 +242,29 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       "application/pdf": "pdf",
       "text/csv": "csv",
       "application/vnd.ms-powerpoint": "ppt",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation": "pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        "pptx",
       "application/msword": "doc",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        "docx",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        "xlsx",
     } as Record<string, Doc<"files">["type"]>;
 
     try {
       await createFile({
         post: values.post,
         name: values.name,
-        ucefileId: uceStorageId,
+        imageId: imageStorageId,
         uacefileId: uaceStorageId,
         userId: user?.user?.id as Id<"users">,
-        type: types[uceFileType],
+        type: types[imageFileType],
         dateOfBirth: values.dateOfBirth,
         email: values.email,
         telephone: values.telephone,
         postalAddress: values.postalAddress,
         nationality: values.nationality,
+        nin: values.nin,
         homeDistrict: values.homeDistrict,
         subcounty: values.subcounty,
         village: values.village,
@@ -328,7 +329,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className="mt-4 w-[80%] mx-auto">
-    
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           APPLICATION FOR APPOINTMENT TO THE UGANDA PUBLIC SERVICE
         </h1>
@@ -366,6 +366,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Upload your Photo</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...imageRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -420,7 +434,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     )}
                   />
 
-                  {/* Date of Birth Field */}
                   <FormField
                     control={form.control}
                     name="telephone"
@@ -465,13 +478,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     )}
                   />
 
-                  {/* Date of Birth Field */}
                   <FormField
                     control={form.control}
-                    name="homeDistrict"
+                    name="nin"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Home District</FormLabel>
+                        <FormLabel>NIN Number</FormLabel>
                         <FormControl>
                           <Input className="w-[500px]" {...field} />
                         </FormControl>
@@ -480,6 +492,19 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     )}
                   />
                 </div>
+                <FormField
+                  control={form.control}
+                  name="homeDistrict"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Home District</FormLabel>
+                      <FormControl>
+                        <Input className="w-[500px]" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="flex justify-between w-full">
                   <FormField
@@ -496,7 +521,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                     )}
                   />
 
-                  {/* Date of Birth Field */}
                   <FormField
                     control={form.control}
                     name="village"
@@ -890,20 +914,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="ucefile"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel>Upload your Image</FormLabel>
-                      <FormControl>
-                        <Input type="file" {...ucefileRef} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="uaceyear"
                   render={({ field }) => (
                     <FormItem>
@@ -975,8 +985,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   name="uacefile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Have all your Docements attached here{" "}
-                      {"["}ACADEMIC DOCUMENTS{"]"}? </FormLabel>
+                      <FormLabel>
+                        Have all your Docements attached here {"["}ACADEMIC
+                        DOCUMENTS{"]"}?{" "}
+                      </FormLabel>
                       <FormControl>
                         <Input type="file" {...uacefileRef} />
                       </FormControl>
