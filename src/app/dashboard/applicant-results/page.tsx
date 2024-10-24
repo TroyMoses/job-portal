@@ -9,14 +9,18 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { AddScoreDialog } from "@/components/Dialog";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useToast } from "@/components/ui/use-toast";
 // import { AddScoreDialog } from "./AddScoreDialog";
 
 const ResultsPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
+  const { toast } = useToast();
   
   // Fetch all results
   const results = useQuery(api.results.getAllResults);
+
+  const toggleAppointed = useMutation(api.results.toggleAppointed);
   
   const [openDialog, setOpenDialog] = useState<{
     applicantId: Id<"results">;
@@ -67,8 +71,8 @@ const ResultsPage = () => {
             <TableHead>Com{"("}ii{")"}</TableHead>
             <TableHead>Com{"("}iii{")"}</TableHead>
             <TableHead>Com{"("}iv{")"}</TableHead>
-            <TableHead>Interview Average</TableHead>
-            <TableHead>Overall Average</TableHead>
+{/*             <TableHead>Interview Average</TableHead> */}
+{/*             <TableHead>Overall Average</TableHead> */}
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -82,8 +86,8 @@ const ResultsPage = () => {
               <TableCell>{result.commTwo ?? '0'}%</TableCell>
               <TableCell>{result.commThree ?? '0'}%</TableCell>
               <TableCell>{result.commFour ?? '0'}%</TableCell>
-              <TableCell>{result.oralInterviewAverage ?? '0'}%</TableCell>
-              <TableCell>{result.overallAverageScore ?? '0'}%</TableCell>
+{/*               <TableCell>{result.oralInterviewAverage ?? '0'}%</TableCell> */}
+{/*               <TableCell>{result.overallAverageScore ?? '0'}%</TableCell> */}
               <TableCell>
                 {isCommissioner1 && result.commOne === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commOne")}>
@@ -105,6 +109,18 @@ const ResultsPage = () => {
                     Add Score
                   </Button>
                 )}
+              <Button onClick={() => {
+                    toggleAppointed({
+                      userId: result.userId,
+                    });
+                    toast({
+                      variant: "success",
+                      title: "Applicant appointed",
+                      description: "You can now view the appointed applicants in the appointed table",
+                    });
+                  }}>
+                    Appoint
+                  </Button>
               </TableCell>
             </TableRow>
           ))}
