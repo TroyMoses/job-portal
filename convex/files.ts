@@ -268,7 +268,6 @@ export const toggleShortlisted = mutation({
         userId: args.userId,
       });
     } else {
-      await ctx.db.delete(shortlisted._id);
     }
   },
 });
@@ -286,7 +285,6 @@ export const toggleRejected = mutation({
         userId: args.userId,
       });
     } else {
-      await ctx.db.delete(rejected._id);
     }
   },
 });
