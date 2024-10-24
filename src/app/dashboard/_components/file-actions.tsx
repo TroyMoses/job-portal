@@ -53,7 +53,7 @@ export function FileCardActions({
               className="flex gap-1 items-center cursor-pointer"
             >
               <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Approve
+                <StarIcon className="w-4 h-4" /> Shortlist
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -65,7 +65,7 @@ export function FileCardActions({
               className="flex gap-1 items-center cursor-pointer"
             >
               <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Reject
+                <StarHalf className="w-4 h-4" /> Don't Shortlist
               </div>
             </DropdownMenuItem>
           </>
