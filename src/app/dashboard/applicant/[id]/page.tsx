@@ -213,7 +213,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
             type="button"
             className="text-sm px-2 py-1"
           >
-            Approve Application
+            Shortlist
           </Button>
           <Button
             onClick={() => {
@@ -226,7 +226,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
             type="button"
             className="text-sm px-2 py-1"
           >
-            Reject Application
+            Not Shortlist
           </Button>
         </div>
       </div>
