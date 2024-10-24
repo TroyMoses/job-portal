@@ -28,15 +28,19 @@ const JobDetails = ({ params }: { params: { id: string } }) => {
         <div className="flex-[0.7]">
           <JobCard job={singleJob!} />
         </div>
+        <SignedIn>
         <ApplyButton
             // @ts-ignore
             id={params.id}
           />
+          </SignedIn>
+        <SignedOut>
           <SignInButton>
             <button className="px-8 py-3 bg-emerald-600 rounded-lg text-white">
               Sign Up To Apply
             </button>
           </SignInButton>
+          </SignedOut>
       </div>
       <div className="mt-5 w-[80%] mx-auto flex flex-col gap-5">
         <div>
