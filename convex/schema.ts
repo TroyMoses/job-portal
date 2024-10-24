@@ -122,7 +122,7 @@ export const resultType = v.object({
 export default defineSchema({
   files: defineTable({
     name: v.string(),
-    type: fileTypes,
+    type: v.optional(fileTypes),
     imageId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
