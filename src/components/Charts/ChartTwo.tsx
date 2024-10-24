@@ -11,7 +11,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 const options: ApexOptions = {
-  colors: ["#3C50E0", "#80CAEE"],
+  colors: ["#09E037FF", "#80CAEE"],
   chart: {
     fontFamily: "Satoshi, sans-serif",
     type: "bar",
@@ -42,7 +42,7 @@ const options: ApexOptions = {
     bar: {
       horizontal: false,
       borderRadius: 0,
-      columnWidth: "25%",
+      columnWidth: "50%",
       borderRadiusApplication: "end",
       borderRadiusWhenStacked: "last",
     },
@@ -80,10 +80,13 @@ interface ChartTwoState {
 const ChartTwo: React.FC = () => {
   const getAllRejected = useQuery(api.files.getAllRejected);
   const getAllShortListed = useQuery(api.files.getAllShortListed);
+  const getFiles = useQuery(api.files.getFiles, {});
 
   const [series, setSeries] = useState<{ name: string; data: number[] }[]>([
     { name: "Shortlisted", data: [] },
     { name: "Rejected", data: [] },
+    { name: "Applicants", data: [] },
+
   ]);
 
   const [categories, setCategories] = useState<string[]>([]);
@@ -93,16 +96,18 @@ const ChartTwo: React.FC = () => {
       try {
         const shortlistedData = getAllShortListed || [];
         const rejectedData = getAllRejected || [];
+        const getFilesData = getFiles || [];
 
         const shortlistedByWeek = processWeeklyData(shortlistedData);
         const rejectedByWeek = processWeeklyData(rejectedData);
+        const applicantsByWeek = processWeeklyData(getFilesData);
 
-        const weeks = await Object.keys(shortlistedByWeek);
+        const weeks = await Object.keys(applicantsByWeek);
 
         setCategories(weeks);
         setSeries([
+          { name: "Applicants", data: weeks.map(week => shortlistedByWeek[week] || 0) },
           { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
-          { name: "Unsuccessful", data: weeks.map(week => rejectedByWeek[week] || 0) },
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -110,7 +115,7 @@ const ChartTwo: React.FC = () => {
     };
 
     fetchData();
-  }, [getAllRejected, getAllShortListed]);
+  }, [getAllRejected, getAllShortListed, getFiles]);
 
   const processWeeklyData = (data: any[]) => {
     const weeklyData: Record<string, number> = {};
