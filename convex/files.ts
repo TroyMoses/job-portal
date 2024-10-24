@@ -128,6 +128,7 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     rejectedOnly: v.optional(v.boolean()),
+    appointedOnly: v.optional(v.boolean()),
     shortlisted: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
   },
@@ -141,6 +142,16 @@ export const getFiles = query({
 
       files = files.filter((file) =>
         shortlisted.some((shortlist) => shortlist.userId === file.userId)
+      );
+    }
+
+    if (args.appointedOnly) {
+      const appointed = await ctx.db
+        .query("appointed")
+        .collect();
+
+      files = files.filter((file) =>
+        appointed.some((appointed) => appointed.userId === file.userId)
       );
     }
 
