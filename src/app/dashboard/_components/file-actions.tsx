@@ -65,7 +65,7 @@ export function FileCardActions({
               className="flex gap-1 items-center cursor-pointer"
             >
               <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Don't Shortlist
+                <StarHalf className="w-4 h-4" /> Don{"'"}t Shortlist
               </div>
             </DropdownMenuItem>
           </>
