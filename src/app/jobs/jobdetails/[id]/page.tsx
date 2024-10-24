@@ -9,12 +9,18 @@ import { Loader2 } from "lucide-react";
 import { api } from "../../../../../convex/_generated/api";
 
 const JobDetails = ({ params }: { params: { id: string } }) => {
-
+  const { user, isLoaded: userLoaded } = useUser();
+  
   const singleJob = useQuery(
     api.jobs.getJobById,
     // @ts-ignore
     { jobId: params.id }
   );
+
+  if (!userLoaded) {
+    return <p>Loading user data, make sure you are logged in..</p>;
+  }
+
 
   const isLoading = singleJob === undefined;
 

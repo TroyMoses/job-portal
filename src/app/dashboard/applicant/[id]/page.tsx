@@ -107,7 +107,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* UCE and UACE Files */}
-        <h2 className="mt-10 mb-1 text-2xl font-semibold">
+        {/* <h2 className="mt-10 mb-1 text-2xl font-semibold">
           UCE and UACE Documents
         </h2>
         <div className=" grid grid-cols-2 gap-5">
@@ -120,7 +120,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
                 </button>
               </Link>
             </div>
-          )}
+          )} 
 
           {file.uaceFileUrl && (
             <div>
@@ -132,7 +132,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
               </Link>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Educational Record */}
         <h2 className="mt-10 mb-1 text-2xl font-semibold">Education Record</h2>

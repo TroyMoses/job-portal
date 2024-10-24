@@ -209,3 +209,14 @@ export const toggleAppointed = mutation({
     }
   },
 });
+
+export const getAllAppointed = query({
+  args: {},
+  async handler(ctx, args) {
+    const appointed = await ctx.db
+      .query("appointed")
+      .collect();
+
+    return appointed;
+  },
+});

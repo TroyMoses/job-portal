@@ -20,7 +20,10 @@ const ResultsPage = () => {
   // Fetch all results
   const results = useQuery(api.results.getAllResults);
 
+
+
   const toggleAppointed = useMutation(api.results.toggleAppointed);
+
   
   const [openDialog, setOpenDialog] = useState<{
     applicantId: Id<"results">;
@@ -67,12 +70,13 @@ const ResultsPage = () => {
             <TableHead>Name</TableHead>
             <TableHead>Post</TableHead>
             <TableHead>Aptitude</TableHead>
-            <TableHead>Com{"("}i{")"}</TableHead>
-            <TableHead>Com{"("}ii{")"}</TableHead>
-            <TableHead>Com{"("}iii{")"}</TableHead>
-            <TableHead>Com{"("}iv{")"}</TableHead>
-{/*             <TableHead>Interview Average</TableHead> */}
-{/*             <TableHead>Overall Average</TableHead> */}
+
+            <TableHead>Interview{"("}i{")"}</TableHead>
+            <TableHead>Interview{"("}ii{")"}</TableHead>
+            <TableHead>Interview{"("}iii{")"}</TableHead>
+            <TableHead>Interview{"("}iv{")"}</TableHead>
+            {/* <TableHead>Interview Average</TableHead>
+            <TableHead>Overall Average</TableHead> */}
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -86,8 +90,9 @@ const ResultsPage = () => {
               <TableCell>{result.commTwo ?? '0'}%</TableCell>
               <TableCell>{result.commThree ?? '0'}%</TableCell>
               <TableCell>{result.commFour ?? '0'}%</TableCell>
-{/*               <TableCell>{result.oralInterviewAverage ?? '0'}%</TableCell> */}
-{/*               <TableCell>{result.overallAverageScore ?? '0'}%</TableCell> */}
+              {/* <TableCell>{result.oralInterviewAverage ?? '0'}%</TableCell>
+              <TableCell>{result.overallAverageScore ?? '0'}%</TableCell> */}
+
               <TableCell>
                 {isCommissioner1 && result.commOne === undefined && (
                   <Button onClick={() => handleOpenDialog(result._id, "commOne")}>
@@ -109,7 +114,9 @@ const ResultsPage = () => {
                     Add Score
                   </Button>
                 )}
-              <Button onClick={() => {
+
+                
+                  <Button onClick={() => {
                     toggleAppointed({
                       userId: result.userId,
                     });
@@ -121,6 +128,7 @@ const ResultsPage = () => {
                   }}>
                     Appoint
                   </Button>
+
               </TableCell>
             </TableRow>
           ))}
