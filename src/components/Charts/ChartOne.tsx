@@ -116,7 +116,7 @@ const ChartOne = () => {
 
   const [series, setSeries] = useState<{ name: string; data: number[] }[]>([
     { name: "Shortlisted", data: [] },
-    { name: "Rejected", data: [] },
+    { name: "Not Shortlisted", data: [] },
     { name: "Applicants", data: [] },
   ]);
 
@@ -138,7 +138,7 @@ const ChartOne = () => {
         setCategories(weeks);
         setSeries([
           { name: "Shortlisted", data: weeks.map(week => shortlistedByWeek[week] || 0) },
-          { name: "Rejected", data: weeks.map(week => rejectedByWeek[week] || 0) },
+          { name: "Not Shortlisted", data: weeks.map(week => rejectedByWeek[week] || 0) },
           { name: "Applicants", data: weeks.map(week => applicantsByWeek[week] || 0) },
         ]);
       } catch (error) {
