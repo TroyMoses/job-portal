@@ -161,6 +161,10 @@ export default defineSchema({
     userId: v.id("users"),
   }).index("by_userId", ["userId"]),
 
+  appointed: defineTable({
+    userId: v.id("users"),
+  }).index("by_userId", ["userId"]),
+
   rejected: defineTable({
     userId: v.id("users"),
   }).index("by_userId", ["userId"]),
