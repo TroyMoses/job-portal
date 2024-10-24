@@ -122,7 +122,7 @@ export const resultType = v.object({
 export default defineSchema({
   files: defineTable({
     name: v.string(),
-    type: fileTypes,
+    type: v.optional(fileTypes),
     imageId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
     userId: v.id("users"),
@@ -158,6 +158,10 @@ export default defineSchema({
   }).index("by_shouldDelete", ["shouldDelete"]),
 
   shortlisted: defineTable({
+    userId: v.id("users"),
+  }).index("by_userId", ["userId"]),
+
+  appointed: defineTable({
     userId: v.id("users"),
   }).index("by_userId", ["userId"]),
 

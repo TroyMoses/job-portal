@@ -36,29 +36,29 @@ export const createFile = mutation({
     imageId: v.id("_storage"),
     uacefileId: v.id("_storage"),
     userId: v.string(),
-    type: fileTypes,
+    type: v.optional(fileTypes),
     dateOfBirth: v.string(),
     residence: v.string(),
     email: v.string(),
     telephone: v.string(),
-    postalAddress: v.string(),
+    postalAddress: v.optional(v.string()),
     nationality: v.string(),
     nin: v.string(),
     homeDistrict: v.string(),
     subcounty: v.string(),
     village: v.string(),
-    presentministry: v.string(),
-    presentpost: v.string(),
-    presentsalary: v.string(),
-    termsofemployment: v.string(),
+    presentministry: v.optional(v.string()),
+    presentpost: v.optional(v.string()),
+    presentsalary: v.optional(v.string()),
+    termsofemployment: v.optional(v.string()),
     maritalstatus: v.string(),
     children: v.string(),
     schools: v.array(schoolType),
     employmentrecord: v.array(employmentType),
     uceyear: v.string(),
     ucerecord: v.array(uceType),
-    uaceyear: v.string(),
-    uacerecord: v.array(uaceType),
+    uaceyear: v.optional(v.string()),
+    uacerecord: v.optional(v.array(uaceType)),
     conviction: v.string(),
     available: v.string(),
     referencerecord: v.array(referenceType),
@@ -128,6 +128,7 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     rejectedOnly: v.optional(v.boolean()),
+    appointedOnly: v.optional(v.boolean()),
     shortlisted: v.optional(v.boolean()),
     deletedOnly: v.optional(v.boolean()),
   },
@@ -141,6 +142,16 @@ export const getFiles = query({
 
       files = files.filter((file) =>
         shortlisted.some((shortlist) => shortlist.userId === file.userId)
+      );
+    }
+
+    if (args.appointedOnly) {
+      const appointed = await ctx.db
+        .query("appointed")
+        .collect();
+
+      files = files.filter((file) =>
+        appointed.some((appointed) => appointed.userId === file.userId)
       );
     }
 
@@ -268,7 +279,6 @@ export const toggleShortlisted = mutation({
         userId: args.userId,
       });
     } else {
-      await ctx.db.delete(shortlisted._id);
     }
   },
 });
@@ -286,7 +296,6 @@ export const toggleRejected = mutation({
         userId: args.userId,
       });
     } else {
-      await ctx.db.delete(rejected._id);
     }
   },
 });

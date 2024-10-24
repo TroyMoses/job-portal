@@ -192,3 +192,20 @@ export const updateInterviewScore = mutation({
     }
   },
 });
+
+export const toggleAppointed = mutation({
+  args: { userId: v.id("users" )},
+  async handler(ctx, args) {
+
+    const appointed = await ctx.db
+      .query("appointed")
+      .first();
+
+    if (!appointed) {
+      await ctx.db.insert("appointed", {
+        userId: args.userId,
+      });
+    } else {
+    }
+  },
+});

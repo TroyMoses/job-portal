@@ -146,6 +146,52 @@ export function SideNav() {
         </Link>
       )}
 
+      {isCommissioner && (
+        <Link href="/dashboard/appointed">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/appointed"
+              ),
+            })}
+          >
+            <StarIcon /> Appointed Applicants
+          </Button>
+        </Link>
+      )}
+
+      {isAdmin && (
+        <Link href="/dashboard/appointed">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/appointed"
+              ),
+            })}
+          >
+            <StarIcon /> Appointed Applicants
+          </Button>
+        </Link>
+      )}
+
+      {isCAO && (
+        <Link href="/dashboard/appointed">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes(
+                "/dashboard/appointed"
+              ),
+            })}
+          >
+            <StarIcon /> Appointed Applicants
+          </Button>
+        </Link>
+      )}
+
+
       {/* <Link href="/dashboard/trash">
         <Button
           variant={"link"}
