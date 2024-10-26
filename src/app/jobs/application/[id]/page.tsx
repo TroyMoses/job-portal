@@ -29,13 +29,21 @@ const formSchema = z.object({
   image: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Applicant photo is required`),
-  uacefile: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `UACE document is required`),
+  ucefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  fileone: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filetwo: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filethree: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filefour: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filefive: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filesix: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  fileseven: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  fileeight: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  filenine: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  fileten: z.custom<FileList>((val) => val instanceof FileList, "Required"),
   dateOfBirth: z.string().min(1).max(200),
   email: z.string().min(1).max(200),
   telephone: z.string().min(1).max(200),
-  postalAddress: z.string().min(1).max(500),
+  postalAddress: z.string().max(500),
   nationality: z.string().min(1).max(200),
   nin: z.string().min(1).max(200),
   homeDistrict: z.string().min(1).max(200),
@@ -43,11 +51,12 @@ const formSchema = z.object({
   village: z.string().min(1).max(200),
   residence: z.string().min(1).max(100),
   presentministry: z.string().min(1).max(500),
+  registrationnumber: z.string().max(500),
   presentpost: z.string().min(1).max(500),
   presentsalary: z.string().min(1).max(300),
   termsofemployment: z.string().min(1).max(100),
   maritalstatus: z.string().min(1).max(100),
-  children: z.string().min(1).max(100),
+  children: z.string().max(100),
   schools: z.array(
     z.object({
       year: z
@@ -113,7 +122,17 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       post: "",
       name: "",
       image: undefined,
-      uacefile: undefined,
+      ucefile: undefined,
+      fileone: undefined,
+      filetwo: undefined,
+      filethree: undefined,
+      filefour: undefined,
+      filefive: undefined,
+      filesix: undefined,
+      fileseven: undefined,
+      fileeight: undefined,
+      filenine: undefined,
+      fileten: undefined,
       dateOfBirth: "",
       email: "",
       telephone: "",
@@ -124,6 +143,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       village: "",
       residence: "",
       presentministry: "",
+      registrationnumber: "",
       presentpost: "",
       presentsalary: "",
       termsofemployment: "",
@@ -204,7 +224,17 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   });
 
   const imageRef = form.register("image");
-  const uacefileRef = form.register("uacefile");
+  const ucefileRef = form.register("ucefile");
+  const fileoneRef = form.register("fileone");
+  const filetwoRef = form.register("filetwo");
+  const filethreeRef = form.register("filethree");
+  const filefourRef = form.register("filefour");
+  const filefiveRef = form.register("filefive");
+  const filesixRef = form.register("filesix");
+  const filesevenRef = form.register("fileseven");
+  const fileeightRef = form.register("fileeight");
+  const filenineRef = form.register("filenine");
+  const filetenRef = form.register("fileten");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user.isSignedIn) {
@@ -227,15 +257,145 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     });
     const { storageId: imageStorageId } = await imageResult.json();
 
-    // Upload UACE file
-    const uacePostUrl = await generateUploadUrl();
-    const uaceFileType = values.uacefile[0].type;
-    const uaceResult = await fetch(uacePostUrl, {
+    // Upload UCE file
+    const ucePostUrl = await generateUploadUrl();
+    const uceFileType = values.ucefile[0].type;
+    const uceResult = await fetch(ucePostUrl, {
       method: "POST",
-      headers: { "Content-Type": uaceFileType },
-      body: values.uacefile[0],
+      headers: { "Content-Type": uceFileType },
+      body: values.ucefile[0],
     });
-    const { storageId: uaceStorageId } = await uaceResult.json();
+    const { storageId: uceStorageId } = await uceResult.json();
+
+    let fileoneStorageId;
+    if (values.fileone && values.fileone.length > 0) {
+      // Upload fileone
+      const fileonePostUrl = await generateUploadUrl();
+      const fileoneType = values.fileone[0].type;
+      const fileoneResult = await fetch(fileonePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": fileoneType },
+        body: values.fileone[0],
+      });
+      ({ storageId: fileoneStorageId } = await fileoneResult.json());
+    }
+
+    let filetwoStorageId;
+    if (values.filetwo && values.filetwo.length > 0) {
+      // Upload filetwo
+      const filetwoPostUrl = await generateUploadUrl();
+      const filetwoType = values.filetwo[0].type;
+      const filetwoResult = await fetch(filetwoPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filetwoType },
+        body: values.filetwo[0],
+      });
+      ({ storageId: filetwoStorageId } = await filetwoResult.json());
+    }
+
+    let filethreeStorageId;
+    if (values.filethree && values.filethree.length > 0) {
+      // Upload filethree
+      const filethreePostUrl = await generateUploadUrl();
+      const filethreeType = values.filethree[0].type;
+      const filethreeResult = await fetch(filethreePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filethreeType },
+        body: values.filethree[0],
+      });
+      ({ storageId: filethreeStorageId } = await filethreeResult.json());
+    }
+
+    let filefourStorageId;
+    if (values.filefour && values.filefour.length > 0) {
+      // Upload filefour
+      const filefourPostUrl = await generateUploadUrl();
+      const filefourType = values.filefour[0].type;
+      const filefourResult = await fetch(filefourPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filefourType },
+        body: values.filefour[0],
+      });
+      ({ storageId: filefourStorageId } = await filefourResult.json());
+    }
+
+    let filefiveStorageId;
+    if (values.filefive && values.filefive.length > 0) {
+      // Upload filefive
+      const filefivePostUrl = await generateUploadUrl();
+      const filefiveType = values.filefive[0].type;
+      const filefiveResult = await fetch(filefivePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filefiveType },
+        body: values.filefive[0],
+      });
+      ({ storageId: filefiveStorageId } = await filefiveResult.json());
+    }
+
+    let filesixStorageId;
+    if (values.filesix && values.filesix.length > 0) {
+      // Upload filesix
+      const filesixPostUrl = await generateUploadUrl();
+      const filesixType = values.filesix[0].type;
+      const filesixResult = await fetch(filesixPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filesixType },
+        body: values.filesix[0],
+      });
+      ({ storageId: filesixStorageId } = await filesixResult.json());
+    }
+
+    let filesevenStorageId;
+    if (values.fileseven && values.fileseven.length > 0) {
+      // Upload fileseven
+      const filesevenPostUrl = await generateUploadUrl();
+      const filesevenType = values.fileseven[0].type;
+      const filesevenResult = await fetch(filesevenPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filesevenType },
+        body: values.fileseven[0],
+      });
+      ({ storageId: filesevenStorageId } = await filesevenResult.json());
+    }
+
+    let fileeightStorageId;
+    if (values.fileeight && values.fileeight.length > 0) {
+      // Upload fileeight
+      const fileeightPostUrl = await generateUploadUrl();
+      const fileeightType = values.fileeight[0].type;
+      const fileeightResult = await fetch(fileeightPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": fileeightType },
+        body: values.fileeight[0],
+      });
+      ({ storageId: fileeightStorageId } = await fileeightResult.json());
+    }
+
+    let filenineStorageId;
+    if (values.filenine && values.filenine.length > 0) {
+      // Upload filenine
+      const fileninePostUrl = await generateUploadUrl();
+      const filenineType = values.filenine[0].type;
+      const filenineResult = await fetch(fileninePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filenineType },
+        body: values.filenine[0],
+      });
+      ({ storageId: filenineStorageId } = await filenineResult.json());
+    }
+
+    let filetenStorageId;
+    if (values.fileten && values.fileten.length > 0) {
+      // Upload fileten
+      const filetenPostUrl = await generateUploadUrl();
+      const filetenType = values.fileten[0].type;
+      const filetenResult = await fetch(filetenPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": filetenType },
+        body: values.fileten[0],
+      });
+      ({ storageId: filetenStorageId } = await filetenResult.json());
+    }
 
     const types = {
       "image/png": "image",
@@ -256,7 +416,17 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         post: values.post,
         name: values.name,
         imageId: imageStorageId,
-        uacefileId: uaceStorageId,
+        ucefileId: uceStorageId,
+        fileoneId: fileoneStorageId,
+        filetwoId: filetwoStorageId,
+        filethreeId: filethreeStorageId,
+        filefourId: filefourStorageId,
+        filefiveId: filefiveStorageId,
+        filesixId: filesixStorageId,
+        filesevenId: filesevenStorageId,
+        fileeightId: fileeightStorageId,
+        filenineId: filenineStorageId,
+        filetenId: filetenStorageId,
         userId: user?.user?.id as Id<"users">,
         type: types[imageFileType],
         dateOfBirth: values.dateOfBirth,
@@ -270,6 +440,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         village: values.village,
         residence: values.residence,
         presentministry: values.presentministry,
+        registrationnumber: values.registrationnumber,
         presentpost: values.presentpost,
         presentsalary: values.presentsalary,
         termsofemployment: values.termsofemployment,
@@ -329,8 +500,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className="mt-4 w-[80%] mx-auto">
-
-      <h1 className="text-[20px] mt-8 mb-2 font-semibold">
+        <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           PUBLIC SERVICE FORM (PSF-3)
         </h1>
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
@@ -400,7 +570,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                           Full name {"("}Surname first in capital letters{")"}*
                         </FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -415,7 +585,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Date of Birth*</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -431,7 +601,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -445,7 +615,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Telephone Number</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -475,7 +645,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Nationality</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -489,7 +659,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>NIN Number</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -518,7 +688,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Sub-county</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -532,7 +702,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Village</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -579,7 +749,24 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Employer*
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} required/>
+                        <Input {...field} required />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="registrationnumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Registration Number{"("}Mandatory for teachers and
+                        health workers{")"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -595,7 +782,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Present post and date appointment to it
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} required/>
+                        <Input {...field} required />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -918,6 +1105,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
+                  name="ucefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>UCE Document</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...ucefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="uaceyear"
                   render={({ field }) => (
                     <FormItem>
@@ -983,23 +1184,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                 >
                   Add Another Record
                 </Button>
-
-                <FormField
-                  control={form.control}
-                  name="uacefile"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel>
-                        Have all your Docements attached here {"["}ACADEMIC
-                        DOCUMENTS{"]"}?{" "}
-                      </FormLabel>
-                      <FormControl>
-                        <Input type="file" {...uacefileRef} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 <FormField
                   control={form.control}
@@ -1171,6 +1355,151 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   Add Another Record
                 </Button>
 
+                <h1 className="font-semibold">
+                  Have all your Docements attached here {"["}ACADEMIC DOCUMENTS
+                  {"]"}? Upload a maximum of 10 documents{"("}optional{")"}
+                </h1>
+
+                <FormField
+                  control={form.control}
+                  name="fileone"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 1</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...fileoneRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filetwo"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 2</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filetwoRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filethree"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 3</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filethreeRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filefour"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 4</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filefourRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filefive"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 5</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filefiveRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filesix"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 6</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filesixRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="fileseven"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 7</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filesevenRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="fileeight"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 8</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...fileeightRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="filenine"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 9</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filenineRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="fileten"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Document 10</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...filetenRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="consentment"
@@ -1211,12 +1540,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
               </form>
             </Form>
           </div>
-
-          <p className="font-semibold italic mt-10">
-            N.B: Conviction for a criminal offence will not necessarily prevent
-            an applicant from being employed in the Public Service but giving of
-            false information in that context is an offence.
-          </p>
         </div>
       </div>
     </div>

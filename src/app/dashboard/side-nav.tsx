@@ -90,16 +90,18 @@ export function SideNav() {
         <StarIcon /> Applicant
       </Button>
 
-      <Link href="/dashboard/aptitude-test">
-        <Button
-          variant={"link"}
-          className={clsx("flex gap-2", {
-            "text-blue-500": pathname.includes("/dashboard/aptitude-test"),
-          })}
-        >
-          <StarIcon /> Aptitude Test
-        </Button>
-      </Link>
+      {isAdmin && (
+        <Link href="/dashboard/aptitude-test">
+          <Button
+            variant={"link"}
+            className={clsx("flex gap-2", {
+              "text-blue-500": pathname.includes("/dashboard/aptitude-test"),
+            })}
+          >
+            <StarIcon /> Aptitude Test
+          </Button>
+        </Link>
+      )}
 
       {isCommissioner && (
         <Link href="/dashboard/applicant-results">
@@ -190,7 +192,6 @@ export function SideNav() {
           </Button>
         </Link>
       )}
-
 
       {/* <Link href="/dashboard/trash">
         <Button

@@ -14,8 +14,6 @@ import {
   schoolType,
   uaceType,
   uceType,
-  residenceType,
-  consentmentType,
 } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
@@ -34,7 +32,17 @@ export const createFile = mutation({
     post: v.string(),
     name: v.string(),
     imageId: v.id("_storage"),
-    uacefileId: v.id("_storage"),
+    ucefileId: v.id("_storage"),
+    fileoneId: v.optional(v.id("_storage")),
+    filetwoId: v.optional(v.id("_storage")),
+    filethreeId: v.optional(v.id("_storage")),
+    filefourId: v.optional(v.id("_storage")),
+    filefiveId: v.optional(v.id("_storage")),
+    filesixId: v.optional(v.id("_storage")),
+    filesevenId: v.optional(v.id("_storage")),
+    fileeightId: v.optional(v.id("_storage")),
+    filenineId: v.optional(v.id("_storage")),
+    filetenId: v.optional(v.id("_storage")),
     userId: v.string(),
     type: v.optional(fileTypes),
     dateOfBirth: v.string(),
@@ -48,6 +56,7 @@ export const createFile = mutation({
     subcounty: v.string(),
     village: v.string(),
     presentministry: v.optional(v.string()),
+    registrationnumber: v.optional(v.string()),
     presentpost: v.optional(v.string()),
     presentsalary: v.optional(v.string()),
     termsofemployment: v.optional(v.string()),
@@ -92,9 +101,19 @@ export const createFile = mutation({
       post: args.post,
       name: args.name,
       imageId: args.imageId,
-      uacefileId: args.uacefileId,
+      ucefileId: args.ucefileId,
+      fileoneId: args.fileoneId,
+      filetwoId: args.filetwoId,
+      filethreeId: args.filethreeId,
+      filefourId: args.filefourId,
+      filefiveId: args.filefiveId,
+      filesixId: args.filesixId,
+      fileeightId: args.fileeightId,
+      filenineId: args.filenineId,
+      filetenId: args.filetenId,
       type: args.type,
       userId: userId,
+      dateOfBirth: args.dateOfBirth,
       residence: args.residence,
       email: args.email,
       telephone: args.telephone,
@@ -105,6 +124,7 @@ export const createFile = mutation({
       subcounty: args.subcounty,
       village: args.village,
       presentministry: args.presentministry,
+      registrationnumber: args.registrationnumber,
       presentpost: args.presentpost,
       presentsalary: args.presentsalary,
       termsofemployment: args.termsofemployment,
@@ -136,9 +156,7 @@ export const getFiles = query({
     let files = await ctx.db.query("files").collect();
 
     if (args.shortlisted) {
-      const shortlisted = await ctx.db
-        .query("shortlisted")
-        .collect();
+      const shortlisted = await ctx.db.query("shortlisted").collect();
 
       files = files.filter((file) =>
         shortlisted.some((shortlist) => shortlist.userId === file.userId)
@@ -146,9 +164,7 @@ export const getFiles = query({
     }
 
     if (args.appointedOnly) {
-      const appointed = await ctx.db
-        .query("appointed")
-        .collect();
+      const appointed = await ctx.db.query("appointed").collect();
 
       files = files.filter((file) =>
         appointed.some((appointed) => appointed.userId === file.userId)
@@ -156,9 +172,7 @@ export const getFiles = query({
     }
 
     if (args.rejectedOnly) {
-      const rejected = await ctx.db
-        .query("rejected")
-        .collect();
+      const rejected = await ctx.db.query("rejected").collect();
 
       files = files.filter((file) =>
         rejected.some((rejected) => rejected.userId === file.userId)
@@ -174,11 +188,39 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        imageUrl: file.imageId
-          ? await ctx.storage.getUrl(file.imageId)
+        imageUrl: file.imageId ? await ctx.storage.getUrl(file.imageId) : null,
+        uceFileUrl: file.ucefileId
+          ? await ctx.storage.getUrl(file.ucefileId)
           : null,
-        uaceFileUrl: file.uacefileId
-          ? await ctx.storage.getUrl(file.uacefileId)
+        fileOneUrl: file.fileoneId
+          ? await ctx.storage.getUrl(file.fileoneId)
+          : null,
+        fileTwoUrl: file.filetwoId
+          ? await ctx.storage.getUrl(file.filetwoId)
+          : null,
+        fileThreeUrl: file.filethreeId
+          ? await ctx.storage.getUrl(file.filethreeId)
+          : null,
+        fileFourUrl: file.filefourId
+          ? await ctx.storage.getUrl(file.filefourId)
+          : null,
+        fileFiveUrl: file.filefiveId
+          ? await ctx.storage.getUrl(file.filefiveId)
+          : null,
+        fileSixUrl: file.filesixId
+          ? await ctx.storage.getUrl(file.filesixId)
+          : null,
+        fileSevenUrl: file.filesevenId
+          ? await ctx.storage.getUrl(file.filesevenId)
+          : null,
+        fileEightUrl: file.fileeightId
+          ? await ctx.storage.getUrl(file.fileeightId)
+          : null,
+        fileNineUrl: file.filenineId
+          ? await ctx.storage.getUrl(file.filenineId)
+          : null,
+        fileTenUrl: file.filetenId
+          ? await ctx.storage.getUrl(file.filetenId)
           : null,
         post: file.post,
         email: file.email,
@@ -189,8 +231,10 @@ export const getFiles = query({
         homeDistrict: file.homeDistrict,
         subcounty: file.subcounty,
         village: file.village,
+        dateOfBirth: file.dateOfBirth,
         residence: file.residence,
         presentministry: file.presentministry,
+        registrationnumber: file.registrationnumber,
         presentpost: file.presentpost,
         presentsalary: file.presentsalary,
         termsofemployment: file.termsofemployment,
@@ -227,8 +271,8 @@ export const deleteAllFiles = internalMutation({
         if (file.imageId) {
           await ctx.storage.delete(file.imageId);
         }
-        if (file.uacefileId) {
-          await ctx.storage.delete(file.uacefileId);
+        if (file.ucefileId) {
+          await ctx.storage.delete(file.ucefileId);
         }
         return await ctx.db.delete(file._id);
       })
@@ -267,34 +311,56 @@ export const restoreFile = mutation({
 });
 
 export const toggleShortlisted = mutation({
-  args: { userId: v.id("users" )},
+  args: { userId: v.id("users") },
   async handler(ctx, args) {
-
+    // Check if the user is already in the `shortlisted` table
     const shortlisted = await ctx.db
       .query("shortlisted")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .first();
 
     if (!shortlisted) {
+      // Insert the user into the `shortlisted` table
       await ctx.db.insert("shortlisted", {
         userId: args.userId,
       });
+
+      // Remove the user from the `rejected` table if they are present
+      const rejected = await ctx.db
+        .query("rejected")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .first();
+
+      if (rejected) {
+        await ctx.db.delete(rejected._id);
+      }
     } else {
     }
   },
 });
 
 export const toggleRejected = mutation({
-  args: { userId: v.id("users" )},
+  args: { userId: v.id("users") },
   async handler(ctx, args) {
-
     const rejected = await ctx.db
       .query("rejected")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .first();
 
     if (!rejected) {
       await ctx.db.insert("rejected", {
         userId: args.userId,
       });
+
+      // Remove the user from the `rejected` table if they are present
+      const shortlisted = await ctx.db
+        .query("shortlisted")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .first();
+
+      if (shortlisted) {
+        await ctx.db.delete(shortlisted._id);
+      }
     } else {
     }
   },
@@ -303,9 +369,7 @@ export const toggleRejected = mutation({
 export const getAllShortListed = query({
   args: {},
   async handler(ctx, args) {
-    const shortlisted = await ctx.db
-      .query("shortlisted")
-      .collect();
+    const shortlisted = await ctx.db.query("shortlisted").collect();
 
     return shortlisted;
   },
@@ -314,9 +378,7 @@ export const getAllShortListed = query({
 export const getAllRejected = query({
   args: {},
   async handler(ctx, args) {
-    const rejected = await ctx.db
-      .query("rejected")
-      .collect();
+    const rejected = await ctx.db.query("rejected").collect();
 
     return rejected;
   },
