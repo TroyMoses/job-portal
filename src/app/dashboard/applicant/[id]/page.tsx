@@ -4,17 +4,20 @@ import { useMutation, useQuery } from "convex/react";
 import React from "react";
 import { api } from "../../../../../convex/_generated/api";
 import { Doc } from "../../../../../convex/_generated/dataModel";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
+import Image from "next/image";
 
 const Applicant = ({ params }: { params: { id: string } }) => {
+  const { toast } = useToast();
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
   const toggleRejected = useMutation(api.files.toggleRejected);
-  
+
   const shortlisted = useQuery(api.files.getAllShortListed);
 
   const files = useQuery(api.files.getFiles, {});
@@ -32,7 +35,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
     return <p>No files found for this applicant.</p>;
   }
 
-  const file = filteredFiles[0]; 
+  const file = filteredFiles[0];
 
   // Ensure user is loaded
   if (!userLoaded) {
@@ -51,6 +54,14 @@ const Applicant = ({ params }: { params: { id: string } }) => {
   return (
     <div className="mx-auto p-10 w-[80%]">
       <h1 className="text-3xl font-semibold">Applicant Details</h1>
+      <div className="my-4">
+        <Image
+          src={file?.imageUrl ?? "/c4.png"}
+          alt={file.name}
+          height={200}
+          width={200}
+        />
+      </div>
       <div className="mt-5">
         <div className="grid grid-col-2 gap-4 md:grid-cols-3">
           <p>
@@ -107,32 +118,37 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* UCE and UACE Files */}
-        {/* <h2 className="mt-10 mb-1 text-2xl font-semibold">
-          UCE and UACE Documents
+        <h2 className="mt-10 mb-1 text-2xl font-semibold">
+          Academic Documents
         </h2>
-        <div className=" grid grid-cols-2 gap-5">
-          {file.uceFileUrl && (
-            <div>
-              <h3 className="text-base font-semibold">UCE Document:</h3>
-              <Link href={file.uceFileUrl} target="_blank">
-                <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
-                  Open Document
-                </button>
-              </Link>
-            </div>
-          )} 
-
-          {file.uaceFileUrl && (
-            <div>
-              <h3 className="text-base font-semibold">UACE File:</h3>
-              <Link href={file.uaceFileUrl} target="_blank">
-                <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
-                  Open Document
-                </button>
-              </Link>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {/* Dynamically render each document button if the URL exists */}
+          {[
+            { label: "UCE Document", url: file.uceFileUrl },
+            { label: "Document One", url: file.fileOneUrl },
+            { label: "Document Two", url: file.fileTwoUrl },
+            { label: "Document Three", url: file.fileThreeUrl },
+            { label: "Document Four", url: file.fileFourUrl },
+            { label: "Document Five", url: file.fileFiveUrl },
+            { label: "Document Six", url: file.fileSixUrl },
+            { label: "Document Seven", url: file.fileSevenUrl },
+            { label: "Document Eight", url: file.fileEightUrl },
+            { label: "Document Nine", url: file.fileNineUrl },
+            { label: "Document Ten", url: file.fileTenUrl },
+          ].map(
+            (doc, index) =>
+              doc.url && (
+                <div key={index}>
+                  <h3 className="text-base font-semibold">{doc.label}:</h3>
+                  <Link href={doc.url} target="_blank">
+                    <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                      Open Document
+                    </button>
+                  </Link>
+                </div>
+              )
           )}
-        </div> */}
+        </div>
 
         {/* Educational Record */}
         <h2 className="mt-10 mb-1 text-2xl font-semibold">Education Record</h2>
@@ -161,8 +177,17 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         <div className="grid grid-cols-2 md:grid-cols-3">
           {file.employmentrecord?.map((employment, index) => (
             <p key={index}>
-              <strong>{employment.year}:</strong> {employment.position} at{" "}
-              {employment.employer}
+              <strong>Year: </strong>
+              {employment.year} <br />
+              <span>
+                <strong>Position/Title: </strong>
+                {employment.position}
+              </span>
+              <br />
+              <span>
+                <strong>Employer: </strong>
+                {employment.employer}
+              </span>
             </p>
           ))}
         </div>
@@ -208,6 +233,12 @@ const Applicant = ({ params }: { params: { id: string } }) => {
               toggleShortlisted({
                 userId: file.userId,
               });
+              toast({
+                variant: "success",
+                title: "Applicant Shortlisted",
+                description:
+                  "Applicant has been added to the shortlisted table",
+              });
               router.push("/dashboard/shortlist");
             }}
             type="button"
@@ -219,6 +250,12 @@ const Applicant = ({ params }: { params: { id: string } }) => {
             onClick={() => {
               toggleRejected({
                 userId: file.userId,
+              });
+              toast({
+                variant: "success",
+                title: "Applicant Rejected",
+                description:
+                  "Applicant has been added to the not-shortlisted table",
               });
               router.push("/dashboard/rejected");
             }}

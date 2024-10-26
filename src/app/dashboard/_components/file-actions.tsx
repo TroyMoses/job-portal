@@ -11,6 +11,7 @@ import { MoreVertical, StarHalf, StarIcon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export function FileCardActions({
   file,
@@ -21,6 +22,7 @@ export function FileCardActions({
   isShortlisted: boolean;
   isRejected: boolean;
 }) {
+  const { toast } = useToast();
   const router = useRouter();
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
   const toggleRejected = useMutation(api.files.toggleRejected);
@@ -49,6 +51,11 @@ export function FileCardActions({
                 toggleShortlisted({
                   userId: file.userId,
                 });
+                toast({
+                  variant: "success",
+                  title: "Applicant Shortlisted",
+                  description: "Applicant has been added to the shortlisted table",
+                });
               }}
               className="flex gap-1 items-center cursor-pointer"
             >
@@ -60,6 +67,11 @@ export function FileCardActions({
               onClick={() => {
                 toggleRejected({
                   userId: file.userId,
+                });
+                toast({
+                  variant: "success",
+                  title: "Applicant Rejected",
+                  description: "Applicant has been added to the not-shortlisted table",
                 });
               }}
               className="flex gap-1 items-center cursor-pointer"
