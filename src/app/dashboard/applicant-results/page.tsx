@@ -129,12 +129,12 @@ const ResultsPage = () => {
             <TableHead>
             Aptitude
             </TableHead>
-            <TableHead>Interview (i)</TableHead>
-            <TableHead>Interview (ii)</TableHead>
-            <TableHead>Interview (iii)</TableHead>
-            <TableHead>Interview (iv)</TableHead>
-            <TableHead>Interview (v)</TableHead>
-            <TableHead>Interview (vi)</TableHead>
+            <TableHead>Comm1</TableHead>
+            <TableHead>Comm2</TableHead>
+            <TableHead>Comm3</TableHead>
+            <TableHead>Comm4</TableHead>
+            <TableHead>Comm5</TableHead>
+            <TableHead>Technical</TableHead>
             <TableHead>
             Interview Avg
             </TableHead>

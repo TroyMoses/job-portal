@@ -105,7 +105,7 @@ const ApplicationStatus = () => {
                       Status: Pending
                     </p>
                     <p className="text-lg text-gray-600">
-                      Your application is under review.
+                      Your application for the post of {jobPost} is under review.
                     </p>
                   </>
                 ) : (
