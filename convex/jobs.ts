@@ -36,7 +36,6 @@ export const createJob = mutation({
     competences: v.array(competencesType),
   },
   async handler(ctx, args) {
-    
     await ctx.db.insert("jobs", {
       title: args.title,
       salaryScale: args.salaryScale,
@@ -67,10 +66,7 @@ export const getJobs = query({
     deletedOnly: v.optional(v.boolean()),
   },
   async handler(ctx, args) {
-
-    let jobs = await ctx.db
-      .query("jobs")
-      .collect();
+    let jobs = await ctx.db.query("jobs").collect();
 
     const query = args.query;
 
@@ -107,9 +103,8 @@ export const getJobs = query({
 export const getAllJobs = query({
   args: {},
   async handler(ctx) {
-    
     const jobs = await ctx.db.query("jobs").collect();
-  
+
     return jobs;
   },
 });
@@ -122,53 +117,49 @@ export const deleteAllJobs = internalMutation({
       .withIndex("by_shouldDelete", (q) => q.eq("shouldDelete", true))
       .collect();
 
-      await Promise.all(
-        jobs.map(async (job) => {
-          return await ctx.db.delete(job._id);
-        })
-      );
+    await Promise.all(
+      jobs.map(async (job) => {
+        return await ctx.db.delete(job._id);
+      })
+    );
   },
 });
 
-  export const deletejob = mutation({
-    args: { jobId: v.id("jobs") },
-    async handler(ctx, args) {
-      const access = await hasAccessToJob(ctx, args.jobId);
+export const deletejob = mutation({
+  args: { jobId: v.id("jobs") },
+  async handler(ctx, args) {
+    const access = await hasAccessToJob(ctx, args.jobId);
 
-      if (!access) {
-        throw new ConvexError("no access to job");
-      }
-
-      await ctx.db.patch(args.jobId, {
-        shouldDelete: true,
-      });
-    },
-  });
-
-  export const restoreJob = mutation({
-    args: { jobId: v.id("jobs") },
-    async handler(ctx, args) {
-      const access = await hasAccessToJob(ctx, args.jobId);
-
-      if (!access) {
-        throw new ConvexError("no access to job");
-      }
-
-      await ctx.db.patch(args.jobId, {
-        shouldDelete: false,
-      });
-    },
-  });
-
-async function hasAccessToJob(
-    ctx: QueryCtx | MutationCtx,
-    jobId: Id<"jobs">
-  ) {
-    const job = await ctx.db.get(jobId);
-
-    if (!job) {
-      return null;
+    if (!access) {
+      throw new ConvexError("no access to job");
     }
 
-    return { job };
+    // Instantly delete the job from the database
+    await ctx.db.delete(args.jobId);
+  },
+});
+
+export const restoreJob = mutation({
+  args: { jobId: v.id("jobs") },
+  async handler(ctx, args) {
+    const access = await hasAccessToJob(ctx, args.jobId);
+
+    if (!access) {
+      throw new ConvexError("no access to job");
+    }
+
+    await ctx.db.patch(args.jobId, {
+      shouldDelete: false,
+    });
+  },
+});
+
+async function hasAccessToJob(ctx: QueryCtx | MutationCtx, jobId: Id<"jobs">) {
+  const job = await ctx.db.get(jobId);
+
+  if (!job) {
+    return null;
   }
+
+  return { job };
+}

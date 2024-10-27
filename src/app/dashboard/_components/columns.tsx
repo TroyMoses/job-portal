@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { formatRelative } from "date-fns";
+import { JobCardActions } from "./job-actions";
 
 export const columns: ColumnDef<Doc<"jobs"> >[] = [
   {
@@ -27,6 +28,18 @@ export const columns: ColumnDef<Doc<"jobs"> >[] = [
       return (
         <div>
           {formatRelative(new Date(row.original._creationTime), new Date())}
+        </div>
+      );
+    },
+  },
+  {
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <div>
+          <JobCardActions
+            job={row.original}
+          />
         </div>
       );
     },
