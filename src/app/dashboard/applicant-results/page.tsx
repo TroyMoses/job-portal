@@ -109,6 +109,7 @@ const ResultsPage = () => {
             <TableHead>Interview Average</TableHead>
             <TableHead>Overall Average</TableHead>
             <TableHead>Action</TableHead>
+            <TableHead>Appoint</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -168,7 +169,24 @@ const ResultsPage = () => {
                     Add Score
                   </Button>
                 )}
-                {isCAO && (
+              </TableCell>
+              <TableCell>
+                {isCommissioner && (
+                  <Button
+                    onClick={() => {
+                      toggleAppointed({ userId: result.userId });
+                      toast({
+                        variant: "success",
+                        title: "Applicant appointed",
+                        description:
+                          "You can now view the appointed applicants in the appointed table",
+                      });
+                    }}
+                  >
+                    Appoint
+                  </Button>
+                )}
+                {isAdmin && (
                   <Button
                     onClick={() => {
                       toggleAppointed({ userId: result.userId });
