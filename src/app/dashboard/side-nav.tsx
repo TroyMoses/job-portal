@@ -82,15 +82,6 @@ export function SideNav() {
         </Button>
       </Link>
 
-      <Button
-        variant={"link"}
-        className={clsx("flex gap-2", {
-          "text-blue-500": pathname.includes("/dashboard/applicant"),
-        })}
-      >
-        <StarIcon /> Applicant
-      </Button>
-
       {isAdmin && (
         <Link href="/dashboard/aptitude-test">
           <Button

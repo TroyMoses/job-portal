@@ -1,9 +1,30 @@
+"use client";
+
 import React from "react";
 import HeroImg from "../../../public/1234.png";
 import Image from "next/image";
 import ApplicationGuidelines from "../Guidelines";
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const Hero = () => {
+
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isCommissioner = user?.publicMetadata?.role === "commissioner";
+  const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
+
+  if (isAdmin || isCommissioner || isCAO || isTechnical) {
+    router.push("/dashboard/home");
+  }
+
   return (
     <div className="pt-[5rem] pb-[3rem]">
       <div className="w-[100%] h-[60vh] justify-center">
