@@ -69,12 +69,12 @@ export function JobCardActions({ job }: { job: Doc<"jobs"> }) {
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              // router.push(`/dashboard/applicant/${file.userId}`);
+              router.push(`/dashboard/editjob/${job._id}`);
             }}
             className="flex gap-1 items-center cursor-pointer"
           >
             <div className="flex gap-1 items-center">
-              <StarIcon className="w-4 h-4" /> View
+              <StarIcon className="w-4 h-4" /> View/Edit
             </div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
