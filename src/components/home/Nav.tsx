@@ -27,10 +27,6 @@ export default function Nav() {
   const isCAO = user?.publicMetadata?.role === "cao";
   const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (isAdmin || isCommissioner || isCAO || isTechnical) {
-    router.push("/dashboard/home");
-  }
-
   return (
     <div className="h-[15vh] bg-green-500 overflow-hidden shadow-md px-8">
       <div className="items-center container mx-auto justify-between flex"></div>
