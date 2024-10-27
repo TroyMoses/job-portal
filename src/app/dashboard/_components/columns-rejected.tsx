@@ -23,6 +23,10 @@ export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean } & { is
     header: "Telephone",
   },
   {
+    accessorKey: "reason",
+    header: "Reason",
+  },
+  {
     header: "Uploaded On",
     cell: ({ row }) => {
       return (

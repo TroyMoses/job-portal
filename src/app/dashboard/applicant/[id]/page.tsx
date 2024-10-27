@@ -1,9 +1,9 @@
 "use client";
 
 import { useMutation, useQuery } from "convex/react";
-import React from "react";
+import React, { useState } from "react";
 import { api } from "../../../../../convex/_generated/api";
-import { Doc } from "../../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
+import { RejectionReasonDialog } from "../../_components/RejectionReasonDialog";
 
 const Applicant = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
@@ -19,7 +20,22 @@ const Applicant = ({ params }: { params: { id: string } }) => {
   const toggleShortlisted = useMutation(api.files.toggleShortlisted);
   const toggleRejected = useMutation(api.files.toggleRejected);
 
+  const [showRejectionDialog, setShowRejectionDialog] = useState(false);
+
   const shortlisted = useQuery(api.files.getAllShortListed);
+
+  const handleRejection = (reason: string) => {
+    toggleRejected({
+      userId: file.userId as Id<"users">,
+      reason,
+    });
+    toast({
+      variant: "success",
+      title: "Applicant Not Shortlisted",
+      description: "Applicant has been added to the not-shortlisted table",
+    });
+    setShowRejectionDialog(false);
+  };
 
   const files = useQuery(api.files.getFiles, {});
   const isLoading = files === undefined;
@@ -250,18 +266,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
             Shortlist
           </Button>
           <Button
-            onClick={() => {
-              toggleRejected({
-                userId: file.userId,
-              });
-              toast({
-                variant: "success",
-                title: "Applicant Rejected",
-                description:
-                  "Applicant has been added to the not-shortlisted table",
-              });
-              router.push("/dashboard/rejected");
-            }}
+            onClick={() => setShowRejectionDialog(true)}
             variant={"destructive"}
             type="button"
             className="text-sm px-2 py-1"
@@ -270,6 +275,13 @@ const Applicant = ({ params }: { params: { id: string } }) => {
           </Button>
         </div>
       </div>
+
+      {showRejectionDialog && (
+        <RejectionReasonDialog
+          onSubmit={handleRejection}
+          onClose={() => setShowRejectionDialog(false)}
+        />
+      )}
     </div>
   );
 };

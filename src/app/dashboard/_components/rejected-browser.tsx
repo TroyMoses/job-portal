@@ -47,7 +47,7 @@ export function RejectedBrowser({
         file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         file.post?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         file.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        file.telephone?.toLowerCase().includes(searchQuery.toLowerCase())
+        file.telephone?.toLowerCase().includes(searchQuery.toLowerCase() )
     ) ?? [];
 
   // Ensure user is loaded
