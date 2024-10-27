@@ -95,13 +95,13 @@ const formSchema = z.object({
   available: z.string().min(1).max(500),
   referencerecord: z.array(
     z.object({
-      name: z.string().min(1, "Reference name is required"),
+      name: z.string().min(1, "Referee name is required"),
       address: z.string().min(1, "Address is required"),
     })
   ),
   officerrecord: z.array(
     z.object({
-      name: z.string().min(1, "Subject name is required"),
+      name: z.string().min(1, "Recommending officer name is required"),
       title: z.string().min(1, "Title is required"),
       contact: z.string().min(1, "Contact is required"),
     })
@@ -1046,7 +1046,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                      <Input {...field} placeholder="If yes, enter the year here..." />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1128,7 +1128,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                      <Input {...field} placeholder="If yes, enter the year here..." />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1239,7 +1239,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`referencerecord.${index}.name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Referee Name</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Name" />
                           </FormControl>
@@ -1252,7 +1252,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`referencerecord.${index}.address`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Address</FormLabel>
+                          <FormLabel>Referee Address</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Address" />
                           </FormControl>
@@ -1268,7 +1268,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       onClick={() => removeReferenceRecord(index)}
                       className="text-sm px-2 py-1"
                     >
-                      Remove Record
+                      Remove Referee
                     </Button>
                   </div>
                 ))}
@@ -1281,7 +1281,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   }
                   className="text-sm px-2 py-1"
                 >
-                  Add Another Record
+                  Add Another Referee
                 </Button>
 
                 {officerFields.map((field, index) => (
@@ -1297,7 +1297,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`officerrecord.${index}.name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Recommending Officer Name</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Name" />
                           </FormControl>
@@ -1339,7 +1339,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       onClick={() => removeOfficerRecord(index)}
                       className="text-sm px-2 py-1"
                     >
-                      Remove Record
+                      Remove Recommending Officer
                     </Button>
                   </div>
                 ))}
@@ -1352,7 +1352,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   }
                   className="text-sm px-2 py-1"
                 >
-                  Add Another Record
+                  Add Recommending Officer
                 </Button>
 
                 <h1 className="font-semibold">

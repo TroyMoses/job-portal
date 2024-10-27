@@ -155,7 +155,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         <div className="">
           <h3 className="text-xl font-semibold">UCE Record:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3">
-            {file.ucerecord?.map((record, index) => (
+            {file.ucerecord?.map((record: any, index: any) => (
               <p key={index}>
                 <strong>{record.subject}:</strong> {record.grade}
               </p>
@@ -164,7 +164,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
 
           <h3 className="text-xl font-semibold mt-4">UACE Record:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3">
-            {file.uacerecord?.map((record, index) => (
+            {file.uacerecord?.map((record: any, index: any) => (
               <p key={index}>
                 <strong>{record.subject}:</strong> {record.grade}
               </p>
@@ -175,7 +175,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         {/* Employment Record */}
         <h2 className="mt-10 mb-1 text-2xl font-semibold">Employment Record</h2>
         <div className="grid grid-cols-2 md:grid-cols-3">
-          {file.employmentrecord?.map((employment, index) => (
+          {file.employmentrecord?.map((employment: any, index: any) => (
             <p key={index}>
               <strong>Year: </strong>
               {employment.year} <br />
@@ -193,9 +193,9 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* References */}
-        <h2 className="mt-6 mb-1 text-2xl font-semibold">References</h2>
+        <h2 className="mt-6 mb-1 text-2xl font-semibold">Referees</h2>
         <div className="grid grid-cols-2 md:grid-cols-3">
-          {file.referencerecord?.map((reference, index) => (
+          {file.referencerecord?.map((reference: any, index: any) => (
             <p key={index}>
               <strong>{reference.name}:</strong> {reference.address}
             </p>
@@ -203,9 +203,9 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Officer Record */}
-        <h2 className="mt-6 mb-1 text-2xl font-semibold">Officer Record</h2>
+        <h2 className="mt-6 mb-1 text-2xl font-semibold">Recommending Officer</h2>
         <div className="grid grid-cols-2 md:grid-cols-3">
-          {file.officerrecord?.map((officer, index) => (
+          {file.officerrecord?.map((officer: any, index: any) => (
             <div key={index}>
               <strong>{officer.name}:</strong> {officer.title}, Contact:{" "}
               {officer.contact}

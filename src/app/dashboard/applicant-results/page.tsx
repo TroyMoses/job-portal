@@ -19,6 +19,7 @@ import { AddScoreDialog } from "@/components/Dialog";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input"; // Import Input component
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 const ResultsPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
@@ -31,6 +32,11 @@ const ResultsPage = () => {
 
   // State for managing the search input and filtered results
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  }>({ key: "overallAverageScore", direction: "desc" });
 
   const [openDialog, setOpenDialog] = useState<{
     applicantId: Id<"results">;
@@ -62,13 +68,34 @@ const ResultsPage = () => {
   }
 
   // Filter results based on search query
-  const filteredResults = results.filter(
-    (result) =>
-      result?.applicantName
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      result?.jobPost?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredResults = results
+    .filter(
+      (result) =>
+        result?.applicantName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        result?.jobPost?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (!sortConfig) return 0;
+      const fieldA = a[sortConfig.key];
+      const fieldB = b[sortConfig.key];
+      if (fieldA === fieldB) return 0;
+      const modifier = sortConfig.direction === "asc" ? 1 : -1;
+      return fieldA > fieldB ? modifier : -modifier;
+    });
+
+  const handleSort = (key: string) => {
+    setSortConfig((prevConfig) => {
+      if (prevConfig?.key === key) {
+        return {
+          key,
+          direction: prevConfig.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return { key, direction: "asc" };
+    });
+  };
 
   const handleOpenDialog = (
     applicantId: Id<"results">,
@@ -99,15 +126,32 @@ const ResultsPage = () => {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Post</TableHead>
-            <TableHead>Aptitude</TableHead>
+            <TableHead>
+            Aptitude
+            </TableHead>
             <TableHead>Interview (i)</TableHead>
             <TableHead>Interview (ii)</TableHead>
             <TableHead>Interview (iii)</TableHead>
             <TableHead>Interview (iv)</TableHead>
             <TableHead>Interview (v)</TableHead>
             <TableHead>Interview (vi)</TableHead>
-            <TableHead>Interview Average</TableHead>
-            <TableHead>Overall Average</TableHead>
+            <TableHead>
+            Interview Avg
+            </TableHead>
+            <TableHead>
+              <div className="flex items-center gap-2">
+                <h2>Overall Avg</h2>
+                
+                <button className="text-xs" onClick={() => handleSort("overallAverageScore")}>
+                {sortConfig?.key === "overallAverageScore" &&
+                    (sortConfig.direction === "asc" ? (
+                      <ArrowUp />
+                    ) : (
+                      <ArrowDown />
+                    ))}
+                </button>
+              </div>
+            </TableHead>
             <TableHead>Action</TableHead>
             <TableHead>Appoint</TableHead>
           </TableRow>
