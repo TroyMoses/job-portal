@@ -77,7 +77,7 @@ const ApplicationStatus = () => {
                       <br /> You have been shortlisted for the position of {jobPost}.
                     </p>
                     {userResult ? (
-                      <Link href={`/jobs/results/${userResult._id}`}>
+                      <Link href={`/jobs/my-scores`}>
                         <Button className="mt-4">View My Scores</Button>
                       </Link>
                     ) : (
@@ -89,15 +89,15 @@ const ApplicationStatus = () => {
                 ) : isRejected ? (
                   <>
                     <p className="text-xl font-semibold text-red-600">
-                      Status: Unsuccessful
+                      Status: Not Shortlisted
                     </p>
-                    {/* <p className="text-lg text-gray-600">
+                    <p className="text-lg text-gray-600">
                        Reason:{" "}
                       {
                         //@ts-ignore
                         rejectedApplicant?.reason || "Not provided"
                       }
-                    </p> */}
+                    </p>
                   </>
                 ) : !hasNotApplied ? (
                   <>

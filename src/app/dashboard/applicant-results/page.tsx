@@ -78,7 +78,9 @@ const ResultsPage = () => {
     )
     .sort((a, b) => {
       if (!sortConfig) return 0;
+      //@ts-ignore
       const fieldA = a[sortConfig.key];
+      //@ts-ignore
       const fieldB = b[sortConfig.key];
       if (fieldA === fieldB) return 0;
       const modifier = sortConfig.direction === "asc" ? 1 : -1;
