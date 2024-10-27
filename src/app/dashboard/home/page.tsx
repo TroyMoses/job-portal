@@ -17,23 +17,24 @@ const ECommerce: React.FC = () => {
   const getAllRejected = useQuery(api.files.getAllRejected);
   const getAllShortListed = useQuery(api.files.getAllShortListed);
   const getFiles = useQuery(api.files.getFiles, {});
+  const getAppointed = useQuery(api.results.getAllAppointed);
 
-  if (!getAllRejected || !getAllShortListed || !getFiles) {
+  if (!getAllRejected || !getAllShortListed || !getFiles || !getAppointed) {
     return <div>Loading...</div>; 
   }
 
   const totalApplicants = getFiles.length || 0;
   const shortListed = getAllShortListed.length || 0;
   const notShortListed = getAllRejected.length || 0;
-  const appointed = 0; 
+  const appointed = getAppointed.length || 0; 
 
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats 
           title="Appointed" 
-          total="0" 
-          rate="0%" 
+          total={appointed.toString()}
+          rate={`${((appointed / shortListed) * 100).toFixed(2)}%`}
           levelUp
         >
           <svg
