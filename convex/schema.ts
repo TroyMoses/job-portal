@@ -115,6 +115,8 @@ export const resultType = v.object({
   commTwo: v.optional(v.number()),
   commThree: v.optional(v.number()),
   commFour: v.optional(v.number()),
+  commFive: v.optional(v.number()),
+  technical: v.optional(v.number()),
   oralInterviewAverage: v.optional(v.number()),
   overallAverageScore: v.optional(v.number()),
 });

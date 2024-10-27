@@ -41,7 +41,7 @@ export function RejectedBrowser({
       ),
     })) ?? [];
 
-    // Ensure user is loaded
+  // Ensure user is loaded
   if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
@@ -49,8 +49,9 @@ export function RejectedBrowser({
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (!isAdmin && !isCommissioner && !isCAO) {
+  if (!isAdmin && !isCommissioner && !isCAO && !isTechnical) {
     router.push("/");
     return null;
   }
@@ -59,11 +60,9 @@ export function RejectedBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
 
       <Tabs defaultValue="table">
@@ -73,7 +72,6 @@ export function RejectedBrowser({
               <RowsIcon /> Table
             </TabsTrigger>
           </TabsList>
-
         </div>
 
         {isLoading && (
@@ -88,7 +86,6 @@ export function RejectedBrowser({
           <DataTable columns={columns} data={modifiedFiles} />
         </TabsContent>
       </Tabs>
-
     </div>
   );
 }
