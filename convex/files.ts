@@ -174,10 +174,14 @@ export const getFiles = query({
 
     if (args.rejectedOnly) {
       const rejected = await ctx.db.query("rejected").collect();
-
-      files = files.filter((file) =>
-        rejected.some((rejected) => rejected.userId === file.userId)
-      );
+      files = files
+        .filter((file) =>
+          rejected.some((rejectedItem) => rejectedItem.userId === file.userId)
+        )
+        .map((file) => ({
+          ...file,
+          reason: rejected.find((rejectedItem) => rejectedItem.userId === file.userId)?.reason || "",
+        }));
     }
 
     if (args.deletedOnly) {
@@ -341,7 +345,7 @@ export const toggleShortlisted = mutation({
 });
 
 export const toggleRejected = mutation({
-  args: { userId: v.id("users") },
+  args: { userId: v.id("users"), reason: v.string(), },
   async handler(ctx, args) {
     const rejected = await ctx.db
       .query("rejected")
@@ -351,9 +355,9 @@ export const toggleRejected = mutation({
     if (!rejected) {
       await ctx.db.insert("rejected", {
         userId: args.userId,
+        reason: args.reason,
       });
 
-      // Remove the user from the `rejected` table if they are present
       const shortlisted = await ctx.db
         .query("shortlisted")
         .withIndex("by_userId", (q) => q.eq("userId", args.userId))

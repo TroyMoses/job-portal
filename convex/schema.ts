@@ -106,10 +106,12 @@ export const resultType = v.object({
   applicantName: v.optional(v.string()),
   jobPost: v.optional(v.string()),
   testId: v.id("aptitude_test"),
-  selectedAnswers: v.array(v.object({
-    question: v.string(),
-    selectedAnswer: v.string(),
-  })),
+  selectedAnswers: v.array(
+    v.object({
+      question: v.string(),
+      selectedAnswer: v.string(),
+    })
+  ),
   aptitudetestscore: v.number(),
   commOne: v.optional(v.number()),
   commTwo: v.optional(v.number()),
@@ -180,6 +182,7 @@ export default defineSchema({
 
   rejected: defineTable({
     userId: v.id("users"),
+    reason: v.optional(v.string()),
   }).index("by_userId", ["userId"]),
 
   users: defineTable({
@@ -206,5 +209,4 @@ export default defineSchema({
   }).index("by_shouldDelete", ["shouldDelete"]),
 
   results: defineTable(resultType).index("by_userId", ["userId"]),
-
 });
