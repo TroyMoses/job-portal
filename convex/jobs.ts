@@ -100,6 +100,29 @@ export const getJobs = query({
   },
 });
 
+export const updateJob = mutation({
+  args: {
+    jobId: v.id("jobs"),
+    title: v.string(),
+    salaryScale: v.string(),
+    reportsTo: v.string(),
+    purpose: v.string(),
+    keyFunctions: v.array(v.object({ function: v.string() })),
+    qualifications: v.array(v.object({ qualification: v.string() })),
+    experiences: v.array(v.object({ experience: v.string() })),
+    competences: v.array(v.object({ competence: v.string() })),
+  },
+  async handler(ctx, args) {
+    const { jobId, ...updateData } = args;
+
+    if (!jobId) {
+      throw new Error("jobId is required for updating a job");
+    }
+
+    await ctx.db.patch(jobId, updateData);
+  },
+});
+
 export const getAllJobs = query({
   args: {},
   async handler(ctx) {
