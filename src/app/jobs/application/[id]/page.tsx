@@ -12,6 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -30,17 +33,41 @@ const formSchema = z.object({
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Applicant photo is required`),
   ucefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  fileone: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filetwo: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filethree: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filefour: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filefive: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filesix: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  fileseven: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  fileeight: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  filenine: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  fileten: z.custom<FileList>((val) => val instanceof FileList, "Required"),
-  dateOfBirth: z.string().min(1).max(200),
+  uacefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  plefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  transcriptfile: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  universityfile: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffileone: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffiletwo: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilethree: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilefour: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilefive: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilesix: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  dateOfBirth: z.date().refine((date) => !!date, { message: "Date of Birth is required" }),
   email: z.string().min(1).max(200),
   telephone: z.string().min(1).max(200),
   postalAddress: z.string().max(500),
@@ -123,17 +150,17 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       name: "",
       image: undefined,
       ucefile: undefined,
-      fileone: undefined,
-      filetwo: undefined,
-      filethree: undefined,
-      filefour: undefined,
-      filefive: undefined,
-      filesix: undefined,
-      fileseven: undefined,
-      fileeight: undefined,
-      filenine: undefined,
-      fileten: undefined,
-      dateOfBirth: "",
+      uacefile: undefined,
+      plefile: undefined,
+      transcriptfile: undefined,
+      universityfile: undefined,
+      prooffileone: undefined,
+      prooffiletwo: undefined,
+      prooffilethree: undefined,
+      prooffilefour: undefined,
+      prooffilefive: undefined,
+      prooffilesix: undefined,
+      dateOfBirth: undefined,
       email: "",
       telephone: "",
       postalAddress: "",
@@ -225,16 +252,16 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
   const imageRef = form.register("image");
   const ucefileRef = form.register("ucefile");
-  const fileoneRef = form.register("fileone");
-  const filetwoRef = form.register("filetwo");
-  const filethreeRef = form.register("filethree");
-  const filefourRef = form.register("filefour");
-  const filefiveRef = form.register("filefive");
-  const filesixRef = form.register("filesix");
-  const filesevenRef = form.register("fileseven");
-  const fileeightRef = form.register("fileeight");
-  const filenineRef = form.register("filenine");
-  const filetenRef = form.register("fileten");
+  const uacefileRef = form.register("uacefile");
+  const plefileRef = form.register("plefile");
+  const transcriptfileRef = form.register("transcriptfile");
+  const universityfileRef = form.register("universityfile");
+  const prooffileoneRef = form.register("prooffileone");
+  const prooffiletwoRef = form.register("prooffiletwo");
+  const prooffilethreeRef = form.register("prooffilethree");
+  const prooffilefourRef = form.register("prooffilefour");
+  const prooffilefiveRef = form.register("prooffilefive");
+  const prooffilesixRef = form.register("prooffilesix");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user.isSignedIn) {
@@ -267,134 +294,139 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     });
     const { storageId: uceStorageId } = await uceResult.json();
 
-    let fileoneStorageId;
-    if (values.fileone && values.fileone.length > 0) {
-      // Upload fileone
-      const fileonePostUrl = await generateUploadUrl();
-      const fileoneType = values.fileone[0].type;
-      const fileoneResult = await fetch(fileonePostUrl, {
+    let uacefileStorageId;
+    if (values.uacefile && values.uacefile.length > 0) {
+      // Upload uacefile
+      const uacefilePostUrl = await generateUploadUrl();
+      const uacefileType = values.uacefile[0].type;
+      const uacefileResult = await fetch(uacefilePostUrl, {
         method: "POST",
-        headers: { "Content-Type": fileoneType },
-        body: values.fileone[0],
+        headers: { "Content-Type": uacefileType },
+        body: values.uacefile[0],
       });
-      ({ storageId: fileoneStorageId } = await fileoneResult.json());
+      ({ storageId: uacefileStorageId } = await uacefileResult.json());
     }
 
-    let filetwoStorageId;
-    if (values.filetwo && values.filetwo.length > 0) {
-      // Upload filetwo
-      const filetwoPostUrl = await generateUploadUrl();
-      const filetwoType = values.filetwo[0].type;
-      const filetwoResult = await fetch(filetwoPostUrl, {
+    let plefileStorageId;
+    if (values.plefile && values.plefile.length > 0) {
+      // Upload plefile
+      const plefilePostUrl = await generateUploadUrl();
+      const plefileType = values.plefile[0].type;
+      const plefileResult = await fetch(plefilePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filetwoType },
-        body: values.filetwo[0],
+        headers: { "Content-Type": plefileType },
+        body: values.plefile[0],
       });
-      ({ storageId: filetwoStorageId } = await filetwoResult.json());
+      ({ storageId: plefileStorageId } = await plefileResult.json());
     }
 
-    let filethreeStorageId;
-    if (values.filethree && values.filethree.length > 0) {
-      // Upload filethree
-      const filethreePostUrl = await generateUploadUrl();
-      const filethreeType = values.filethree[0].type;
-      const filethreeResult = await fetch(filethreePostUrl, {
+    let transcriptfileStorageId;
+    if (values.transcriptfile && values.transcriptfile.length > 0) {
+      // Upload transcriptfile
+      const transcriptfilePostUrl = await generateUploadUrl();
+      const transcriptfileType = values.transcriptfile[0].type;
+      const transcriptfileResult = await fetch(transcriptfilePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filethreeType },
-        body: values.filethree[0],
+        headers: { "Content-Type": transcriptfileType },
+        body: values.transcriptfile[0],
       });
-      ({ storageId: filethreeStorageId } = await filethreeResult.json());
+      ({ storageId: transcriptfileStorageId } =
+        await transcriptfileResult.json());
     }
 
-    let filefourStorageId;
-    if (values.filefour && values.filefour.length > 0) {
-      // Upload filefour
-      const filefourPostUrl = await generateUploadUrl();
-      const filefourType = values.filefour[0].type;
-      const filefourResult = await fetch(filefourPostUrl, {
+    let universityfileStorageId;
+    if (values.universityfile && values.universityfile.length > 0) {
+      // Upload universityfile
+      const universityfilePostUrl = await generateUploadUrl();
+      const universityfileType = values.universityfile[0].type;
+      const universityfileResult = await fetch(universityfilePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filefourType },
-        body: values.filefour[0],
+        headers: { "Content-Type": universityfileType },
+        body: values.universityfile[0],
       });
-      ({ storageId: filefourStorageId } = await filefourResult.json());
+      ({ storageId: universityfileStorageId } =
+        await universityfileResult.json());
     }
 
-    let filefiveStorageId;
-    if (values.filefive && values.filefive.length > 0) {
-      // Upload filefive
-      const filefivePostUrl = await generateUploadUrl();
-      const filefiveType = values.filefive[0].type;
-      const filefiveResult = await fetch(filefivePostUrl, {
+    let prooffileoneStorageId;
+    if (values.prooffileone && values.prooffileone.length > 0) {
+      // Upload prooffileone
+      const prooffileonePostUrl = await generateUploadUrl();
+      const prooffileoneType = values.prooffileone[0].type;
+      const prooffileoneResult = await fetch(prooffileonePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filefiveType },
-        body: values.filefive[0],
+        headers: { "Content-Type": prooffileoneType },
+        body: values.prooffileone[0],
       });
-      ({ storageId: filefiveStorageId } = await filefiveResult.json());
+      ({ storageId: prooffileoneStorageId } = await prooffileoneResult.json());
     }
 
-    let filesixStorageId;
-    if (values.filesix && values.filesix.length > 0) {
-      // Upload filesix
-      const filesixPostUrl = await generateUploadUrl();
-      const filesixType = values.filesix[0].type;
-      const filesixResult = await fetch(filesixPostUrl, {
+    let prooffiletwoStorageId;
+    if (values.prooffiletwo && values.prooffiletwo.length > 0) {
+      // Upload prooffiletwo
+      const prooffiletwoPostUrl = await generateUploadUrl();
+      const prooffiletwoType = values.prooffiletwo[0].type;
+      const prooffiletwoResult = await fetch(prooffiletwoPostUrl, {
         method: "POST",
-        headers: { "Content-Type": filesixType },
-        body: values.filesix[0],
+        headers: { "Content-Type": prooffiletwoType },
+        body: values.prooffiletwo[0],
       });
-      ({ storageId: filesixStorageId } = await filesixResult.json());
+      ({ storageId: prooffiletwoStorageId } = await prooffiletwoResult.json());
     }
 
-    let filesevenStorageId;
-    if (values.fileseven && values.fileseven.length > 0) {
-      // Upload fileseven
-      const filesevenPostUrl = await generateUploadUrl();
-      const filesevenType = values.fileseven[0].type;
-      const filesevenResult = await fetch(filesevenPostUrl, {
+    let prooffilethreeStorageId;
+    if (values.prooffilethree && values.prooffilethree.length > 0) {
+      // Upload prooffilethree
+      const prooffilethreePostUrl = await generateUploadUrl();
+      const prooffilethreeType = values.prooffilethree[0].type;
+      const prooffilethreeResult = await fetch(prooffilethreePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filesevenType },
-        body: values.fileseven[0],
+        headers: { "Content-Type": prooffilethreeType },
+        body: values.prooffilethree[0],
       });
-      ({ storageId: filesevenStorageId } = await filesevenResult.json());
+      ({ storageId: prooffilethreeStorageId } =
+        await prooffilethreeResult.json());
     }
 
-    let fileeightStorageId;
-    if (values.fileeight && values.fileeight.length > 0) {
-      // Upload fileeight
-      const fileeightPostUrl = await generateUploadUrl();
-      const fileeightType = values.fileeight[0].type;
-      const fileeightResult = await fetch(fileeightPostUrl, {
+    let prooffilefourStorageId;
+    if (values.prooffilefour && values.prooffilefour.length > 0) {
+      // Upload prooffilefour
+      const prooffilefourPostUrl = await generateUploadUrl();
+      const prooffilefourType = values.prooffilefour[0].type;
+      const prooffilefourResult = await fetch(prooffilefourPostUrl, {
         method: "POST",
-        headers: { "Content-Type": fileeightType },
-        body: values.fileeight[0],
+        headers: { "Content-Type": prooffilefourType },
+        body: values.prooffilefour[0],
       });
-      ({ storageId: fileeightStorageId } = await fileeightResult.json());
+      ({ storageId: prooffilefourStorageId } =
+        await prooffilefourResult.json());
     }
 
-    let filenineStorageId;
-    if (values.filenine && values.filenine.length > 0) {
-      // Upload filenine
-      const fileninePostUrl = await generateUploadUrl();
-      const filenineType = values.filenine[0].type;
-      const filenineResult = await fetch(fileninePostUrl, {
+    let prooffilefiveStorageId;
+    if (values.prooffilefive && values.prooffilefive.length > 0) {
+      // Upload prooffilefive
+      const prooffilefivePostUrl = await generateUploadUrl();
+      const prooffilefiveType = values.prooffilefive[0].type;
+      const prooffilefiveResult = await fetch(prooffilefivePostUrl, {
         method: "POST",
-        headers: { "Content-Type": filenineType },
-        body: values.filenine[0],
+        headers: { "Content-Type": prooffilefiveType },
+        body: values.prooffilefive[0],
       });
-      ({ storageId: filenineStorageId } = await filenineResult.json());
+      ({ storageId: prooffilefiveStorageId } =
+        await prooffilefiveResult.json());
     }
 
-    let filetenStorageId;
-    if (values.fileten && values.fileten.length > 0) {
-      // Upload fileten
-      const filetenPostUrl = await generateUploadUrl();
-      const filetenType = values.fileten[0].type;
-      const filetenResult = await fetch(filetenPostUrl, {
+    let prooffilesixStorageId;
+    if (values.prooffilesix && values.prooffilesix.length > 0) {
+      // Upload prooffilesix
+      const prooffilesixPostUrl = await generateUploadUrl();
+      const prooffilesixType = values.prooffilesix[0].type;
+      const prooffilesixResult = await fetch(prooffilesixPostUrl, {
         method: "POST",
-        headers: { "Content-Type": filetenType },
-        body: values.fileten[0],
+        headers: { "Content-Type": prooffilesixType },
+        body: values.prooffilesix[0],
       });
-      ({ storageId: filetenStorageId } = await filetenResult.json());
+      ({ storageId: prooffilesixStorageId } = await prooffilesixResult.json());
     }
 
     const types = {
@@ -417,19 +449,19 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         name: values.name,
         imageId: imageStorageId,
         ucefileId: uceStorageId,
-        fileoneId: fileoneStorageId,
-        filetwoId: filetwoStorageId,
-        filethreeId: filethreeStorageId,
-        filefourId: filefourStorageId,
-        filefiveId: filefiveStorageId,
-        filesixId: filesixStorageId,
-        filesevenId: filesevenStorageId,
-        fileeightId: fileeightStorageId,
-        filenineId: filenineStorageId,
-        filetenId: filetenStorageId,
+        uacefileId: uacefileStorageId,
+        plefileId: plefileStorageId,
+        transcriptfileId: transcriptfileStorageId,
+        universityfileId: universityfileStorageId,
+        prooffileoneId: prooffileoneStorageId,
+        prooffiletwoId: prooffiletwoStorageId,
+        prooffilethreeId: prooffilethreeStorageId,
+        prooffilefourId: prooffilefourStorageId,
+        prooffilefiveId: prooffilefiveStorageId,
+        prooffilesixId: prooffilesixStorageId,
         userId: user?.user?.id as Id<"users">,
         type: types[imageFileType],
-        dateOfBirth: values.dateOfBirth,
+        dateOfBirth: values.dateOfBirth.toISOString(),
         email: values.email,
         telephone: values.telephone,
         postalAddress: values.postalAddress,
@@ -560,7 +592,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   )}
                 />
 
-                <div className="flex justify-between w-full">
+                <div className="flex justify-between gap-[75px] w-full">
                   <FormField
                     control={form.control}
                     name="name"
@@ -585,7 +617,23 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Date of Birth*</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required />
+                          <Controller
+                            control={form.control}
+                            name="dateOfBirth"
+                            render={({ field: { onChange, value } }) => (
+                              <DatePicker
+                                selected={value ? new Date(value) : null}
+                                onChange={(date) => onChange(date)}
+                                dateFormat="yyyy-MM-dd" // Format of the date
+                                placeholderText="Select date"
+                                className="w-[500px] p-2 border rounded" // Styling to match your form
+                                maxDate={new Date()} // Optional: prevent selecting future dates
+                                showYearDropdown
+                                scrollableYearDropdown
+                                yearDropdownItemNumber={100} // Adjust for reasonable age range
+                              />
+                            )}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -1046,7 +1094,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                      <Input {...field} placeholder="If yes, enter the year here..." />
+                        <Input
+                          {...field}
+                          placeholder="If yes, enter the year here..."
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1128,7 +1179,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                      <Input {...field} placeholder="If yes, enter the year here..." />
+                        <Input
+                          {...field}
+                          placeholder="If yes, enter the year here..."
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1362,12 +1416,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="fileone"
+                  name="uacefile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 1</FormLabel>
+                      <FormLabel>UACE Certificate</FormLabel>
                       <FormControl>
-                        <Input type="file" {...fileoneRef} />
+                        <Input type="file" {...uacefileRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1376,12 +1430,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filetwo"
+                  name="plefile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 2</FormLabel>
+                      <FormLabel>PLE Result Slip</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filetwoRef} />
+                        <Input type="file" {...plefileRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1390,12 +1444,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filethree"
+                  name="transcriptfile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 3</FormLabel>
+                      <FormLabel>University Transcript</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filethreeRef} />
+                        <Input type="file" {...transcriptfileRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1404,12 +1458,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filefour"
+                  name="universityfile"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 4</FormLabel>
+                      <FormLabel>University Certificate</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filefourRef} />
+                        <Input type="file" {...universityfileRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1418,12 +1472,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filefive"
+                  name="prooffileone"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 5</FormLabel>
+                      <FormLabel>Other Proof Certificate 1</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filefiveRef} />
+                        <Input type="file" {...prooffileoneRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1432,12 +1486,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filesix"
+                  name="prooffiletwo"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 6</FormLabel>
+                      <FormLabel>Other Proof Certificate 2</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filesixRef} />
+                        <Input type="file" {...prooffiletwoRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1446,12 +1500,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="fileseven"
+                  name="prooffilethree"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 7</FormLabel>
+                      <FormLabel>Other Proof Certificate 3</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filesevenRef} />
+                        <Input type="file" {...prooffilethreeRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1460,12 +1514,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="fileeight"
+                  name="prooffilefour"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 8</FormLabel>
+                      <FormLabel>Other Proof Certificate 4</FormLabel>
                       <FormControl>
-                        <Input type="file" {...fileeightRef} />
+                        <Input type="file" {...prooffilefourRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1474,12 +1528,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="filenine"
+                  name="prooffilefive"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 9</FormLabel>
+                      <FormLabel>Other Proof Certificate 5</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filenineRef} />
+                        <Input type="file" {...prooffilefiveRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -1488,12 +1542,12 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="fileten"
+                  name="prooffilesix"
                   render={() => (
                     <FormItem>
-                      <FormLabel>Document 10</FormLabel>
+                      <FormLabel>Other Proof Certificate 6</FormLabel>
                       <FormControl>
-                        <Input type="file" {...filetenRef} />
+                        <Input type="file" {...prooffilesixRef} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

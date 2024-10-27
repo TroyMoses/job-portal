@@ -10,6 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import Image from "next/image";
+import { format } from "date-fns";
 
 const Applicant = ({ params }: { params: { id: string } }) => {
   const { toast } = useToast();
@@ -36,6 +37,8 @@ const Applicant = ({ params }: { params: { id: string } }) => {
   }
 
   const file = filteredFiles[0];
+
+  const formattedDate = format(new Date(file.dateOfBirth), 'dd/MM/yyyy');
 
   // Ensure user is loaded
   if (!userLoaded) {
@@ -71,7 +74,7 @@ const Applicant = ({ params }: { params: { id: string } }) => {
             <strong>Post Applied for:</strong> {file.post}
           </p>
           <p>
-            <strong>Date of Birth:</strong> {file.dateOfBirth}
+            <strong>Date of Birth:</strong> {formattedDate}
           </p>
           <p>
             <strong>Email:</strong> {file.email}
@@ -124,17 +127,17 @@ const Applicant = ({ params }: { params: { id: string } }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {/* Dynamically render each document button if the URL exists */}
           {[
-            { label: "UCE Document", url: file.uceFileUrl },
-            { label: "Document One", url: file.fileOneUrl },
-            { label: "Document Two", url: file.fileTwoUrl },
-            { label: "Document Three", url: file.fileThreeUrl },
-            { label: "Document Four", url: file.fileFourUrl },
-            { label: "Document Five", url: file.fileFiveUrl },
-            { label: "Document Six", url: file.fileSixUrl },
-            { label: "Document Seven", url: file.fileSevenUrl },
-            { label: "Document Eight", url: file.fileEightUrl },
-            { label: "Document Nine", url: file.fileNineUrl },
-            { label: "Document Ten", url: file.fileTenUrl },
+            { label: "UCE Certificate", url: file.uceFileUrl },
+            { label: "UACE Certificate", url: file.uaceFileUrl },
+            { label: "PLE Result Slip", url: file.pleFileUrl },
+            { label: "University Transcript", url: file.transcriptFileUrl },
+            { label: "University Certificate", url: file.universityFileUrl },
+            { label: "Other Proof Certificate 1", url: file.proofFileOneUrl },
+            { label: "Other Proof Certificate 2", url: file.proofFileTwoUrl },
+            { label: "Other Proof Certificate 3", url: file.proofFileThreeUrl },
+            { label: "Other Proof Certificate 4", url: file.proofFileFourUrl },
+            { label: "Other Proof Certificate 5", url: file.proofFileFiveUrl },
+            { label: "Other Proof Certificate 6", url: file.proofFileSixUrl },
           ].map(
             (doc, index) =>
               doc.url && (

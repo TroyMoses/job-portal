@@ -33,16 +33,16 @@ export const createFile = mutation({
     name: v.string(),
     imageId: v.id("_storage"),
     ucefileId: v.id("_storage"),
-    fileoneId: v.optional(v.id("_storage")),
-    filetwoId: v.optional(v.id("_storage")),
-    filethreeId: v.optional(v.id("_storage")),
-    filefourId: v.optional(v.id("_storage")),
-    filefiveId: v.optional(v.id("_storage")),
-    filesixId: v.optional(v.id("_storage")),
-    filesevenId: v.optional(v.id("_storage")),
-    fileeightId: v.optional(v.id("_storage")),
-    filenineId: v.optional(v.id("_storage")),
-    filetenId: v.optional(v.id("_storage")),
+    uacefileId: v.optional(v.id("_storage")),
+    plefileId: v.optional(v.id("_storage")),
+    transcriptfileId: v.optional(v.id("_storage")),
+    universityfileId: v.optional(v.id("_storage")),
+    prooffileoneId: v.optional(v.id("_storage")),
+    prooffiletwoId: v.optional(v.id("_storage")),
+    prooffilethreeId: v.optional(v.id("_storage")),
+    prooffilefourId: v.optional(v.id("_storage")),
+    prooffilefiveId: v.optional(v.id("_storage")),
+    prooffilesixId: v.optional(v.id("_storage")),
     userId: v.string(),
     type: v.optional(fileTypes),
     dateOfBirth: v.string(),
@@ -102,15 +102,16 @@ export const createFile = mutation({
       name: args.name,
       imageId: args.imageId,
       ucefileId: args.ucefileId,
-      fileoneId: args.fileoneId,
-      filetwoId: args.filetwoId,
-      filethreeId: args.filethreeId,
-      filefourId: args.filefourId,
-      filefiveId: args.filefiveId,
-      filesixId: args.filesixId,
-      fileeightId: args.fileeightId,
-      filenineId: args.filenineId,
-      filetenId: args.filetenId,
+      uacefileId: args.uacefileId,
+      plefileId: args.plefileId,
+      transcriptfileId: args.transcriptfileId,
+      universityfileId: args.universityfileId,
+      prooffileoneId: args.prooffileoneId,
+      prooffiletwoId: args.prooffiletwoId,
+      prooffilethreeId: args.prooffilethreeId,
+      prooffilefourId: args.prooffilefourId,
+      prooffilefiveId: args.prooffilefiveId,
+      prooffilesixId: args.prooffilesixId,
       type: args.type,
       userId: userId,
       dateOfBirth: args.dateOfBirth,
@@ -192,35 +193,35 @@ export const getFiles = query({
         uceFileUrl: file.ucefileId
           ? await ctx.storage.getUrl(file.ucefileId)
           : null,
-        fileOneUrl: file.fileoneId
-          ? await ctx.storage.getUrl(file.fileoneId)
+        uaceFileUrl: file.uacefileId
+          ? await ctx.storage.getUrl(file.uacefileId)
           : null,
-        fileTwoUrl: file.filetwoId
-          ? await ctx.storage.getUrl(file.filetwoId)
+        pleFileUrl: file.plefileId
+          ? await ctx.storage.getUrl(file.plefileId)
           : null,
-        fileThreeUrl: file.filethreeId
-          ? await ctx.storage.getUrl(file.filethreeId)
+        transcriptFileUrl: file.transcriptfileId
+          ? await ctx.storage.getUrl(file.transcriptfileId)
           : null,
-        fileFourUrl: file.filefourId
-          ? await ctx.storage.getUrl(file.filefourId)
+        universityFileUrl: file.universityfileId
+          ? await ctx.storage.getUrl(file.universityfileId)
           : null,
-        fileFiveUrl: file.filefiveId
-          ? await ctx.storage.getUrl(file.filefiveId)
+        proofFileOneUrl: file.prooffileoneId
+          ? await ctx.storage.getUrl(file.prooffileoneId)
           : null,
-        fileSixUrl: file.filesixId
-          ? await ctx.storage.getUrl(file.filesixId)
+        proofFileTwoUrl: file.prooffiletwoId
+          ? await ctx.storage.getUrl(file.prooffiletwoId)
           : null,
-        fileSevenUrl: file.filesevenId
-          ? await ctx.storage.getUrl(file.filesevenId)
+        proofFileThreeUrl: file.prooffilethreeId
+          ? await ctx.storage.getUrl(file.prooffilethreeId)
           : null,
-        fileEightUrl: file.fileeightId
-          ? await ctx.storage.getUrl(file.fileeightId)
+        proofFileFourUrl: file.prooffilefourId
+          ? await ctx.storage.getUrl(file.prooffilefourId)
           : null,
-        fileNineUrl: file.filenineId
-          ? await ctx.storage.getUrl(file.filenineId)
+        proofFileFiveUrl: file.prooffilefiveId
+          ? await ctx.storage.getUrl(file.prooffilefiveId)
           : null,
-        fileTenUrl: file.filetenId
-          ? await ctx.storage.getUrl(file.filetenId)
+        proofFileSixUrl: file.prooffilesixId
+          ? await ctx.storage.getUrl(file.prooffilesixId)
           : null,
         post: file.post,
         email: file.email,
