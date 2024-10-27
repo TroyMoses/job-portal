@@ -51,11 +51,7 @@ export function AddScoreDialog({
   };
 
   return (
-    <Dialog
-      open
-      //@ts-ignore
-      onClose={onClose}
-    >
+    <Dialog open onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Interview Score</DialogTitle>

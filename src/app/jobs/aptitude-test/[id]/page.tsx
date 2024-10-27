@@ -62,7 +62,8 @@ const AptitudeTest = ({ params }: { params: { id: Id<"users"> } }) => {
         };
       });
     
-      const score = (correctCount / randomTest.aptitudeTest.length) * 100;
+      const scoreBefore = (correctCount / randomTest.aptitudeTest.length) * 100;
+      const score = Math.round(scoreBefore);
     
       await submitResults({
         userId: params.id ,
