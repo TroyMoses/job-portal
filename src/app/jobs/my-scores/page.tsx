@@ -76,11 +76,11 @@ const MyScores = () => {
                         </p>
                         <p>
                           <strong>Interview Average:</strong>{" "}
-                          {applicantResult.oralInterviewAverage ?? "Pending"}
+                          {applicantResult.oralInterviewAverage ?? "Pending"}%
                         </p>
                         <p>
                           <strong>Overall Average:</strong>{" "}
-                          {applicantResult.overallAverageScore ?? "Pending"}
+                          {applicantResult.overallAverageScore ?? "Pending"}%
                         </p>
                       </div>
                     ) : (

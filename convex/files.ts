@@ -384,6 +384,15 @@ export const getAllRejected = query({
   },
 });
 
+export const getAllAppointed = query({
+  args: {},
+  async handler(ctx, args) {
+    const appointed = await ctx.db.query("appointed").collect();
+
+    return appointed;
+  },
+});
+
 async function hasAccessToFile(
   ctx: QueryCtx | MutationCtx,
   fileId: Id<"files">
