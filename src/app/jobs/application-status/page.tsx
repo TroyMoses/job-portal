@@ -91,13 +91,13 @@ const ApplicationStatus = () => {
                     <p className="text-xl font-semibold text-red-600">
                       Status: Unsuccessful
                     </p>
-                    {/* <p className="text-lg text-gray-600">
+                    <p className="text-lg text-gray-600">
                        Reason:{" "}
                       {
                         //@ts-ignore
                         rejectedApplicant?.reason || "Not provided"
                       }
-                    </p> */}
+                    </p>
                   </>
                 ) : !hasNotApplied ? (
                   <>
