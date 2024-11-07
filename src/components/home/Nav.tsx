@@ -1,6 +1,5 @@
 "use client";
 
-import {  useEffect  } from "react";
 import { Button } from "@/components/ui/button";
 import {
   SignInButton,
@@ -26,15 +25,7 @@ export default function Nav() {
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
-
-  // if (isAdmin) {
-  //   router.push("/dashboard/home");
-  // } else if (isCommissioner) {
-  //   router.push("/dashboard/home");
-  // } else {
-  //   router.push("/")
-  // }
-
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
   return (
     <div className="h-[15vh] bg-green-500 overflow-hidden shadow-md px-8">
@@ -85,7 +76,12 @@ export default function Nav() {
                   <Link href="/dashboard/home">CAO Dashboard</Link>
                 </Button>
               )}
-              {!isAdmin && !isCommissioner && !isCAO && (
+              {isTechnical && (
+                <Button size={"sm"} variant={"outline"}>
+                  <Link href="/dashboard/home">Technical Personnel Dashboard</Link>
+                </Button>
+              )}
+              {!isAdmin && !isCommissioner && !isCAO && !isTechnical && (
                 <Button size={"sm"} variant={"outline"}>
                 <Link href="/jobs/application-status">Applicant Dashboard</Link>
               </Button>

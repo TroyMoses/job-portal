@@ -5,7 +5,7 @@ import { RejectedBrowser } from "../_components/rejected-browser";
 export default function FavoritesPage() {
   return (
     <div>
-      <RejectedBrowser title="Rejected Applications" rejectedOnly />
+      <RejectedBrowser title="Applications Not Shortlisted" rejectedOnly />
     </div>
   );
 }

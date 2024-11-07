@@ -23,8 +23,9 @@ const FeaturedJobs = () => {
     <div className=" mt-45 pt-20 pb-12">
       <Heading
         mainHeading="Available Jobs"
-        subHeading="Know your worth and find the job that qualify your life"
+        subHeading=""
       />
+      <h1 className="text-[18px] sm:text-[18px] text-center lg:text-[18px] text-red-500 leading-[1rem] lg:leading-[2rem] font-extrabold">RESTRICTED FOR SERVING OFFICERS IN KAKUMIRO DISTRICT LOCAL GOVERNMENT</h1>
       <div className="mt-12 w-[80%] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-12">
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">

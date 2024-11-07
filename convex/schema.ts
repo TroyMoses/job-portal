@@ -106,15 +106,19 @@ export const resultType = v.object({
   applicantName: v.optional(v.string()),
   jobPost: v.optional(v.string()),
   testId: v.id("aptitude_test"),
-  selectedAnswers: v.array(v.object({
-    question: v.string(),
-    selectedAnswer: v.string(),
-  })),
+  selectedAnswers: v.array(
+    v.object({
+      question: v.string(),
+      selectedAnswer: v.string(),
+    })
+  ),
   aptitudetestscore: v.number(),
   commOne: v.optional(v.number()),
   commTwo: v.optional(v.number()),
   commThree: v.optional(v.number()),
   commFour: v.optional(v.number()),
+  commFive: v.optional(v.number()),
+  technical: v.optional(v.number()),
   oralInterviewAverage: v.optional(v.number()),
   overallAverageScore: v.optional(v.number()),
 });
@@ -124,7 +128,17 @@ export default defineSchema({
     name: v.string(),
     type: v.optional(fileTypes),
     imageId: v.optional(v.id("_storage")),
+    ucefileId: v.optional(v.id("_storage")),
     uacefileId: v.optional(v.id("_storage")),
+    plefileId: v.optional(v.id("_storage")),
+    transcriptfileId: v.optional(v.id("_storage")),
+    universityfileId: v.optional(v.id("_storage")),
+    prooffileoneId: v.optional(v.id("_storage")),
+    prooffiletwoId: v.optional(v.id("_storage")),
+    prooffilethreeId: v.optional(v.id("_storage")),
+    prooffilefourId: v.optional(v.id("_storage")),
+    prooffilefiveId: v.optional(v.id("_storage")),
+    prooffilesixId: v.optional(v.id("_storage")),
     userId: v.id("users"),
     shouldDelete: v.optional(v.boolean()),
     dateOfBirth: v.optional(v.string()),
@@ -139,6 +153,7 @@ export default defineSchema({
     village: v.optional(v.string()),
     residence: v.optional(v.string()),
     presentministry: v.optional(v.string()),
+    registrationnumber: v.optional(v.string()),
     presentpost: v.optional(v.string()),
     presentsalary: v.optional(v.string()),
     termsofemployment: v.optional(v.string()),
@@ -167,6 +182,7 @@ export default defineSchema({
 
   rejected: defineTable({
     userId: v.id("users"),
+    reason: v.optional(v.string()),
   }).index("by_userId", ["userId"]),
 
   users: defineTable({
@@ -193,5 +209,4 @@ export default defineSchema({
   }).index("by_shouldDelete", ["shouldDelete"]),
 
   results: defineTable(resultType).index("by_userId", ["userId"]),
-
 });

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 export function FileBrowser({
   title,
@@ -21,35 +22,44 @@ export function FileBrowser({
   deletedOnly?: boolean;
 }) {
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
   const shortlisted = useQuery(api.files.getAllShortListed);
-
   const files = useQuery(api.files.getFiles, {
     shortlisted: shortlistedOnly,
     deletedOnly,
   });
   const isLoading = files === undefined;
 
+  // Filtered data based on search query
   const modifiedFiles =
-    files?.map((file: Doc<"files">) => ({
-      ...file,
-      isShortlisted: (shortlisted ?? []).some(
-        (shortlisted) => shortlisted.userId === file.userId
-      ),
-    })) ?? [];
+    files
+      ?.map((file: Doc<"files">) => ({
+        ...file,
+        isShortlisted: (shortlisted ?? []).some(
+          (shortlisted) => shortlisted.userId === file.userId
+        ),
+      }))
+      .filter(
+        (file) =>
+          file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          file.post?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          file.telephone?.toLowerCase().includes(searchQuery.toLowerCase())
+      ) ?? [];
 
-     if (!userLoaded) {
+  if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
 
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (!isAdmin && !isCommissioner && !isCAO) {
+  if (!isAdmin && !isCommissioner && !isCAO && !isTechnical) {
     router.push("/");
     return null;
   }
@@ -58,12 +68,19 @@ export function FileBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
+
+      {/* Search Input */}
+      <Input
+        type="text"
+        placeholder="Search by job post, applicant name or telephone..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 w-full max-w-lg"
+      />
 
       <Tabs defaultValue="table">
         <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">
@@ -72,7 +89,6 @@ export function FileBrowser({
               <RowsIcon /> Table
             </TabsTrigger>
           </TabsList>
-
         </div>
 
         {isLoading && (
@@ -83,11 +99,13 @@ export function FileBrowser({
         )}
 
         <TabsContent value="table">
-          {/* @ts-ignore */}
-          <DataTable columns={columns} data={modifiedFiles} />
+          <DataTable
+            //@ts-ignore
+            columns={columns}
+            data={modifiedFiles}
+          />
         </TabsContent>
       </Tabs>
-
     </div>
   );
 }

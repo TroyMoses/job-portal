@@ -12,6 +12,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
@@ -29,13 +32,45 @@ const formSchema = z.object({
   image: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
     .refine((files) => files.length > 0, `Applicant photo is required`),
-  uacefile: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `UACE document is required`),
-  dateOfBirth: z.string().min(1).max(200),
+  ucefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  uacefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  plefile: z.custom<FileList>((val) => val instanceof FileList, "Required"),
+  transcriptfile: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  universityfile: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffileone: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffiletwo: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilethree: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilefour: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilefive: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  prooffilesix: z.custom<FileList>(
+    (val) => val instanceof FileList,
+    "Required"
+  ),
+  dateOfBirth: z.date().refine((date) => !!date, { message: "Date of Birth is required" }),
   email: z.string().min(1).max(200),
   telephone: z.string().min(1).max(200),
-  postalAddress: z.string().min(1).max(500),
+  postalAddress: z.string().max(500),
   nationality: z.string().min(1).max(200),
   nin: z.string().min(1).max(200),
   homeDistrict: z.string().min(1).max(200),
@@ -43,11 +78,12 @@ const formSchema = z.object({
   village: z.string().min(1).max(200),
   residence: z.string().min(1).max(100),
   presentministry: z.string().min(1).max(500),
+  registrationnumber: z.string().max(500),
   presentpost: z.string().min(1).max(500),
   presentsalary: z.string().min(1).max(300),
   termsofemployment: z.string().min(1).max(100),
   maritalstatus: z.string().min(1).max(100),
-  children: z.string().min(1).max(100),
+  children: z.string().max(100),
   schools: z.array(
     z.object({
       year: z
@@ -86,13 +122,13 @@ const formSchema = z.object({
   available: z.string().min(1).max(500),
   referencerecord: z.array(
     z.object({
-      name: z.string().min(1, "Reference name is required"),
+      name: z.string().min(1, "Referee name is required"),
       address: z.string().min(1, "Address is required"),
     })
   ),
   officerrecord: z.array(
     z.object({
-      name: z.string().min(1, "Subject name is required"),
+      name: z.string().min(1, "Recommending officer name is required"),
       title: z.string().min(1, "Title is required"),
       contact: z.string().min(1, "Contact is required"),
     })
@@ -113,8 +149,18 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       post: "",
       name: "",
       image: undefined,
+      ucefile: undefined,
       uacefile: undefined,
-      dateOfBirth: "",
+      plefile: undefined,
+      transcriptfile: undefined,
+      universityfile: undefined,
+      prooffileone: undefined,
+      prooffiletwo: undefined,
+      prooffilethree: undefined,
+      prooffilefour: undefined,
+      prooffilefive: undefined,
+      prooffilesix: undefined,
+      dateOfBirth: undefined,
       email: "",
       telephone: "",
       postalAddress: "",
@@ -124,6 +170,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
       village: "",
       residence: "",
       presentministry: "",
+      registrationnumber: "",
       presentpost: "",
       presentsalary: "",
       termsofemployment: "",
@@ -204,7 +251,17 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
   });
 
   const imageRef = form.register("image");
+  const ucefileRef = form.register("ucefile");
   const uacefileRef = form.register("uacefile");
+  const plefileRef = form.register("plefile");
+  const transcriptfileRef = form.register("transcriptfile");
+  const universityfileRef = form.register("universityfile");
+  const prooffileoneRef = form.register("prooffileone");
+  const prooffiletwoRef = form.register("prooffiletwo");
+  const prooffilethreeRef = form.register("prooffilethree");
+  const prooffilefourRef = form.register("prooffilefour");
+  const prooffilefiveRef = form.register("prooffilefive");
+  const prooffilesixRef = form.register("prooffilesix");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user.isSignedIn) {
@@ -227,15 +284,150 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
     });
     const { storageId: imageStorageId } = await imageResult.json();
 
-    // Upload UACE file
-    const uacePostUrl = await generateUploadUrl();
-    const uaceFileType = values.uacefile[0].type;
-    const uaceResult = await fetch(uacePostUrl, {
+    // Upload UCE file
+    const ucePostUrl = await generateUploadUrl();
+    const uceFileType = values.ucefile[0].type;
+    const uceResult = await fetch(ucePostUrl, {
       method: "POST",
-      headers: { "Content-Type": uaceFileType },
-      body: values.uacefile[0],
+      headers: { "Content-Type": uceFileType },
+      body: values.ucefile[0],
     });
-    const { storageId: uaceStorageId } = await uaceResult.json();
+    const { storageId: uceStorageId } = await uceResult.json();
+
+    let uacefileStorageId;
+    if (values.uacefile && values.uacefile.length > 0) {
+      // Upload uacefile
+      const uacefilePostUrl = await generateUploadUrl();
+      const uacefileType = values.uacefile[0].type;
+      const uacefileResult = await fetch(uacefilePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": uacefileType },
+        body: values.uacefile[0],
+      });
+      ({ storageId: uacefileStorageId } = await uacefileResult.json());
+    }
+
+    let plefileStorageId;
+    if (values.plefile && values.plefile.length > 0) {
+      // Upload plefile
+      const plefilePostUrl = await generateUploadUrl();
+      const plefileType = values.plefile[0].type;
+      const plefileResult = await fetch(plefilePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": plefileType },
+        body: values.plefile[0],
+      });
+      ({ storageId: plefileStorageId } = await plefileResult.json());
+    }
+
+    let transcriptfileStorageId;
+    if (values.transcriptfile && values.transcriptfile.length > 0) {
+      // Upload transcriptfile
+      const transcriptfilePostUrl = await generateUploadUrl();
+      const transcriptfileType = values.transcriptfile[0].type;
+      const transcriptfileResult = await fetch(transcriptfilePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": transcriptfileType },
+        body: values.transcriptfile[0],
+      });
+      ({ storageId: transcriptfileStorageId } =
+        await transcriptfileResult.json());
+    }
+
+    let universityfileStorageId;
+    if (values.universityfile && values.universityfile.length > 0) {
+      // Upload universityfile
+      const universityfilePostUrl = await generateUploadUrl();
+      const universityfileType = values.universityfile[0].type;
+      const universityfileResult = await fetch(universityfilePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": universityfileType },
+        body: values.universityfile[0],
+      });
+      ({ storageId: universityfileStorageId } =
+        await universityfileResult.json());
+    }
+
+    let prooffileoneStorageId;
+    if (values.prooffileone && values.prooffileone.length > 0) {
+      // Upload prooffileone
+      const prooffileonePostUrl = await generateUploadUrl();
+      const prooffileoneType = values.prooffileone[0].type;
+      const prooffileoneResult = await fetch(prooffileonePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffileoneType },
+        body: values.prooffileone[0],
+      });
+      ({ storageId: prooffileoneStorageId } = await prooffileoneResult.json());
+    }
+
+    let prooffiletwoStorageId;
+    if (values.prooffiletwo && values.prooffiletwo.length > 0) {
+      // Upload prooffiletwo
+      const prooffiletwoPostUrl = await generateUploadUrl();
+      const prooffiletwoType = values.prooffiletwo[0].type;
+      const prooffiletwoResult = await fetch(prooffiletwoPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffiletwoType },
+        body: values.prooffiletwo[0],
+      });
+      ({ storageId: prooffiletwoStorageId } = await prooffiletwoResult.json());
+    }
+
+    let prooffilethreeStorageId;
+    if (values.prooffilethree && values.prooffilethree.length > 0) {
+      // Upload prooffilethree
+      const prooffilethreePostUrl = await generateUploadUrl();
+      const prooffilethreeType = values.prooffilethree[0].type;
+      const prooffilethreeResult = await fetch(prooffilethreePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffilethreeType },
+        body: values.prooffilethree[0],
+      });
+      ({ storageId: prooffilethreeStorageId } =
+        await prooffilethreeResult.json());
+    }
+
+    let prooffilefourStorageId;
+    if (values.prooffilefour && values.prooffilefour.length > 0) {
+      // Upload prooffilefour
+      const prooffilefourPostUrl = await generateUploadUrl();
+      const prooffilefourType = values.prooffilefour[0].type;
+      const prooffilefourResult = await fetch(prooffilefourPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffilefourType },
+        body: values.prooffilefour[0],
+      });
+      ({ storageId: prooffilefourStorageId } =
+        await prooffilefourResult.json());
+    }
+
+    let prooffilefiveStorageId;
+    if (values.prooffilefive && values.prooffilefive.length > 0) {
+      // Upload prooffilefive
+      const prooffilefivePostUrl = await generateUploadUrl();
+      const prooffilefiveType = values.prooffilefive[0].type;
+      const prooffilefiveResult = await fetch(prooffilefivePostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffilefiveType },
+        body: values.prooffilefive[0],
+      });
+      ({ storageId: prooffilefiveStorageId } =
+        await prooffilefiveResult.json());
+    }
+
+    let prooffilesixStorageId;
+    if (values.prooffilesix && values.prooffilesix.length > 0) {
+      // Upload prooffilesix
+      const prooffilesixPostUrl = await generateUploadUrl();
+      const prooffilesixType = values.prooffilesix[0].type;
+      const prooffilesixResult = await fetch(prooffilesixPostUrl, {
+        method: "POST",
+        headers: { "Content-Type": prooffilesixType },
+        body: values.prooffilesix[0],
+      });
+      ({ storageId: prooffilesixStorageId } = await prooffilesixResult.json());
+    }
 
     const types = {
       "image/png": "image",
@@ -256,10 +448,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         post: values.post,
         name: values.name,
         imageId: imageStorageId,
-        uacefileId: uaceStorageId,
+        ucefileId: uceStorageId,
+        uacefileId: uacefileStorageId,
+        plefileId: plefileStorageId,
+        transcriptfileId: transcriptfileStorageId,
+        universityfileId: universityfileStorageId,
+        prooffileoneId: prooffileoneStorageId,
+        prooffiletwoId: prooffiletwoStorageId,
+        prooffilethreeId: prooffilethreeStorageId,
+        prooffilefourId: prooffilefourStorageId,
+        prooffilefiveId: prooffilefiveStorageId,
+        prooffilesixId: prooffilesixStorageId,
         userId: user?.user?.id as Id<"users">,
         type: types[imageFileType],
-        dateOfBirth: values.dateOfBirth,
+        dateOfBirth: values.dateOfBirth.toISOString(),
         email: values.email,
         telephone: values.telephone,
         postalAddress: values.postalAddress,
@@ -270,6 +472,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         village: values.village,
         residence: values.residence,
         presentministry: values.presentministry,
+        registrationnumber: values.registrationnumber,
         presentpost: values.presentpost,
         presentsalary: values.presentsalary,
         termsofemployment: values.termsofemployment,
@@ -329,8 +532,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
         </div>
       </div>
       <div className="mt-4 w-[80%] mx-auto">
-
-      <h1 className="text-[20px] mt-8 mb-2 font-semibold">
+        <h1 className="text-[20px] mt-8 mb-2 font-semibold">
           PUBLIC SERVICE FORM (PSF-3)
         </h1>
         <h1 className="text-[20px] mt-8 mb-2 font-semibold">
@@ -390,7 +592,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   )}
                 />
 
-                <div className="flex justify-between w-full">
+                <div className="flex justify-between gap-[75px] w-full">
                   <FormField
                     control={form.control}
                     name="name"
@@ -400,7 +602,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                           Full name {"("}Surname first in capital letters{")"}*
                         </FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -415,7 +617,23 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Date of Birth*</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Controller
+                            control={form.control}
+                            name="dateOfBirth"
+                            render={({ field: { onChange, value } }) => (
+                              <DatePicker
+                                selected={value ? new Date(value) : null}
+                                onChange={(date) => onChange(date)}
+                                dateFormat="yyyy-MM-dd" // Format of the date
+                                placeholderText="Select date"
+                                className="w-[500px] p-2 border rounded" // Styling to match your form
+                                maxDate={new Date()} // Optional: prevent selecting future dates
+                                showYearDropdown
+                                scrollableYearDropdown
+                                yearDropdownItemNumber={100} // Adjust for reasonable age range
+                              />
+                            )}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -431,7 +649,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -445,7 +663,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Telephone Number</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -475,7 +693,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Nationality</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -489,7 +707,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>NIN Number</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -518,7 +736,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Sub-county</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -532,7 +750,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       <FormItem>
                         <FormLabel>Village</FormLabel>
                         <FormControl>
-                          <Input className="w-[500px]" {...field} required/>
+                          <Input className="w-[500px]" {...field} required />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -579,7 +797,24 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Employer*
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} required/>
+                        <Input {...field} required />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="registrationnumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Registration Number{"("}Mandatory for teachers and
+                        health workers{")"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -595,7 +830,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         Present post and date appointment to it
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} required/>
+                        <Input {...field} required />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -859,7 +1094,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input
+                          {...field}
+                          placeholder="If yes, enter the year here..."
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -918,6 +1156,20 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
+                  name="ucefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>UCE Document</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...ucefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="uaceyear"
                   render={({ field }) => (
                     <FormItem>
@@ -927,7 +1179,10 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                         passes.
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Input
+                          {...field}
+                          placeholder="If yes, enter the year here..."
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -986,23 +1241,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
 
                 <FormField
                   control={form.control}
-                  name="uacefile"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel>
-                        Have all your Docements attached here {"["}ACADEMIC
-                        DOCUMENTS{"]"}?{" "}
-                      </FormLabel>
-                      <FormControl>
-                        <Input type="file" {...uacefileRef} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="conviction"
                   render={({ field }) => (
                     <FormItem>
@@ -1055,7 +1293,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`referencerecord.${index}.name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Referee Name</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Name" />
                           </FormControl>
@@ -1068,7 +1306,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`referencerecord.${index}.address`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Address</FormLabel>
+                          <FormLabel>Referee Address</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Address" />
                           </FormControl>
@@ -1084,7 +1322,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       onClick={() => removeReferenceRecord(index)}
                       className="text-sm px-2 py-1"
                     >
-                      Remove Record
+                      Remove Referee
                     </Button>
                   </div>
                 ))}
@@ -1097,7 +1335,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   }
                   className="text-sm px-2 py-1"
                 >
-                  Add Another Record
+                  Add Another Referee
                 </Button>
 
                 {officerFields.map((field, index) => (
@@ -1113,7 +1351,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       name={`officerrecord.${index}.name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>Recommending Officer Name</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="Name" />
                           </FormControl>
@@ -1155,7 +1393,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                       onClick={() => removeOfficerRecord(index)}
                       className="text-sm px-2 py-1"
                     >
-                      Remove Record
+                      Remove Recommending Officer
                     </Button>
                   </div>
                 ))}
@@ -1168,8 +1406,153 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                   }
                   className="text-sm px-2 py-1"
                 >
-                  Add Another Record
+                  Add Recommending Officer
                 </Button>
+
+                <h1 className="font-semibold">
+                  Have all your Docements attached here {"["}ACADEMIC DOCUMENTS
+                  {"]"}? Upload a maximum of 10 documents{"("}optional{")"}
+                </h1>
+
+                <FormField
+                  control={form.control}
+                  name="uacefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>UACE Certificate</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...uacefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="plefile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>PLE Result Slip</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...plefileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="transcriptfile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>University Transcript</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...transcriptfileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="universityfile"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>University Certificate</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...universityfileRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffileone"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 1</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffileoneRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffiletwo"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 2</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffiletwoRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffilethree"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 3</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffilethreeRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffilefour"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 4</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffilefourRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffilefive"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 5</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffilefiveRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="prooffilesix"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Other Proof Certificate 6</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...prooffilesixRef} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}
@@ -1211,12 +1594,6 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
               </form>
             </Form>
           </div>
-
-          <p className="font-semibold italic mt-10">
-            N.B: Conviction for a criminal offence will not necessarily prevent
-            an applicant from being employed in the Public Service but giving of
-            false information in that context is an offence.
-          </p>
         </div>
       </div>
     </div>

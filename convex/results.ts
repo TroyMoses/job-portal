@@ -35,6 +35,8 @@ export const submitResults = mutation({
       commTwo: undefined,
       commThree: undefined,
       commFour: undefined,
+      commFive: undefined,
+      technical: undefined,
       oralInterviewAverage: undefined,
       overallAverageScore: undefined,
     });
@@ -64,43 +66,6 @@ export const getAllResults = query({
     return results;
   },
 });
-
-// export const addOralInterviewScore1 = mutation({
-//   args: {
-//     userId: v.id("users"),
-//     commissioner: v.string(),  // E.g., "commOne", "commTwo"
-//     score: v.number(),
-//   },
-//   async handler(ctx, args) {
-//     const result = await ctx.db.query("results").withIndex("by_userId", (q) =>
-//       q.eq("userId", args.userId)
-//     ).first();
-
-//     if (!result) {
-//       throw new Error("No result found for this user.");
-//     }
-
-//     const updatedFields: Partial<Record<string, number>> = {};
-//     updatedFields[args.commissioner] = args.score;
-
-//     // Calculate oral interview average if all fields are available
-//     const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
-//     if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined) {
-//       const interviewScores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(Boolean);
-//       if (interviewScores.length === 4) {
-//         updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 4;
-//       }
-//     }
-
-//     // Calculate overall average if oral interview average is available
-//     if (updatedFields.oralInterviewAverage) {
-//       updatedFields.overallAverageScore = (result.aptitudetestscore + updatedFields.oralInterviewAverage) / 2;
-//     }
-
-//     // Patch the result
-//     await ctx.db.patch(result._id, updatedFields);
-//   },
-// });
 
 export const addOralInterviewScore = mutation({
   args: {
@@ -133,17 +98,21 @@ export const addOralInterviewScore = mutation({
       updatedFields.commTwo || result.commTwo,
       updatedFields.commThree || result.commThree,
       updatedFields.commFour || result.commFour,
+      updatedFields.commFive || result.commFive,
+      updatedFields.technical || result.technical,
     ].filter((score) => score !== undefined);
 
-    if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined) {
+    if (result.commOne !== undefined && result.commTwo !== undefined && result.commThree !== undefined && result.commFour !== undefined && result.commFive !== undefined && result.technical !== undefined) {
       const interviewScores = [
         updatedFields.commOne || result.commOne,
         updatedFields.commTwo || result.commTwo,
         updatedFields.commThree || result.commThree,
         updatedFields.commFour || result.commFour,
+        updatedFields.commFive || result.commFive,
+        updatedFields.technical || result.technical,
       ].filter((score) => score !== undefined);
-            if (interviewScores.length === 4) {
-              updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 4;
+            if (interviewScores.length === 6) {
+              updatedFields.oralInterviewAverage = interviewScores.reduce((a, b) => a + b, 0) / 6;
             }
           }
 
@@ -166,32 +135,39 @@ export const updateInterviewScore = mutation({
     field: v.string(), // Field to update (commOne, commTwo, etc.)
   },
   async handler(ctx, { applicantId, score, field }) {
-    const result = await ctx.db.get(applicantId);
-
-    if (!result) {
-      throw new Error("Applicant result not found");
-    }
-
     // Update the correct commissioner field with the score
     await ctx.db.patch(applicantId, { [field]: score });
 
-    // Recalculate the interview average if all scores are available
-    const scores = [result.commOne, result.commTwo, result.commThree, result.commFour].filter(
-      (s) => s !== undefined
-    );
+    // Refetch the updated result document
+    const updatedResult = await ctx.db.get(applicantId);
 
-    if (scores.length === 4) {
+    // Calculate the new average only if all scores are present
+    const scores = [
+      updatedResult?.commOne,
+      updatedResult?.commTwo,
+      updatedResult?.commThree,
+      updatedResult?.commFour,
+      updatedResult?.commFive,
+      updatedResult?.technical,
+    ].filter((s) => s !== undefined);
+
+    if (scores.length === 6) {
+      // Calculate oral interview average and overall average score
       //@ts-ignore
-      const oralInterviewAverage = scores.reduce((a, b) => a + b, 0) / 4;
-      const overallAverageScore = (oralInterviewAverage + result.aptitudetestscore) / 2;
-
-      await ctx.db.patch(applicantId, {
-        oralInterviewAverage,
-        overallAverageScore,
-      });
+      const oralInterviewAverage = Math.round(scores.reduce((a, b) => a + b, 0) / 6);
+      if (updatedResult) {
+        const overallAverageScore = Math.round((oralInterviewAverage + updatedResult.aptitudetestscore) / 2);
+      
+        // Update the averages in the database
+        await ctx.db.patch(applicantId, {
+          oralInterviewAverage,
+          overallAverageScore,
+        });
+      }
     }
   },
 });
+
 
 export const toggleAppointed = mutation({
   args: { userId: v.id("users" )},
@@ -207,5 +183,16 @@ export const toggleAppointed = mutation({
       });
     } else {
     }
+  },
+});
+
+export const getAllAppointed = query({
+  args: {},
+  async handler(ctx, args) {
+    const appointed = await ctx.db
+      .query("appointed")
+      .collect();
+
+    return appointed;
   },
 });

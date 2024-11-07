@@ -14,8 +14,6 @@ import {
   schoolType,
   uaceType,
   uceType,
-  residenceType,
-  consentmentType,
 } from "./schema";
 import { Doc, Id } from "./_generated/dataModel";
 
@@ -34,7 +32,17 @@ export const createFile = mutation({
     post: v.string(),
     name: v.string(),
     imageId: v.id("_storage"),
-    uacefileId: v.id("_storage"),
+    ucefileId: v.id("_storage"),
+    uacefileId: v.optional(v.id("_storage")),
+    plefileId: v.optional(v.id("_storage")),
+    transcriptfileId: v.optional(v.id("_storage")),
+    universityfileId: v.optional(v.id("_storage")),
+    prooffileoneId: v.optional(v.id("_storage")),
+    prooffiletwoId: v.optional(v.id("_storage")),
+    prooffilethreeId: v.optional(v.id("_storage")),
+    prooffilefourId: v.optional(v.id("_storage")),
+    prooffilefiveId: v.optional(v.id("_storage")),
+    prooffilesixId: v.optional(v.id("_storage")),
     userId: v.string(),
     type: v.optional(fileTypes),
     dateOfBirth: v.string(),
@@ -48,6 +56,7 @@ export const createFile = mutation({
     subcounty: v.string(),
     village: v.string(),
     presentministry: v.optional(v.string()),
+    registrationnumber: v.optional(v.string()),
     presentpost: v.optional(v.string()),
     presentsalary: v.optional(v.string()),
     termsofemployment: v.optional(v.string()),
@@ -92,9 +101,20 @@ export const createFile = mutation({
       post: args.post,
       name: args.name,
       imageId: args.imageId,
+      ucefileId: args.ucefileId,
       uacefileId: args.uacefileId,
+      plefileId: args.plefileId,
+      transcriptfileId: args.transcriptfileId,
+      universityfileId: args.universityfileId,
+      prooffileoneId: args.prooffileoneId,
+      prooffiletwoId: args.prooffiletwoId,
+      prooffilethreeId: args.prooffilethreeId,
+      prooffilefourId: args.prooffilefourId,
+      prooffilefiveId: args.prooffilefiveId,
+      prooffilesixId: args.prooffilesixId,
       type: args.type,
       userId: userId,
+      dateOfBirth: args.dateOfBirth,
       residence: args.residence,
       email: args.email,
       telephone: args.telephone,
@@ -105,6 +125,7 @@ export const createFile = mutation({
       subcounty: args.subcounty,
       village: args.village,
       presentministry: args.presentministry,
+      registrationnumber: args.registrationnumber,
       presentpost: args.presentpost,
       presentsalary: args.presentsalary,
       termsofemployment: args.termsofemployment,
@@ -136,9 +157,7 @@ export const getFiles = query({
     let files = await ctx.db.query("files").collect();
 
     if (args.shortlisted) {
-      const shortlisted = await ctx.db
-        .query("shortlisted")
-        .collect();
+      const shortlisted = await ctx.db.query("shortlisted").collect();
 
       files = files.filter((file) =>
         shortlisted.some((shortlist) => shortlist.userId === file.userId)
@@ -146,9 +165,7 @@ export const getFiles = query({
     }
 
     if (args.appointedOnly) {
-      const appointed = await ctx.db
-        .query("appointed")
-        .collect();
+      const appointed = await ctx.db.query("appointed").collect();
 
       files = files.filter((file) =>
         appointed.some((appointed) => appointed.userId === file.userId)
@@ -156,13 +173,15 @@ export const getFiles = query({
     }
 
     if (args.rejectedOnly) {
-      const rejected = await ctx.db
-        .query("rejected")
-        .collect();
-
-      files = files.filter((file) =>
-        rejected.some((rejected) => rejected.userId === file.userId)
-      );
+      const rejected = await ctx.db.query("rejected").collect();
+      files = files
+        .filter((file) =>
+          rejected.some((rejectedItem) => rejectedItem.userId === file.userId)
+        )
+        .map((file) => ({
+          ...file,
+          reason: rejected.find((rejectedItem) => rejectedItem.userId === file.userId)?.reason || "",
+        }));
     }
 
     if (args.deletedOnly) {
@@ -174,11 +193,39 @@ export const getFiles = query({
     const filesWithUrl = await Promise.all(
       files.map(async (file) => ({
         ...file,
-        imageUrl: file.imageId
-          ? await ctx.storage.getUrl(file.imageId)
+        imageUrl: file.imageId ? await ctx.storage.getUrl(file.imageId) : null,
+        uceFileUrl: file.ucefileId
+          ? await ctx.storage.getUrl(file.ucefileId)
           : null,
         uaceFileUrl: file.uacefileId
           ? await ctx.storage.getUrl(file.uacefileId)
+          : null,
+        pleFileUrl: file.plefileId
+          ? await ctx.storage.getUrl(file.plefileId)
+          : null,
+        transcriptFileUrl: file.transcriptfileId
+          ? await ctx.storage.getUrl(file.transcriptfileId)
+          : null,
+        universityFileUrl: file.universityfileId
+          ? await ctx.storage.getUrl(file.universityfileId)
+          : null,
+        proofFileOneUrl: file.prooffileoneId
+          ? await ctx.storage.getUrl(file.prooffileoneId)
+          : null,
+        proofFileTwoUrl: file.prooffiletwoId
+          ? await ctx.storage.getUrl(file.prooffiletwoId)
+          : null,
+        proofFileThreeUrl: file.prooffilethreeId
+          ? await ctx.storage.getUrl(file.prooffilethreeId)
+          : null,
+        proofFileFourUrl: file.prooffilefourId
+          ? await ctx.storage.getUrl(file.prooffilefourId)
+          : null,
+        proofFileFiveUrl: file.prooffilefiveId
+          ? await ctx.storage.getUrl(file.prooffilefiveId)
+          : null,
+        proofFileSixUrl: file.prooffilesixId
+          ? await ctx.storage.getUrl(file.prooffilesixId)
           : null,
         post: file.post,
         email: file.email,
@@ -189,8 +236,10 @@ export const getFiles = query({
         homeDistrict: file.homeDistrict,
         subcounty: file.subcounty,
         village: file.village,
+        dateOfBirth: file.dateOfBirth,
         residence: file.residence,
         presentministry: file.presentministry,
+        registrationnumber: file.registrationnumber,
         presentpost: file.presentpost,
         presentsalary: file.presentsalary,
         termsofemployment: file.termsofemployment,
@@ -227,8 +276,8 @@ export const deleteAllFiles = internalMutation({
         if (file.imageId) {
           await ctx.storage.delete(file.imageId);
         }
-        if (file.uacefileId) {
-          await ctx.storage.delete(file.uacefileId);
+        if (file.ucefileId) {
+          await ctx.storage.delete(file.ucefileId);
         }
         return await ctx.db.delete(file._id);
       })
@@ -267,34 +316,56 @@ export const restoreFile = mutation({
 });
 
 export const toggleShortlisted = mutation({
-  args: { userId: v.id("users" )},
+  args: { userId: v.id("users") },
   async handler(ctx, args) {
-
+    // Check if the user is already in the `shortlisted` table
     const shortlisted = await ctx.db
       .query("shortlisted")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .first();
 
     if (!shortlisted) {
+      // Insert the user into the `shortlisted` table
       await ctx.db.insert("shortlisted", {
         userId: args.userId,
       });
+
+      // Remove the user from the `rejected` table if they are present
+      const rejected = await ctx.db
+        .query("rejected")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .first();
+
+      if (rejected) {
+        await ctx.db.delete(rejected._id);
+      }
     } else {
     }
   },
 });
 
 export const toggleRejected = mutation({
-  args: { userId: v.id("users" )},
+  args: { userId: v.id("users"), reason: v.string(), },
   async handler(ctx, args) {
-
     const rejected = await ctx.db
       .query("rejected")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
       .first();
 
     if (!rejected) {
       await ctx.db.insert("rejected", {
         userId: args.userId,
+        reason: args.reason,
       });
+
+      const shortlisted = await ctx.db
+        .query("shortlisted")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .first();
+
+      if (shortlisted) {
+        await ctx.db.delete(shortlisted._id);
+      }
     } else {
     }
   },
@@ -303,9 +374,7 @@ export const toggleRejected = mutation({
 export const getAllShortListed = query({
   args: {},
   async handler(ctx, args) {
-    const shortlisted = await ctx.db
-      .query("shortlisted")
-      .collect();
+    const shortlisted = await ctx.db.query("shortlisted").collect();
 
     return shortlisted;
   },
@@ -314,11 +383,18 @@ export const getAllShortListed = query({
 export const getAllRejected = query({
   args: {},
   async handler(ctx, args) {
-    const rejected = await ctx.db
-      .query("rejected")
-      .collect();
+    const rejected = await ctx.db.query("rejected").collect();
 
     return rejected;
+  },
+});
+
+export const getAllAppointed = query({
+  args: {},
+  async handler(ctx, args) {
+    const appointed = await ctx.db.query("appointed").collect();
+
+    return appointed;
   },
 });
 

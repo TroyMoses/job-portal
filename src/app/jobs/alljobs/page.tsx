@@ -6,15 +6,15 @@ import Link from "next/link";
 import React from "react";
 import { api } from "../../../../convex/_generated/api";
 import { Loader2 } from "lucide-react";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
 const AllJobs = () => {
-
   const jobs = useQuery(api.jobs.getAllJobs);
 
   const isLoading = jobs === undefined;
 
   const modifiedJobs =
-    jobs?.map((job) => ({
+    jobs?.map((job: Doc<"jobs">) => ({
       ...job,
     })) ?? [];
 
@@ -30,7 +30,7 @@ const AllJobs = () => {
             <div className="text-2xl">Loading job listings...</div>
           </div>
         )}
-        {modifiedJobs.map((job) => {
+        {modifiedJobs.map((job: Doc<"jobs">) => {
           return (
             <Link href={`/jobs/jobdetails/${job._id}`} key={job._id}>
               <JobCard job={job} />

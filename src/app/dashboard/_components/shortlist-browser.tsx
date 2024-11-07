@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 export function ShortListBrowser({
   title,
@@ -24,6 +25,7 @@ export function ShortListBrowser({
   const router = useRouter();
 
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const shortlisted = useQuery(api.files.getAllShortListed);
 
@@ -39,7 +41,14 @@ export function ShortListBrowser({
       isShortlisted: (shortlisted ?? []).some(
         (shortlisted) => shortlisted.userId === file.userId
       ),
-    })) ?? [];
+    }))
+    .filter(
+      (file) =>
+        file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.post?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.telephone?.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ?? [];
 
     // Ensure user is loaded
   if (!userLoaded) {
@@ -49,8 +58,9 @@ export function ShortListBrowser({
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (!isAdmin && !isCommissioner && !isCAO) {
+  if (!isAdmin && !isCommissioner && !isCAO && !isTechnical) {
     router.push("/");
     return null;
   }
@@ -65,6 +75,15 @@ export function ShortListBrowser({
         <h1 className="text-4xl font-bold">{title}</h1>
 
       </div>
+
+      {/* Search Input */}
+      <Input
+        type="text"
+        placeholder="Search by job post, applicant name, email or telephone..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 w-full max-w-lg"
+      />
 
       <Tabs defaultValue="table">
         <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">

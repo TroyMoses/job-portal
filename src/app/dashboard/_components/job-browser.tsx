@@ -10,6 +10,9 @@ import { columns } from "./columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
 export function JobBrowser({
   title,
@@ -18,6 +21,7 @@ export function JobBrowser({
   title: string;
   deletedOnly?: boolean;
 }) {
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
 
@@ -25,9 +29,15 @@ export function JobBrowser({
   const isLoading = jobs === undefined;
 
   const modifiedJobs =
-    jobs?.map((job) => ({
-      ...job,
-    })) ?? [];
+    jobs
+      ?.map((job: Doc<"jobs">) => ({
+        ...job,
+      }))
+      .filter(
+        (job) =>
+          job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job.salaryScale.toLowerCase().includes(searchQuery.toLowerCase())
+      ) ?? [];
 
   // Ensure user is loaded
   if (!userLoaded) {
@@ -37,35 +47,47 @@ export function JobBrowser({
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (!isAdmin && !isCommissioner && !isCAO) {
+  if (!isAdmin && !isCommissioner && !isCAO && !isTechnical) {
     router.push("/");
     return null;
   }
 
   return (
     <div>
-      {isAdmin && (
-        <div>
-          <div className="hidden md:flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-bold">{title}</h1>
+      <div>
+        <div className="hidden md:flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">{title}</h1>
 
+          {isAdmin && (
             <Link href={"/dashboard/addjob"}>
               <Button type="button" className="text-sm px-2 py-1">
                 Upload Job
               </Button>
             </Link>
-          </div>
-          <div className="md:hidden flex flex-col gap-5 mb-8">
-            <h1 className="text-4xl font-bold">{title}</h1>
-            <Link href={"/dashboard/addjob"}>
-              <Button type="button" className="text-sm px-2 py-1">
-                Upload Job
-              </Button>
-            </Link>
-          </div>
+          )}
         </div>
-      )}
+        <div className="md:hidden flex flex-col gap-5 mb-8">
+          <h1 className="text-4xl font-bold">{title}</h1>
+          {isAdmin && (
+            <Link href={"/dashboard/addjob"}>
+              <Button type="button" className="text-sm px-2 py-1">
+                Upload Job
+              </Button>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Search Input */}
+      <Input
+        type="text"
+        placeholder="Search by job title or salary scale..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 w-full max-w-lg"
+      />
 
       <Tabs defaultValue="table">
         <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">

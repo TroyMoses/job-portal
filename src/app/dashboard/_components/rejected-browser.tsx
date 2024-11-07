@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { Input } from "@/components/ui/input";
 
 export function RejectedBrowser({
   title,
@@ -24,6 +25,7 @@ export function RejectedBrowser({
   const router = useRouter();
 
   const [type, setType] = useState<Doc<"files">["type"] | "all">("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const rejected = useQuery(api.files.getAllRejected);
 
@@ -39,9 +41,16 @@ export function RejectedBrowser({
       isRejected: (rejected ?? []).some(
         (rejected) => rejected.userId === file.userId
       ),
-    })) ?? [];
+    }))
+    .filter(
+      (file) =>
+        file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.post?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        file.telephone?.toLowerCase().includes(searchQuery.toLowerCase() )
+    ) ?? [];
 
-    // Ensure user is loaded
+  // Ensure user is loaded
   if (!userLoaded) {
     return <p>Loading user data...</p>;
   }
@@ -49,8 +58,9 @@ export function RejectedBrowser({
   const isAdmin = user?.publicMetadata?.role === "admin";
   const isCommissioner = user?.publicMetadata?.role === "commissioner";
   const isCAO = user?.publicMetadata?.role === "cao";
+  const isTechnical = user?.publicMetadata?.role === "technical";
 
-  if (!isAdmin && !isCommissioner && !isCAO) {
+  if (!isAdmin && !isCommissioner && !isCAO && !isTechnical) {
     router.push("/");
     return null;
   }
@@ -59,12 +69,19 @@ export function RejectedBrowser({
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
       <div className="md:hidden flex flex-col gap-5 mb-8">
         <h1 className="text-4xl font-bold">{title}</h1>
-
       </div>
+
+      {/* Search Input */}
+      <Input
+        type="text"
+        placeholder="Search by job post, applicant name, email or telephone..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 w-full max-w-lg"
+      />
 
       <Tabs defaultValue="table">
         <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">
@@ -73,7 +90,6 @@ export function RejectedBrowser({
               <RowsIcon /> Table
             </TabsTrigger>
           </TabsList>
-
         </div>
 
         {isLoading && (
@@ -88,7 +104,6 @@ export function RejectedBrowser({
           <DataTable columns={columns} data={modifiedFiles} />
         </TabsContent>
       </Tabs>
-
     </div>
   );
 }

@@ -8,6 +8,9 @@ const nextConfig = {
       {
         hostname: "warmhearted-bird-895.convex.cloud",
       },
+      {
+        hostname: "grateful-emu-114.convex.cloud",
+      },
     ],
   },
   typescript: {
