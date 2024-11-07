@@ -16,6 +16,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectLabel, SelectValue, SelectGroup } from "@/components/ui/select";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 import { z } from "zod";
@@ -562,21 +563,38 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
-                <FormField
+               <FormField
                   control={form.control}
                   name="post"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Post applied for and Reference Number
-                      </FormLabel>
+                      <FormLabel>Post applied for and Reference Number</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Select
+                          onValueChange={field.onChange}  // This updates the form's state
+                          value={field.value}             // Ensures the selected value is shown
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Reference No" />  {/* Placeholder if no selection */}
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Select Reference No</SelectLabel>
+                              <SelectItem value="KDSC/INT/01/10/2024">KDSC/INT/01/10/2024</SelectItem>
+                              <SelectItem value="KDSC/INT/02/10/2024">KDSC/INT/02/10/2024</SelectItem>
+                              <SelectItem value="KDSC/INT/03/10/2024">KDSC/INT/03/10/2024</SelectItem>
+                              <SelectItem value="KDSC/INT/04/10/2024">KDSC/INT/04/10/2024</SelectItem>
+                              <SelectItem value="KDSC/INT/05/10/2024">KDSC/INT/05/10/2024</SelectItem>
+                              <SelectItem value="KDSC/INT/06/10/2024">KDSC/INT/06/10/2024</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
 
                 <FormField
                   control={form.control}
