@@ -11,6 +11,11 @@ import { Doc } from "../../../../convex/_generated/dataModel";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { Button } from "@/components/ui/button";
+import { FileText, Download } from "lucide-react";
 
 export function FileBrowser({
   title,
@@ -64,6 +69,45 @@ export function FileBrowser({
     return null;
   }
 
+  const exportToExcel = () => {
+    const filteredData = modifiedFiles.map((file) => ({
+      Name: file.name,
+      Post: file.post,
+      Telephone: file.telephone,
+      Email: file.email, // Example of another field
+      "Shortlisted?": file.isShortlisted ? "Yes" : "No",
+      Date: new Date(file._creationTime).toLocaleDateString("en-GB"), 
+    }));
+  
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Files");
+  
+    // Write the workbook to an Excel file
+    XLSX.writeFile(workbook, "application_data.xlsx");
+  };
+  
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Files Data", 14, 10);
+  
+    const tableData = modifiedFiles.map((file) => [
+      file.name,
+      file.post,
+      file.telephone,
+      file.isShortlisted ? "Yes" : "No",
+    ]);
+  
+    doc.autoTable({
+      head: [["Name", "Post", "Telephone", "Shortlisted"]],
+      body: tableData,
+    });
+  
+    doc.save("application_data.pdf");
+  };
+  
   return (
     <div>
       <div className="hidden md:flex justify-between items-center mb-8">
@@ -83,13 +127,33 @@ export function FileBrowser({
       />
 
       <Tabs defaultValue="table">
-        <div className="flex flex-col-reverse gap-4 md:gap-0 md:flex-row md:justify-between md:items-center items-start">
-          <TabsList className="mb-2">
-            <TabsTrigger value="table" className="flex gap-2 items-center">
-              <RowsIcon /> Table
-            </TabsTrigger>
-          </TabsList>
-        </div>
+      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+  {/* TabsList on the left */}
+  <div className="flex items-center">
+    <TabsList>
+      <TabsTrigger value="table" className="flex gap-2 items-center">
+        <RowsIcon /> Table
+      </TabsTrigger>
+    </TabsList>
+  </div>
+
+  {/* Buttons on the right */}
+  <div className="flex gap-4">
+    {/* Export to PDF */}
+    <Button variant="secondary" onClick={exportToPDF}>
+      <FileText className="mr-2 h-4 w-4" />
+      Export to PDF
+    </Button>
+
+    {/* Export to Excel */}
+    <Button variant="secondary" onClick={exportToExcel}>
+      <Download className="mr-2 h-4 w-4" />
+      Export to Excel
+    </Button>
+  </div>
+</div>
+
+
 
         {isLoading && (
           <div className="flex flex-col gap-8 w-full items-center mt-12 md:mt-24">
