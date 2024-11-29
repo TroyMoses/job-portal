@@ -137,7 +137,7 @@ export function FileBrowser({
           </div>
 
           <div className="flex gap-4">
-            <Button variant="secondary" onClick={exportToPDF}>
+            <Button variant="destructive" onClick={exportToPDF}>
               <FileText className="mr-2 h-4 w-4" />
               Export to PDF
             </Button>
