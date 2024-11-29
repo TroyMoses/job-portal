@@ -127,31 +127,27 @@ export function FileBrowser({
       />
 
       <Tabs defaultValue="table">
-      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
-  {/* TabsList on the left */}
-  <div className="flex items-center">
-    <TabsList>
-      <TabsTrigger value="table" className="flex gap-2 items-center">
-        <RowsIcon /> Table
-      </TabsTrigger>
-    </TabsList>
-  </div>
+        <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+          <div className="flex items-center">
+            <TabsList>
+              <TabsTrigger value="table" className="flex gap-2 items-center">
+                <RowsIcon /> Table
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-  {/* Buttons on the right */}
-  <div className="flex gap-4">
-    {/* Export to PDF */}
-    <Button variant="secondary" onClick={exportToPDF}>
-      <FileText className="mr-2 h-4 w-4" />
-      Export to PDF
-    </Button>
+          <div className="flex gap-4">
+            <Button variant="secondary" onClick={exportToPDF}>
+              <FileText className="mr-2 h-4 w-4" />
+              Export to PDF
+            </Button>
 
-    {/* Export to Excel */}
-    <Button variant="secondary" onClick={exportToExcel}>
-      <Download className="mr-2 h-4 w-4" />
-      Export to Excel
-    </Button>
-  </div>
-</div>
+            <Button variant="secondary" onClick={exportToExcel}>
+              <Download className="mr-2 h-4 w-4" />
+              Export to Excel
+            </Button>
+          </div>
+        </div>
 
 
 
