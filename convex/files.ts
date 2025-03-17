@@ -330,7 +330,6 @@ export const toggleShortlisted = mutation({
         userId: args.userId,
       });
 
-      // Remove the user from the `rejected` table if they are present
       const rejected = await ctx.db
         .query("rejected")
         .withIndex("by_userId", (q) => q.eq("userId", args.userId))
