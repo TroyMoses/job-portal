@@ -19,10 +19,6 @@ export const columns: ColumnDef<Doc<"files"> & { isShortlisted: boolean } & { is
     header: "Email",
   },
   {
-    accessorKey: "telephone",
-    header: "Telephone",
-  },
-  {
     accessorKey: "reason",
     header: "Reason",
   },
