@@ -580,12 +580,7 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Select Reference No</SelectLabel>
-                              <SelectItem value="Medical Laboratory Technologit - KDSC/INT/01/10/2024">Medical Laboratory Technologit - KDSC/INT/01/10/2024</SelectItem>
-                              <SelectItem value="Senior Clinical Officer - KDSC/INT/02/10/2025">Senior Clinical Officer - KDSC/INT/02/10/2025</SelectItem>
-                              <SelectItem value="Medical Laboratory Technician - KDSC/INT/03/10/2024">Medical Laboratory Technician - KDSC/INT/03/10/2024</SelectItem>
-                              <SelectItem value="Head Teacher - KDSC/INT/04/10/2024">Head Teacher - KDSC/INT/04/10/2024</SelectItem>
-                              <SelectItem value="Deputy Teacher - KDSC/INT/05/10/2024">Deputy Teacher - KDSC/INT/05/10/2024</SelectItem>
-                              <SelectItem value="Senior Education Assistant - KDSC/INT/06/10/2024">Senior Education Assistant - KDSC/INT/06/10/2024</SelectItem>
+                              <SelectItem value="Deputy Teacher - KDSC/INT/01/03/2025">Deputy Teacher - KDSC/INT/01/03/2025</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
