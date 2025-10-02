@@ -580,7 +580,15 @@ const JobApplication = ({ params }: { params: { id: string } }) => {
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Select Reference No</SelectLabel>
-                              <SelectItem value="Deputy Teacher - KDSC/INT/01/03/2025">Deputy Teacher - KDSC/INT/01/03/2025</SelectItem>
+                              <SelectItem value="Senior Community Development Officer - KDSC/INT/01/10/2025">Senior Community Development Officer - KDSC/INT/01/10/2025</SelectItem>
+                              <SelectItem value="Finance Officer - KDSC/INT/02/10/2025">Finance Officer - KDSC/INT/02/10/2025</SelectItem>
+                              <SelectItem value="Assistant Town Clerk	- KDSC/INT/03/10/2025">Assistant Town Clerk	- KDSC/INT/03/10/2025</SelectItem>
+                              <SelectItem value="Assistant Nursing Officer (Midwifery)- KDSC/INT/04/10/2025">Assistant Nursing Officer (Midwifery)- KDSC/INT/04/10/2025</SelectItem>
+                              <SelectItem value="Assistant Nursing Officer (Nursing)	- KDSC/INT/05/10/2025">Assistant Nursing Officer (Nursing)	- KDSC/INT/05/10/2025</SelectItem>
+                              <SelectItem value="Assistant Nursing Officer (Nursing) - KDSC/INT/05/10/2025">Assistant Nursing Officer (Nursing) - KDSC/INT/05/10/2025</SelectItem>
+                              <SelectItem value="Head Teacher - KDSC/INT/06/10/2025">Head Teacher - KDSC/INT/06/10/2025</SelectItem>
+                              <SelectItem value="Deputy Head Teacher - KDSC/INT/07/10/2025">Deputy Head Teacher - KDSC/INT/07/10/2025</SelectItem>
+                              <SelectItem value="Senior Education Assistant	- KDSC/INT/08/10/2025">Senior Education Assistant	- KDSC/INT/08/10/2025</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
